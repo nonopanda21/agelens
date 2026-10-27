@@ -440,3 +440,11 @@ At the user's request the nav button is gone. Because the hero/footer animation 
 ## 2026-10-27 · Open public demo (invite codes optional)
 At the user's request the invite step is skipped for the first deployment. `--public` without `AGELENS_INVITES` = **open demo**: no gate (`api_access.gate_enabled()`); `/api/access/status` adds `invite`; redeem → 404. Reviewer/study tokens are optional on the host: unset → a random in-memory value at each start (nobody knows it, the desks stay closed, no token file is written). `check_config` now fails only on a malformed invite list or a too-short token. Frontend uses `access.invite` for the gate/chip and hides the Reviewer link on any public host unless signed in with a reviewer code; the access page explains the open demo. `render.yaml` no longer asks for secrets.
 Verified: unit tests 243 OK (test_access 19: +open-demo tests: no gate, desks closed, no token file written, diag off; adjusted config-check cases). Open-mode rehearsal on 127.0.0.1 with a fresh DB and no secrets: 960 ads rebuilt, /api/overview 200, no gate, Reviewer link hidden, Quick check works, access page text correct, no console errors, 0 overflow at 1280/360, `data/reviewer_token` unchanged. Invite-mode browser rehearsal still 33/33; local sweep 110/110. Main server restarted on the new code.
+
+## 2026-10-27 · Public demo live (open mode)
+Deployed by the team on Render (free plan) from GitHub `nonopanda21/agelens`, commit 5a34daf: https://agelens-c8kj.onrender.com
+Checked from this machine (read-only: nothing was submitted):
+- API: /api/health 200 with 960 ads; /api/access/status reports public, no invite; /api/overview 200; reviewer API without a token 401; /api/diag 404.
+- Headers: HTTPS (HTTP/2) with HSTS, X-Frame-Options DENY, Referrer-Policy no-referrer, X-Robots-Tag noindex.
+- Real Chromium at 1280 and 390: home with all 9 sections and the map drawn; Explore, an evidence page, Job Seeker "Use an example" answer (5 sections), Quick check, My requests, About and Study load; no console errors, no 4xx/5xx, no horizontal overflow. Screenshots viewed (home 1280, Job Seeker 390).
+- The instance was awake (first load 1.6 s); the free plan's sleep/wake delay and data reset on restart were not measured.
