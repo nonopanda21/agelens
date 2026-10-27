@@ -45,9 +45,10 @@
 
   function render(el) {
     const a = AgeLens.access, i = AgeLens.session.info();
-    if (!a.public) {
+    if (!a.invite) {
       el.replaceChildren(h('div.wrap.section.rq.rq-center', {}, h('h1', {}, 'No invite code needed'),
-        h('p.hint', {}, 'This copy of AgeLens runs on your own computer, so everything is open. Invite codes are used only on the public demo.'),
+        h('p.hint', {}, a.public ? 'This public demo is open to everyone, so no invite code is needed. All data in it is simulated; please do not enter real personal information.'
+          : 'This copy of AgeLens runs on your own computer, so everything is open. Invite codes are used only on a public demo that has them switched on.'),
         h('a.btn.btn-primary', { href: '#/' }, 'Back to Overview')));
       return;
     }

@@ -24,7 +24,7 @@
   }
   const hashCode = () => (location.hash.match(/^#\/reviewer\/([\w-]+)/) || [])[1] || null;
   // public demo: a reviewer invite code is the sign-in (the server accepts it in place of the shared token)
-  const viaInvite = () => AgeLens.access.public && AgeLens.session.info().role === 'reviewer';
+  const viaInvite = () => !!AgeLens.access.invite && AgeLens.session.info().role === 'reviewer';
 
   function signIn(el, note) {
     const { h, busy } = U();

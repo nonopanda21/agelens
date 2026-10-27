@@ -85,12 +85,17 @@ class Router:
 
 # --- demo-grade access control (server-side; NOT production auth) -------------------------
 
+_EPHEMERAL_REVIEWER = None
+
+
 def reviewer_token():
     env = os.environ.get("AGELENS_REVIEWER_TOKEN")
     if env:
         return env
-    if os.environ.get("AGELENS_PUBLIC") == "1":
-        raise HTTPError(503, "The reviewer token is not configured on this server.")  # never write a token file on a public host
+    if os.environ.get("AGELENS_PUBLIC") == "1":  # public host: never write a token file; unset = random, unknown, desk closed
+        global _EPHEMERAL_REVIEWER
+        _EPHEMERAL_REVIEWER = _EPHEMERAL_REVIEWER or secrets.token_urlsafe(32)
+        return _EPHEMERAL_REVIEWER
     f = db.DATA_DIR / "reviewer_token"
     if not f.exists():
         f.parent.mkdir(parents=True, exist_ok=True)

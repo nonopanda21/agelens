@@ -2,6 +2,16 @@
 
 Status 2026-10-27: everything below up to step 3 is prepared and rehearsed locally (see "What was verified"). **Steps 1–6 need a team member**, because they create accounts and publish under your name. Nothing has been published yet.
 
+## Two ways to run it (chosen by one environment variable)
+
+| | open demo (default of `render.yaml`) | invite-only demo |
+|---|---|---|
+| set on the host | nothing | `AGELENS_INVITES` (from `scripts/invite.py env`) |
+| who gets in | anyone with the link | only people with a code |
+| reviewer / study desks | closed: a random token nobody knows is generated at each start (set `AGELENS_REVIEWER_TOKEN` / `AGELENS_STUDY_TOKEN` to open them) | reviewer codes open the reviewer workspace |
+
+Switching from open to invite-only later: Render → the service → **Environment** → add `AGELENS_INVITES` → **Save**. Render restarts the service and the invite page appears. No code change is needed.
+
 ## What the public demo is
 
 - `python app.py --public` serves the same app, with these differences from local use:
@@ -9,7 +19,7 @@ Status 2026-10-27: everything below up to step 3 is prepared and rehearsed local
   - there is no sign-up and no email;
   - secrets come only from environment variables;
   - an empty database is rebuilt from the seeded simulated dataset (960 fictional ads, all labelled "Demo · Synthetic data").
-- **It refuses to start** if the invite list or a secret is missing.
+- **It refuses to start** if `AGELENS_INVITES` is set but malformed, or a token is set but shorter than 16 characters.
 - **Headers:** responses carry `X-Robots-Tag: noindex`, HSTS, `X-Frame-Options: DENY` and `Referrer-Policy: no-referrer`.
 - **Turned off:** the diagnostics endpoint.
 - **Study tools:** they stay in simulation mode. Formal mode is refused without `data/study/APPROVAL.json`, and no real participant data may be collected on the demo before teacher approval.
@@ -59,7 +69,7 @@ git push -u origin main                      # GitHub asks you to sign in (brows
 - `.gitignore` already excludes the databases, tokens, logs, uploads, the local invite list, the scheduler's run records and `.claude/`.
 - The repository is about 110 MB, mostly `docs/screenshots/`.
 
-### 2. Make the secrets and the first codes (locally)
+### 2. (invite-only demo only) Make the secrets and the first codes (locally); skip for the open demo
 ```bash
 python3 scripts/invite.py secrets            # two random values: keep them for step 3, do not commit them
 python3 scripts/invite.py new --role viewer   --label "Teacher"         --personal --expires 2026-12-15
@@ -73,7 +83,7 @@ python3 scripts/invite.py env                # the value for AGELENS_INVITES (ha
 ### 3. Create the service on Render
 1. Sign up at render.com with GitHub, and allow it to see the `agelens-demo` repository.
 2. **New → Blueprint**, then pick the repository. Render reads `render.yaml`, which sets the free plan, Ohio region, Python 3.12.3, `pip install -r requirements.txt`, `python app.py --public` and health check `/api/health`.
-3. Render asks for the three secret values:
+3. For the open demo, Render asks for nothing. For the invite-only demo, add these under **Environment**:
    - `AGELENS_INVITES`: the output of `invite.py env`;
    - `AGELENS_REVIEWER_TOKEN` and `AGELENS_STUDY_TOKEN`: the two values from `invite.py secrets`.
 4. **Apply.** The first build takes a few minutes. The log should end with `Imported batch 1: … 960 unique ads` and `AgeLens running at http://0.0.0.0:10000`.

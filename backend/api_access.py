@@ -50,6 +50,11 @@ def public_mode():
     return os.environ.get("AGELENS_PUBLIC") == "1"
 
 
+def gate_enabled():
+    """Invite gate on only when the public demo has an invite list. Public without AGELENS_INVITES = open demo."""
+    return public_mode() and bool(os.environ.get("AGELENS_INVITES", "").strip())
+
+
 def now_dt():
     return datetime.now(timezone.utc)
 
@@ -91,14 +96,15 @@ def check_config():
         items = json.loads(raw) if raw else []
     except ValueError:
         return ["AGELENS_INVITES is not valid JSON."]
-    if not items:
-        problems.append("AGELENS_INVITES is empty: nobody could get in. Create codes with scripts/invite.py.")
+    if raw and not items:
+        problems.append("AGELENS_INVITES is an empty list: nobody could get in. Remove the variable for an open demo, or add codes.")
     valid = load_invites()
     if len(valid) != len(items):
         problems.append("%d of %d AGELENS_INVITES entries are malformed (need id, role viewer|reviewer, sha256)." % (len(items) - len(valid), len(items)))
     for k in ("AGELENS_REVIEWER_TOKEN", "AGELENS_STUDY_TOKEN"):
-        if len(os.environ.get(k, "")) < 16:
-            problems.append("%s must be set to a random value of at least 16 characters." % k)
+        v = os.environ.get(k, "")
+        if v and len(v) < 16:  # unset is fine: a random in-memory value is used and that desk stays closed
+            problems.append("%s must be at least 16 random characters (or leave it unset to keep that desk closed)." % k)
     return problems
 
 
@@ -139,7 +145,7 @@ def session(req, conn=None):
 
 def gate(req):
     """Called by the server for every /api/* request in public mode. Raises 401 without a valid invite session."""
-    if req.path in OPEN_PATHS:
+    if req.path in OPEN_PATHS or not gate_enabled():
         return None
     inv, _ = session(req)
     if not inv:
@@ -184,17 +190,19 @@ def owns(conn, req, code):
 
 def status(req):
     if not public_mode():
-        return {"public": False, "signed_in": False}
+        return {"public": False, "invite": False, "signed_in": False}
+    if not gate_enabled():
+        return {"public": True, "invite": False, "signed_in": False}
     inv, row = session(req)
     if not inv:
-        return {"public": True, "signed_in": False}
-    return {"public": True, "signed_in": True, "role": inv["role"], "label": str(inv.get("label") or "")[:60],
+        return {"public": True, "invite": True, "signed_in": False}
+    return {"public": True, "invite": True, "signed_in": True, "role": inv["role"], "label": str(inv.get("label") or "")[:60],
             "personal": bool(inv.get("personal")), "session_expires_at": row["expires_at"], "code_expires": inv.get("expires")}
 
 
 def redeem(req):
-    if not public_mode():
-        raise HTTPError(404, "Invite codes are used only on the public demo.")
+    if not gate_enabled():
+        raise HTTPError(404, "Invite codes are not used on this server.")
     if len(req.body or b"") > 2048:
         raise HTTPError(413, "That request is too large.")
     key = client_key(req)

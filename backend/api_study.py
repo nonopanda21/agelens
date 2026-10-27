@@ -123,10 +123,17 @@ def task_by_id(doc, tid):
     return None
 
 
+_EPHEMERAL_STUDY = None
+
+
 def study_token():
+    global _EPHEMERAL_STUDY
     env = os.environ.get("AGELENS_STUDY_TOKEN")
     if env:
         return env
+    if os.environ.get("AGELENS_PUBLIC") == "1":  # public host without a study token: random and unknown, desk closed
+        _EPHEMERAL_STUDY = _EPHEMERAL_STUDY or secrets.token_urlsafe(32)
+        return _EPHEMERAL_STUDY
     f = STUDY_DIR / "study_token"
     if not f.exists():
         f.parent.mkdir(parents=True, exist_ok=True)

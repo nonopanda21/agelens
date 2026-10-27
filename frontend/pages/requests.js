@@ -161,7 +161,7 @@
       h('p', {}, 'Your private access key for a request is created when you submit it and is kept only in the browser where you submitted it. This browser does not have the key for ' + code + '.'),
       h('ul', {}, h('li', {}, 'Open My requests in the browser (and browser profile) you used to submit. The request will be listed there.'),
         h('li', {}, 'If site data was cleared or you used a private window, the key is gone and cannot be recovered, because the server only stores a one-way hash of it.'),
-        AgeLens.access.public ? h('li', {}, 'On the public demo, requests sent with a personal invite code open in any browser where you enter that code.') : null,
+        AgeLens.access.invite ? h('li', {}, 'On the public demo, requests sent with a personal invite code open in any browser where you enter that code.') : null,
         h('li', {}, 'You can ask your question again with a new request. Nothing here is visible to anyone who lacks the key.')),
       h('div.rv-actions', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Start a new request'), h('a.btn.btn-quiet', { href: '#/requests' }, 'My requests')));
   }
@@ -216,7 +216,7 @@
 
   async function list(el) {
     const tokens = AgeLens.ownerTokens.all(), codes = Object.keys(tokens);
-    const personal = AgeLens.access.public && AgeLens.session.info().personal;  // public demo, personal invite code
+    const personal = !!AgeLens.access.invite && AgeLens.session.info().personal;  // public demo, personal invite code
     const wrap = h('div.wrap.section.rq', {}, h('h1', {}, 'My ', h('span.ink-pink', {}, 'requests')),
       personal ? h('p.hint.rq-lede', {}, 'Requests you send with your personal invite code are kept on the code, so they open in any browser where you enter it. Requests sent from this browser earlier are listed too.')
         : h('p.hint.rq-lede', {}, 'Each request has a private access key that stays in this browser only. Another browser, a private window or cleared site data cannot open these requests, and the key cannot be recovered.'));

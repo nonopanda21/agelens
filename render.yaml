@@ -1,5 +1,8 @@
 # Render blueprint for the AgeLens public demo (docs/DEPLOY.md). Free plan, no persistent disk:
 # the database is rebuilt from the seeded simulated dataset at every start; requests and sessions are lost on restart.
+# As written it starts an OPEN demo (no invite code; reviewer and study desks closed). Optional, added later in the
+# Render dashboard (Environment), never committed: AGELENS_INVITES (turns the invite gate on; scripts/invite.py env),
+# AGELENS_REVIEWER_TOKEN / AGELENS_STUDY_TOKEN (open those desks to people who know the token).
 services:
   - type: web
     name: agelens-demo
@@ -13,10 +16,3 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.3
-      # secrets: entered in the Render dashboard, never committed (sync: false = Render asks for the value)
-      - key: AGELENS_INVITES
-        sync: false
-      - key: AGELENS_REVIEWER_TOKEN
-        sync: false
-      - key: AGELENS_STUDY_TOKEN
-        sync: false

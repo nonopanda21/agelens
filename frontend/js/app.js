@@ -61,7 +61,7 @@
     onChange(fn) { sessionListeners.push(fn); },
   };
   /** True when the public demo needs an invite and this browser has no valid session. */
-  AgeLens.needsInvite = () => AgeLens.access.public && !AgeLens.session.token();
+  AgeLens.needsInvite = () => !!AgeLens.access.invite && !AgeLens.session.token();
 
   /* ---- motion preference: OS setting OR the user's "Pause animation" toggle (a quiet link in the footers; it stays
      because the background animation runs continuously and WCAG 2.2.2 asks for a way to pause it) ---- */
@@ -189,14 +189,14 @@
     const fl = document.querySelector('.foot .foot-links');
     if (fl) fl.insertBefore(AgeLens.motionToggle(), fl.querySelector('.foot-copy'));
     try { AgeLens.access = await AgeLens.api('/api/access/status'); } catch (e) { AgeLens.access = { public: false, signed_in: false }; }
-    if (AgeLens.access.public && !AgeLens.access.signed_in) AgeLens.session.clear();  // stale or revoked session
+    if (AgeLens.access.invite && !AgeLens.access.signed_in) AgeLens.session.clear();  // stale or revoked session
     // public demo: who you are signed in as, at the end of the nav; the Reviewer link only for reviewer codes
     const chip = AgeLens.h('a.nav-access', { href: '#/access', 'data-nav': 'access' });
     const paint = () => {
-      const i = AgeLens.session.info(), on = AgeLens.access.public && !!i.token;
+      const i = AgeLens.session.info(), on = !!AgeLens.access.invite && !!i.token;
       chip.hidden = !on; chip.textContent = on ? (i.label || 'Guest') + ' · ' + i.role : '';
       chip.setAttribute('aria-label', on ? 'Signed in with an invite code: ' + (i.label || 'guest') + ', ' + i.role : '');
-      const rv = document.querySelector('.nav-reviewer'); if (rv) rv.hidden = AgeLens.access.public && i.role !== 'reviewer';
+      const rv = document.querySelector('.nav-reviewer'); if (rv) rv.hidden = !!AgeLens.access.public && i.role !== 'reviewer';  // public: desk not offered to visitors
     };
     if (nav) { nav.append(chip); AgeLens.session.onChange(paint); paint(); }
     document.body.classList.toggle('public-demo', !!AgeLens.access.public);

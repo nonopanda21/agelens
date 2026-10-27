@@ -97,7 +97,7 @@ class TestGate(Base):
         self.assertEqual(s, 200)
         self.assertIn("<html", html.lower())
         self.assertEqual(hd.get("X-Robots-Tag"), None if not server.PUBLIC else "noindex, nofollow")
-        self.assertEqual(self.call("GET", "/api/access/status")[1], {"public": True, "signed_in": False})
+        self.assertEqual(self.call("GET", "/api/access/status")[1], {"public": True, "invite": True, "signed_in": False})
 
     def test_valid_code_opens_the_api(self):
         hdr, b = self.enter("class")
@@ -196,9 +196,10 @@ class TestConfigCheck(unittest.TestCase):
     def test_check_config(self):
         old = {k: os.environ.get(k) for k in ("AGELENS_INVITES", "AGELENS_REVIEWER_TOKEN", "AGELENS_STUDY_TOKEN")}
         try:
-            os.environ.update(AGELENS_INVITES="", AGELENS_REVIEWER_TOKEN="short", AGELENS_STUDY_TOKEN="")
-            p = AX.check_config()
-            self.assertEqual(len(p), 3)
+            os.environ.update(AGELENS_INVITES="", AGELENS_REVIEWER_TOKEN="", AGELENS_STUDY_TOKEN="")
+            self.assertEqual(AX.check_config(), [])  # open demo: nothing required
+            os.environ.update(AGELENS_INVITES="[]", AGELENS_REVIEWER_TOKEN="short")
+            self.assertEqual(len(AX.check_config()), 2)
             os.environ["AGELENS_INVITES"] = "not json"
             self.assertEqual(AX.check_config(), ["AGELENS_INVITES is not valid JSON."])
             os.environ.update(AGELENS_INVITES=json.dumps(INVITES + [{"id": "bad"}]), AGELENS_REVIEWER_TOKEN="x" * 20, AGELENS_STUDY_TOKEN="y" * 20)
@@ -213,13 +214,39 @@ class TestConfigCheck(unittest.TestCase):
                     os.environ[k] = v
 
 
+class TestOpenPublicDemo(Base):
+    """Public mode without AGELENS_INVITES: open to everyone; reviewer and study desks closed unless their token is set."""
+    PUBLIC = False
+
+    def setUp(self):
+        super().setUp()
+        os.environ["AGELENS_PUBLIC"] = "1"
+        for k in ("AGELENS_INVITES", "AGELENS_REVIEWER_TOKEN", "AGELENS_STUDY_TOKEN"):
+            os.environ.pop(k, None)
+
+    def test_open_without_code(self):
+        self.assertEqual(self.call("GET", "/api/access/status")[1], {"public": True, "invite": False, "signed_in": False})
+        self.assertEqual(self.call("GET", "/api/overview")[0], 200)
+        self.assertEqual(self.call("POST", "/api/age/check", {"text": "年龄35岁以下"})[0], 200)
+        self.assertEqual(self.call("POST", "/api/access/redeem", {"code": CODES["class"]})[0], 404)
+
+    def test_desks_closed_and_no_token_files(self):
+        before = {p: p.exists() for p in (db.DATA_DIR / "reviewer_token",)}
+        self.assertEqual(self.call("GET", "/api/reviewer/requests", headers={"X-Reviewer-Token": "guess-guess-guess"})[0], 401)
+        self.assertEqual(self.call("GET", "/api/study/rater/status", headers={"X-Study-Token": "guess-guess-guess", "X-Rater-Id": "R1"})[0], 401)
+        self.assertEqual({p: p.exists() for p in before}, before)  # nothing written
+
+    def test_diag_still_off(self):
+        self.assertEqual(self.call("POST", "/api/diag", {"x": 1})[0], 404)
+
+
 class TestLocalModeUnchanged(Base):
     PUBLIC = False
 
     def test_no_gate_locally(self):
         os.environ.pop("AGELENS_PUBLIC", None)
         self.assertEqual(self.call("GET", "/api/overview")[0], 200)
-        self.assertEqual(self.call("GET", "/api/access/status")[1], {"public": False, "signed_in": False})
+        self.assertEqual(self.call("GET", "/api/access/status")[1], {"public": False, "invite": False, "signed_in": False})
         self.assertEqual(self.call("POST", "/api/access/redeem", {"code": CODES["class"]})[0], 404)
 
 
