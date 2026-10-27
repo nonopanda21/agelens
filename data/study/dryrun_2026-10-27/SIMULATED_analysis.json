@@ -1,0 +1,155 @@
+{
+ "design": "crossover-rules-v1",
+ "meta": {
+  "schema": "export-v2",
+  "scope": "simulated",
+  "simulated": true,
+  "generated_at": "2026-10-27T22:18:28Z",
+  "tasks_version": "tasks-v0.2-draft",
+  "rubric_version": "rubric-v0.1-draft"
+ },
+ "label": "SIMULATED — software test only, not study data, not a result",
+ "threshold": {
+  "min_effect": 0.2,
+  "ci_lower_gt": 0.0,
+  "ci": "95% percentile bootstrap over participants (20,000 resamples)",
+  "rule": "Success only if mean D >= +0.20 AND the 95% CI lower bound > 0. Anything else is reported as not meeting the threshold."
+ },
+ "n": {
+  "enrolled": 24,
+  "analysed": 24,
+  "excluded_unresolved_or_unscored": 0,
+  "withdrawn": 0,
+  "dropouts": 0,
+  "incomplete": 0,
+  "by_sequence": {
+   "AB-S1": 6,
+   "AB-S2": 6,
+   "BA-S1": 6,
+   "BA-S2": 6
+  }
+ },
+ "primary": {
+  "outcome": "D = usable share on AgeLens tasks - usable share on ad-only tasks (per participant, 2 tasks each)",
+  "mean_A": 0.583,
+  "mean_B": 0.75,
+  "mean_D": 0.167,
+  "ci95_percentile_bootstrap": [
+   -0.042,
+   0.354
+  ],
+  "p_signflip_two_sided": 0.1706,
+  "p_paired_t_two_sided": 0.1186,
+  "n": 24,
+  "D_distribution": {
+   "-1.0": 0,
+   "-0.5": 7,
+   "0.0": 4,
+   "0.5": 11,
+   "1.0": 2
+  },
+  "threshold_met": false,
+  "decision": "NOT MET: needs mean D >= +0.20 and CI lower bound > 0.00; got mean D +0.167, lower bound -0.042"
+ },
+ "order": {
+  "mean_D_AB_group": 0.083,
+  "mean_D_BA_group": 0.25,
+  "order_balanced_effect": 0.167,
+  "order_difference_AB_minus_BA": -0.167,
+  "ci95": [
+   -0.542,
+   0.208
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "note": "AB group meets AgeLens second; a positive difference can mean learning over the session or that AgeLens first carries over to the ad-only tasks"
+ },
+ "sensitivity_period1_only": {
+  "ad_only_first": 0.625,
+  "agelens_first": 0.792,
+  "difference": 0.167,
+  "ci95_percentile_bootstrap": [
+   -0.042,
+   0.375
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "note": "between participants, no carryover possible, low power"
+ },
+ "sensitivity_completers_only": {
+  "n": 24,
+  "mean_D": 0.167,
+  "ci95_percentile_bootstrap": [
+   -0.021,
+   0.354
+  ]
+ },
+ "by_condition_task_level_NOT_INFERENTIAL": {
+  "A": {
+   "tasks": 48,
+   "usable": "28/48",
+   "c1": "48/48",
+   "c2": "28/48",
+   "c3": "28/48",
+   "c4": "28/48",
+   "severe": "11/48"
+  },
+  "B": {
+   "tasks": 48,
+   "usable": "36/48",
+   "c1": "48/48",
+   "c2": "36/48",
+   "c3": "36/48",
+   "c4": "36/48",
+   "severe": "8/48"
+  }
+ },
+ "descriptive_by_task_kind_NOT_INFERENTIAL": {
+  "age_cap/A": "10/12",
+  "age_cap/B": "10/12",
+  "age_preference/A": "6/12",
+  "age_preference/B": "10/12",
+  "incomplete_evidence/A": "4/12",
+  "incomplete_evidence/B": "6/12",
+  "qualification_exception/A": "8/12",
+  "qualification_exception/B": "10/12"
+ },
+ "inter_rater_R1_R2": {
+  "c1": {
+   "n_items": 96,
+   "kappa": null,
+   "raw_agreement": 1.0
+  },
+  "c2": {
+   "n_items": 96,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "c3": {
+   "n_items": 96,
+   "kappa": 0.552,
+   "raw_agreement": 0.792
+  },
+  "c4": {
+   "n_items": 96,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "severe": {
+   "n_items": 96,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  }
+ },
+ "scoring_status": {
+  "items_disagreement": 20,
+  "unresolved": 0,
+  "adjudicated": 20,
+  "missing_answers": 0,
+  "timed_out": 0
+ }
+}

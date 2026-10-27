@@ -1,0 +1,72 @@
+/* Margin widgets (js/sidekit.js): the home section rail (left margin, wide screens) and the Quick check tab + panel (right edge). */
+
+/* ---- section rail ---- */
+.sk-rail{position:fixed;left:max(12px,calc((100vw - var(--max)) / 2 - 190px));top:50%;translate:0 -50%;z-index:45;display:none}
+@media (min-width:1280px){body[data-route="home"] .sk-rail:not([hidden]){display:block}}
+.sk-rail ol{list-style:none;margin:0;padding:10px 6px;display:grid;gap:2px;position:relative}
+/* a hand-drawn dashed spine behind the dots */
+.sk-rail ol::before{content:"";position:absolute;left:16px;top:18px;bottom:18px;border-left:2px dashed rgba(74,55,40,.25)}
+.sk-rail a{display:flex;align-items:center;gap:10px;padding:5px 8px 5px 4px;border-radius:10px;color:var(--text-light);text-decoration:none;font-family:var(--font-sketch);font-size:1rem;line-height:1.1;transition:color .2s var(--ease),background .2s var(--ease)}
+.sk-dot{position:relative;flex:none;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid rgba(74,55,40,.45);transition:transform .25s var(--ease-pop),background .2s,border-color .2s}
+.sk-lab{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity .2s,max-width .25s var(--ease-out)}
+/* labels unfold when the rail is hovered or focused; on very wide screens the current label always shows */
+.sk-rail:is(:hover,:focus-within) .sk-lab{opacity:.8;max-width:150px}
+.sk-rail:is(:hover,:focus-within){background:rgba(255,249,245,.94);border-radius:14px;box-shadow:var(--shadow-sm)}
+@media (min-width:1560px){.sk-rail a[aria-current] .sk-lab{opacity:1;max-width:150px}}
+.sk-rail a:hover{color:var(--brown);background:var(--pink-soft)}
+.sk-rail a[aria-current]{color:var(--brown)}
+.sk-rail:is(:hover,:focus-within) a[aria-current] .sk-lab{opacity:1}
+.sk-rail a[aria-current] .sk-dot{background:var(--pink);border-color:var(--brown);transform:scale(1.3)}
+.sk-rail a:focus-visible{outline:2px solid var(--brown);outline-offset:2px}
+
+/* ---- quick check tab ---- */
+.sk-tab{position:fixed;right:0;top:50%;z-index:56;translate:0 -50%;writing-mode:vertical-rl;padding:16px 9px;border:2px solid var(--brown);border-right:0;border-radius:12px 0 0 12px;background:var(--yellow);color:var(--brown);font:400 1.05rem/1 var(--font-sketch);letter-spacing:.02em;cursor:pointer;box-shadow:-2px 2px 0 var(--brown);transition:padding .2s var(--ease-pop),background .2s}
+.sk-tab:hover{padding-right:13px;background:#FFEF8F}
+.sk-tab:focus-visible{outline:2px solid var(--brown);outline-offset:3px}
+.sk-tab[hidden]{display:none}
+body.sk-open .sk-tab{background:var(--pink)}
+
+/* ---- quick check panel ---- */
+.sk-panel{position:fixed;right:52px;top:50%;translate:0 -50%;z-index:57;width:min(360px,calc(100vw - 76px));max-height:calc(100vh - 120px);overflow:auto;padding:18px 18px 16px;background:var(--surface);border:var(--border);border-radius:16px;box-shadow:4px 4px 0 var(--brown);color:var(--text);animation:skIn .32s var(--ease-pop)}
+.sk-panel[hidden]{display:none}
+@keyframes skIn{from{opacity:0;transform:translateX(18px) scale(.97)}}
+.sk-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sk-head h2{margin:0;font:400 1.5rem/1.1 var(--font-sketch);color:var(--brown)}
+.sk-x{width:32px;height:32px;border-radius:50%;border:2px solid var(--brown);background:var(--paper);color:var(--brown);font-size:1.2rem;line-height:1;cursor:pointer}
+.sk-x:hover{background:var(--pink-soft)}
+.sk-note{margin:8px 0 12px;font-size:.84rem;line-height:1.45;color:var(--text-light)}
+.sk-form{display:grid;gap:8px}
+.sk-form label{font-weight:700;font-size:.9rem;color:var(--brown)}
+.sk-form textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:64px;padding:9px 11px;border:2px solid var(--brown);border-radius:10px;background:var(--paper);font:inherit;font-size:.95rem;color:var(--brown)}
+.sk-form textarea:focus-visible{outline:2px solid var(--pink-ink);outline-offset:1px}
+.sk-ex{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8rem;color:var(--text-light)}
+.sk-chip{padding:3px 9px;border:1.5px dashed var(--brown);border-radius:999px;background:var(--lav-soft);color:var(--brown);font-size:.8rem;cursor:pointer}
+.sk-chip:hover{background:var(--lav)}
+.sk-go{justify-self:start;background:var(--btn,var(--pink))}
+.sk-out:empty{display:none}
+.sk-out{margin-top:14px}
+.sk-res{padding:12px 13px;border:2px solid var(--brown);border-radius:12px;background:var(--bg-alt);animation:skIn .3s var(--ease-pop)}
+.sk-hard_cap{background:var(--pink-soft)}
+.sk-cap_with_exception{background:var(--yellow-soft)}
+.sk-preference{background:var(--lav-soft)}
+.sk-range_or_min{background:var(--blue-soft)}
+.sk-none{background:var(--mint-soft)}
+.sk-cls{margin:0;font:400 1.3rem/1.15 var(--font-sketch);color:var(--brown)}
+.sk-why{margin:4px 0 0;font-size:.88rem;line-height:1.45}
+.sk-terms{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.sk-terms li{display:grid;gap:3px;padding-top:8px;border-top:1.5px dashed rgba(74,55,40,.3)}
+.sk-terms q{font-size:.92rem;color:var(--brown)}
+.sk-age{font-size:.82rem;font-weight:700;color:var(--text)}
+.sk-ver{margin:10px 0 0;font-size:.74rem;color:var(--text-light)}
+.sk-err{margin:0;color:var(--pink-ink);font-weight:700;font-size:.9rem}
+.sk-more{display:inline-flex;align-items:center;gap:4px;margin-top:14px;font-weight:700;font-size:.9rem;color:var(--pink-ink)}
+
+@media (max-width:640px){
+  /* on phones the edge tab would sit over form fields: it becomes a small pill at the bottom-left (back-to-top is bottom-right) */
+  .sk-tab{writing-mode:horizontal-tb;top:auto;bottom:18px;right:auto;left:16px;translate:none;padding:9px 14px;font-size:.95rem;border:2px solid var(--brown);border-radius:999px;box-shadow:2px 2px 0 var(--brown)}
+  .sk-tab:hover{padding-right:14px}
+  body.sk-open .sk-tab{display:none}
+  .sk-panel{right:12px;left:12px;width:auto;top:auto;bottom:16px;translate:none;max-height:calc(100vh - 110px)}
+}
+html[data-motion="reduced"] :is(.sk-panel,.sk-res){animation:none}
+html[data-motion="reduced"] :is(.sk-tab,.sk-dot,.sk-rail a){transition:none}

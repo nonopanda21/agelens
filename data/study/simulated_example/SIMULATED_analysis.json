@@ -1,0 +1,113 @@
+{
+ "meta": {
+  "schema": "export-v1",
+  "scope": "simulated",
+  "simulated": true,
+  "generated_at": "2026-10-23T23:14:39Z",
+  "tasks_version": "tasks-v0.1-draft",
+  "rubric_version": "rubric-v0.1-draft"
+ },
+ "label": "SIMULATED — software test only, not study data, not a result",
+ "n": {
+  "template": {
+   "randomised": 4,
+   "analysed": 4,
+   "excluded_unresolved_or_unscored": 0,
+   "dropouts": 0,
+   "withdrawn": 0,
+   "incomplete": 0,
+   "model_failures": 0
+  },
+  "assisted": {
+   "randomised": 4,
+   "analysed": 4,
+   "excluded_unresolved_or_unscored": 0,
+   "dropouts": 0,
+   "withdrawn": 0,
+   "incomplete": 0,
+   "model_failures": 0
+  }
+ },
+ "primary": {
+  "outcome": "mean participant usable share (usable tasks / 4)",
+  "template_mean": 0.688,
+  "assisted_mean": 0.625,
+  "difference": -0.062,
+  "ci95_percentile_bootstrap": [
+   -0.312,
+   0.125
+  ],
+  "p_randomisation_two_sided": 1.0,
+  "p_welch_t_two_sided": 0.6758,
+  "n": [
+   4,
+   4
+  ],
+  "note": "participant is the unit; with n this small the CI is wide and bootstrap coverage is approximate"
+ },
+ "secondary_ge3": {
+  "template": "3/4",
+  "assisted": "3/4",
+  "risk_difference": 0.0,
+  "ci95_newcombe_hybrid_score": [
+   -0.494,
+   0.494
+  ],
+  "p_fisher_exact_two_sided": 1.0
+ },
+ "sensitivity_completers_only": {
+  "n": [
+   4,
+   4
+  ],
+  "difference": -0.062,
+  "ci95_percentile_bootstrap": [
+   -0.312,
+   0.125
+  ]
+ },
+ "descriptive_by_task_kind_NOT_INFERENTIAL": {
+  "age_cap/assisted": "3/4",
+  "age_cap/template": "3/4",
+  "age_preference/assisted": "3/4",
+  "age_preference/template": "4/4",
+  "incomplete_evidence/assisted": "0/4",
+  "incomplete_evidence/template": "3/4",
+  "qualification_exception/assisted": "4/4",
+  "qualification_exception/template": "1/4"
+ },
+ "inter_rater_R1_R2": {
+  "c1": {
+   "n_items": 32,
+   "kappa": null,
+   "raw_agreement": 1.0
+  },
+  "c2": {
+   "n_items": 32,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "c3": {
+   "n_items": 32,
+   "kappa": 0.745,
+   "raw_agreement": 0.875
+  },
+  "c4": {
+   "n_items": 32,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "severe": {
+   "n_items": 32,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  }
+ },
+ "scoring_status": {
+  "items_disagreement": 4,
+  "unresolved": 0,
+  "adjudicated": 4,
+  "missing_answers": 0,
+  "timed_out": 0
+ }
+}

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(rm -rf *)",
+      "Bash(pip install *)",
+      "Bash(git push *)",
+      "Edit(automation/state.json)",
+      "Edit(automation/tasks.json)",
+      "Edit(automation/config.json)",
+      "Edit(automation/quota.json)",
+      "Edit(automation/events.jsonl)",
+      "Write(automation/state.json)",
+      "Write(automation/tasks.json)",
+      "Write(automation/config.json)",
+      "Write(automation/quota.json)",
+      "Write(automation/events.jsonl)"
+    ]
+  }
+}

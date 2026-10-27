@@ -1,0 +1,21 @@
+/* Invite page and nav chip (pages/access.js, public demo only). */
+.nav nav a.nav-access{margin-left:6px;border:2px solid var(--brown);border-radius:999px;padding:4px 14px;color:var(--brown);background:var(--mint-soft);box-shadow:var(--shadow-sm);max-width:22ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav nav a.nav-access[hidden]{display:none}
+.nav nav a.nav-access[aria-current="page"]{text-decoration:none;background:var(--pink-soft)}
+.nav-reviewer[hidden]{display:none!important}
+body[data-route="access"] .inv-form{max-width:440px;display:grid;gap:var(--s3);margin:var(--s4) auto 0;text-align:left;background:var(--surface);border:var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:clamp(22px,4vw,34px)}
+.inv-form p{margin:0}
+.inv-form input{font-family:var(--font-pix);font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.inv-form input::placeholder{text-transform:none;letter-spacing:.04em}
+.inv-lede{max-width:56ch}
+.inv-facts{max-width:440px;margin:var(--s5) auto 0;padding:14px 18px 14px 34px;text-align:left;font-size:.9rem;line-height:1.5;color:var(--text-light);border:1.5px dashed rgba(74,55,40,.35);border-radius:14px;background:var(--paper)}
+.inv-facts li+li{margin-top:6px}
+.inv-card{max-width:640px;display:grid;gap:var(--s4);padding:clamp(18px,3vw,26px)}
+.inv-card .row{margin-top:0}
+.inv-dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 18px;margin:0}
+.inv-dl dt{color:var(--text-light)}
+.inv-dl dd{margin:0;font-weight:700;color:var(--brown)}
+@media (max-width:560px){.inv-dl{grid-template-columns:minmax(0,1fr);gap:2px}.inv-dl dd{margin-bottom:8px}}
+/* the gate shows only the invite form: no margin widgets */
+body[data-route="access"].public-demo :is(.sk-tab,.sk-rail){display:none!important}
+.rq-acc{background:var(--mint-soft);color:var(--brown);border-color:var(--brown)}

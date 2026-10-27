@@ -1,0 +1,109 @@
+/* Loading + intro choreography (sketchbook style).
+   1. Splash, once per browser session: a book opens, "AgeLens" is lettered in, pastel confetti bursts, then the paper sheet
+      lifts away with a scalloped edge (~1.7 s). Decorative only: aria-hidden, never blocks clicks, any key/click skips it.
+   2. Hero: title letters hop in one by one, the pink underline draws itself, the doodle is inked stroke by stroke and then
+      coloured in, the stats count up (counting lives in home_hero.js).
+   3. Sections: section-title underlines draw when revealed; cards drop in and settle with a small tilt.
+   4. Inner pages: the page lands like a sheet of paper.
+   --intro-delay is set on <html> while the splash plays so the hero waits for it. Everything is off under reduced motion. */
+
+/* ---- 1. splash ---- */
+.al-splash{position:fixed;inset:0;z-index:200;pointer-events:none;overflow:hidden;display:grid;place-items:center;background:var(--paper);
+  background-image:radial-gradient(circle at 20% 30%,rgba(255,182,193,.28),transparent 40%),radial-gradient(circle at 80% 70%,rgba(213,198,224,.3),transparent 42%),radial-gradient(circle at 70% 20%,rgba(168,216,234,.22),transparent 38%);
+  --sc:radial-gradient(circle at 50% 0,#000 14px,transparent 14.5px);
+  animation:spOut .62s cubic-bezier(.7,0,.25,1) 1.15s forwards}
+/* scalloped bottom edge of the lifting sheet */
+.al-splash::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:16px;background:radial-gradient(circle at 14px 0,var(--paper) 13px,transparent 13.5px) 0 0/28px 16px repeat-x}
+@keyframes spOut{to{transform:translateY(-104%)}}
+.al-splash.gone{display:none}
+.sp-box{position:relative;display:grid;justify-items:center;gap:18px}
+.sp-book{width:150px;height:auto;overflow:visible}
+.sp-book .pg-l{transform-origin:75px 60px;animation:spPgL .55s var(--ease-pop) .05s both}
+.sp-book .pg-r{transform-origin:75px 60px;animation:spPgR .55s var(--ease-pop) .12s both}
+.sp-book .ink{stroke-dasharray:1;stroke-dashoffset:1;animation:xDraw .5s ease .35s forwards}
+@keyframes spPgL{from{transform:scaleX(0) skewY(8deg)}}
+@keyframes spPgR{from{transform:scaleX(0) skewY(-8deg)}}
+.sp-word{font-family:var(--font-sketch);font-size:3rem;line-height:1;color:var(--brown);display:flex;rotate:-2deg;position:relative}
+.sp-word span{display:inline-block;animation:chHop .5s var(--ease-pop) both;animation-delay:calc(.3s + var(--i) * 55ms)}
+.sp-word::after{content:"";position:absolute;left:4%;right:4%;bottom:-8px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--pink) 0 7px,transparent 7px 13px);transform-origin:left;animation:lineDraw .45s ease .78s both}
+.sp-conf{position:absolute;left:50%;top:42%;width:0;height:0}
+.sp-conf i{position:absolute;width:10px;height:10px;border:2px solid var(--brown);border-radius:50%;background:var(--c);opacity:0;animation:conf .9s cubic-bezier(.2,.8,.3,1) .62s forwards}
+.sp-conf i:nth-child(3n){border-radius:3px;rotate:20deg}
+.sp-conf i:nth-child(4n){width:7px;height:7px}
+@keyframes conf{0%{opacity:0;transform:translate(0,0) scale(.3)}15%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r))}}
+
+/* shared keyframes */
+@keyframes xDraw{to{stroke-dashoffset:0}}
+@keyframes chHop{0%{opacity:0;transform:translateY(.55em) rotate(var(--rt,-8deg)) scale(.6)}60%{opacity:1;transform:translateY(-.08em) rotate(2deg) scale(1.06)}100%{opacity:1;transform:none}}
+@keyframes lineDraw{from{transform:scaleX(0)}}
+@keyframes fillIn{from{fill-opacity:0}}
+@keyframes popIn{0%{opacity:0;transform:scale(.4) rotate(-20deg)}70%{opacity:1;transform:scale(1.12) rotate(4deg)}100%{opacity:1;transform:none}}
+
+/* ---- 2. hero ---- */
+.xh .xw{display:inline-block;white-space:nowrap}
+.xh .xch{display:inline-block}
+.xh:not(.no-intro) .xh-l1,.xh:not(.no-intro) .xh-l2{animation:none}
+.xh:not(.no-intro) .xch{animation:chHop .55s var(--ease-pop) both;animation-delay:calc(var(--intro-delay,0s) + 60ms + var(--i) * 26ms)}
+.xh:not(.no-intro) .xch:nth-child(odd){--rt:7deg}
+.xh:not(.no-intro) .xh-l2::after{transform-origin:left;animation:lineDraw .6s var(--ease-out) both;animation-delay:calc(var(--intro-delay,0s) + .85s)}
+.xh:not(.no-intro) :is(.xh-badge){animation:xIn .6s var(--ease-pop) both,xWobble 6s ease-in-out infinite;animation-delay:var(--intro-delay,0s),calc(var(--intro-delay,0s) + .6s)}
+.xh:not(.no-intro) .xh-sub{animation-delay:calc(var(--intro-delay,0s) + .55s)}
+.xh:not(.no-intro) .xh-actions{animation-delay:calc(var(--intro-delay,0s) + .7s)}
+.xh:not(.no-intro) :is(.xh-stats,.xh-fine){animation-delay:calc(var(--intro-delay,0s) + .85s)}
+.xh:not(.no-intro) .xh-art{animation-delay:var(--intro-delay,0s)}
+/* doodle inked stroke by stroke, then coloured in */
+.xh:not(.no-intro) .xh-art .ink{stroke-dasharray:1;stroke-dashoffset:1;animation:xDraw .7s ease forwards;animation-delay:calc(var(--intro-delay,0s) + .2s + var(--k,0) * 70ms)}
+.xh:not(.no-intro) .xh-art .fil{animation:fillIn .5s ease both;animation-delay:calc(var(--intro-delay,0s) + .75s + var(--k,0) * 40ms)}
+.xh:not(.no-intro) .xh-art :is(.dd-star,.dd-heart,.dd-sp1,.dd-sp2,.dd-sp3)>*{transform-box:fill-box;transform-origin:center;animation:popIn .6s var(--ease-pop) both;animation-delay:calc(var(--intro-delay,0s) + 1s + var(--k,0) * 60ms)}
+/* shapes that are both outlined and filled run both animations (one `animation` rule would otherwise replace the other) */
+.xh:not(.no-intro) .xh-art .ink.fil{animation:xDraw .7s ease forwards,fillIn .5s ease both;animation-delay:calc(var(--intro-delay,0s) + .2s + var(--k,0) * 70ms),calc(var(--intro-delay,0s) + .75s + var(--k,0) * 40ms)}
+/* popped accents are not inked (their pop animation replaces the stroke draw) */
+.xh:not(.no-intro) .xh-art :is(.dd-star,.dd-heart,.dd-sp1,.dd-sp2,.dd-sp3)>.ink{stroke-dasharray:none;stroke-dashoffset:0}
+.xh:not(.no-intro) .xh-art text{animation:fillIn .4s ease both;animation-delay:calc(var(--intro-delay,0s) + 1.05s)}
+.xh .xh-stat-n{font-variant-numeric:tabular-nums}
+
+/* ---- 3. sections ---- */
+body[data-route="home"] .xs-head.reveal h2::after{transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease-out) .3s}
+body[data-route="home"] .xs-head.reveal.in h2::after{transform:none}
+body[data-route="home"] :is(.xc,.xm-card,.xst-i).reveal:not(.in){translate:0 -18px;rotate:-2.5deg}
+body[data-route="home"] :is(.xc,.xm-card,.xst-i).reveal{transition-property:opacity,scale,translate,rotate,box-shadow;transition-duration:.5s,.55s,.6s,.7s,.3s;transition-timing-function:var(--ease-out),var(--ease-pop),var(--ease-pop),var(--ease-pop),var(--ease)}
+
+/* ---- 4. inner pages: the sheet lands ---- */
+body:not([data-route="home"]) main>.wrap{animation:pgLand .55s var(--ease-pop) backwards}
+@keyframes pgLand{0%{opacity:0;transform:translateY(22px) scale(.985)}70%{opacity:1;transform:translateY(-2px)}100%{transform:none}}
+body:not([data-route="home"]) main>.wrap h1::after{transform-origin:left;animation:lineDraw .6s var(--ease-out) .25s backwards}
+
+/* ---- reduced motion: no splash, no choreography ---- */
+html[data-motion="reduced"] .al-splash{display:none}
+html[data-motion="reduced"] :is(.xch,.xh-l2::after,.xh-art .ink,.xh-art .fil,.xh-art text,.xh-art .dd>*,main>.wrap,main>.wrap h1::after){animation:none!important}
+html[data-motion="reduced"] .xh-art .ink{stroke-dasharray:none;stroke-dashoffset:0}
+html[data-motion="reduced"] body[data-route="home"] .xs-head.reveal h2::after{transform:none;transition:none}
+html[data-motion="reduced"] body[data-route="home"] :is(.xc,.xm-card,.xst-i).reveal{translate:none;rotate:none;transition:none}
+@media (prefers-reduced-motion:reduce){html:not([data-motion="on"]) .al-splash{display:none}}
+
+/* ---- 5. Apple-style scroll effects (driven by js/fx.js) ---- */
+/* the "how" heading lead: key phrases get a pink marker sweep once the heading is revealed */
+.xs-lead{font-weight:700;font-size:clamp(1.1rem,1.6vw,1.3rem);line-height:1.6;color:var(--text);max-width:60ch;margin-inline:auto}
+.xw-mark{color:var(--brown);background:linear-gradient(transparent 58%,var(--pink) 58%,var(--pink) 92%,transparent 92%) no-repeat 0 0/0% 100%;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size .7s var(--ease-out)}
+.xs-head.in .xw-mark{background-size:100% 100%}
+.xs-head.in .xw-mark:nth-of-type(1){transition-delay:.5s}
+.xs-head.in .xw-mark:nth-of-type(2){transition-delay:.8s}
+.xs-head.in .xw-mark:nth-of-type(3){transition-delay:1.1s}
+/* zoom-in panels: fx.js sets the transform; keep it on the compositor */
+[data-zoom]{transform-origin:50% 0;will-change:transform}
+/* a tilted panel is wider than the page while it stands up: clip it to its section so the page never scrolls sideways
+   (clip, not hidden, so the sticky map column keeps working) */
+.home-sec:has([data-zoom]){overflow-x:clip}
+.xh-inner,.xh-art,.xh-canvas{will-change:transform}
+/* section headings wipe up out of a slot as they are revealed */
+body[data-route="home"] .xs-head.reveal h2{clip-path:inset(-30% -6% -40% -6%);transition:clip-path .9s var(--ease-out),translate .9s var(--ease-out)}
+body[data-route="home"] .xs-head.reveal:not(.in) h2{clip-path:inset(-30% -6% 100% -6%);translate:0 .7em}
+/* the "how" cards and steps flip up in 3D instead of dropping */
+body[data-route="home"] :is(.xc-grid,.xst){perspective:1200px}
+body[data-route="home"] :is(.xc,.xst-i).reveal{transform-origin:50% 100%}
+body[data-route="home"] :is(.xc,.xst-i).reveal:not(.in){rotate:x 55deg;translate:0 30px}
+
+html[data-motion="reduced"] .xw-mark{background-size:100% 100%;transition:none}
+html[data-motion="reduced"] [data-zoom]{transform:none!important;will-change:auto}
+html[data-motion="reduced"] body[data-route="home"] .xs-head.reveal h2{clip-path:none;translate:none;transition:none}
+html[data-motion="reduced"] body[data-route="home"] :is(.xc,.xst-i).reveal:not(.in){rotate:none;translate:none}

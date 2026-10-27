@@ -1,0 +1,98 @@
+# SIMULATION — not study data | schema export-v2 | generated 2026-10-27T22:18:28Z | simulated=1
+participant_code,arm,condition,simulated,task_id,task_kind,position,attempted,submitted,missing,timed_out,late,elapsed_s,time_limit_s,answer_chars,aid_inserted,aid_provider,aid_simulated,model_failure,r1_c1,r1_c2,r1_c3,r1_c4,r1_severe,r2_c1,r2_c2,r2_c3,r2_c4,r2_severe,r3_c1,r3_c2,r3_c3,r3_c4,r3_severe,notes_present,disagreement,resolution,final_c1,final_c2,final_c3,final_c4,final_severe,final_usable,participant_status,dropout
+SIM-Y88FE9,AB-S2,A,1,T3,age_preference,1,1,1,0,0,0,0.6,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-Y88FE9,AB-S2,A,1,T1,age_cap,2,1,1,0,0,0,0.3,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-Y88FE9,AB-S2,B,1,T2,qualification_exception,3,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-Y88FE9,AB-S2,B,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,420,282,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-89AS8S,BA-S1,B,1,T3,age_preference,1,1,1,0,0,0,0.9,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-89AS8S,BA-S1,B,1,T1,age_cap,2,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-89AS8S,BA-S1,A,1,T4,incomplete_evidence,3,1,1,0,0,0,0.2,420,282,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-89AS8S,BA-S1,A,1,T2,qualification_exception,4,1,1,0,0,0,0.5,420,74,0,none,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-FMVFMH,BA-S2,B,1,T2,qualification_exception,1,1,1,0,0,0,0.3,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-FMVFMH,BA-S2,B,1,T4,incomplete_evidence,2,1,1,0,0,0,0.2,420,74,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-FMVFMH,BA-S2,A,1,T1,age_cap,3,1,1,0,0,0,0.2,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-FMVFMH,BA-S2,A,1,T3,age_preference,4,1,1,0,0,0,0.5,420,74,0,none,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-CUEMFU,AB-S1,A,1,T4,incomplete_evidence,1,1,1,0,0,0,0.4,420,282,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CUEMFU,AB-S1,A,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CUEMFU,AB-S1,B,1,T3,age_preference,3,1,1,0,0,0,0.2,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CUEMFU,AB-S1,B,1,T1,age_cap,4,1,1,0,0,0,0.2,420,88,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-4R33XT,AB-S2,A,1,T3,age_preference,1,1,1,0,0,0,0.4,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-4R33XT,AB-S2,A,1,T1,age_cap,2,1,1,0,0,0,0.6,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-4R33XT,AB-S2,B,1,T2,qualification_exception,3,1,1,0,0,0,0.6,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-4R33XT,AB-S2,B,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,420,282,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-QB6B9X,AB-S1,A,1,T4,incomplete_evidence,1,1,1,0,0,0,0.5,420,88,0,none,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-QB6B9X,AB-S1,A,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-QB6B9X,AB-S1,B,1,T3,age_preference,3,1,1,0,0,0,0.2,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-QB6B9X,AB-S1,B,1,T1,age_cap,4,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-4B6PGT,BA-S2,B,1,T2,qualification_exception,1,1,1,0,0,0,0.6,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-4B6PGT,BA-S2,B,1,T4,incomplete_evidence,2,1,1,0,0,0,0.2,420,282,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-4B6PGT,BA-S2,A,1,T3,age_preference,3,1,1,0,0,0,0.2,420,284,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-4B6PGT,BA-S2,A,1,T1,age_cap,4,1,1,0,0,0,0.2,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-EH7M8C,BA-S1,B,1,T3,age_preference,1,1,1,0,0,0,0.6,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-EH7M8C,BA-S1,B,1,T1,age_cap,2,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-EH7M8C,BA-S1,A,1,T4,incomplete_evidence,3,1,1,0,0,0,0.4,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-EH7M8C,BA-S1,A,1,T2,qualification_exception,4,1,1,0,0,0,0.2,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-YWGDSN,AB-S1,A,1,T2,qualification_exception,1,1,1,0,0,0,0.4,420,74,0,none,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-YWGDSN,AB-S1,A,1,T4,incomplete_evidence,2,1,1,0,0,0,0.4,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-YWGDSN,AB-S1,B,1,T3,age_preference,3,1,1,0,0,0,0.2,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-YWGDSN,AB-S1,B,1,T1,age_cap,4,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-SGXW6B,AB-S2,A,1,T1,age_cap,1,1,1,0,0,0,0.5,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-SGXW6B,AB-S2,A,1,T3,age_preference,2,1,1,0,0,0,0.2,420,284,0,none,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-SGXW6B,AB-S2,B,1,T2,qualification_exception,3,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-SGXW6B,AB-S2,B,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,420,34,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-YQUUZC,BA-S1,B,1,T3,age_preference,1,1,1,0,0,0,0.6,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-YQUUZC,BA-S1,B,1,T1,age_cap,2,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-YQUUZC,BA-S1,A,1,T2,qualification_exception,3,1,1,0,0,0,0.2,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-YQUUZC,BA-S1,A,1,T4,incomplete_evidence,4,1,1,0,0,0,0.3,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-CDVAMT,BA-S2,B,1,T4,incomplete_evidence,1,1,1,0,0,0,0.6,420,282,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CDVAMT,BA-S2,B,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CDVAMT,BA-S2,A,1,T1,age_cap,3,1,1,0,0,0,0.2,420,88,0,none,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-CDVAMT,BA-S2,A,1,T3,age_preference,4,1,1,0,0,0,0.4,420,284,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-B29YWP,BA-S2,B,1,T4,incomplete_evidence,1,1,1,0,0,0,0.6,420,74,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-B29YWP,BA-S2,B,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-B29YWP,BA-S2,A,1,T3,age_preference,3,1,1,0,0,0,0.2,420,284,0,none,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-B29YWP,BA-S2,A,1,T1,age_cap,4,1,1,0,0,0,0.2,420,283,0,none,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-EG36KQ,AB-S2,A,1,T1,age_cap,1,1,1,0,0,0,0.4,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-EG36KQ,AB-S2,A,1,T3,age_preference,2,1,1,0,0,0,0.5,420,88,0,none,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-EG36KQ,AB-S2,B,1,T2,qualification_exception,3,1,1,0,0,0,0.2,420,74,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-EG36KQ,AB-S2,B,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,420,34,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-3VWPGJ,BA-S1,B,1,T3,age_preference,1,1,1,0,0,0,0.2,420,34,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-3VWPGJ,BA-S1,B,1,T1,age_cap,2,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-3VWPGJ,BA-S1,A,1,T2,qualification_exception,3,1,1,0,0,0,0.2,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-3VWPGJ,BA-S1,A,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,420,74,0,none,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-CDSQ6C,AB-S1,A,1,T2,qualification_exception,1,1,1,0,0,0,0.5,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CDSQ6C,AB-S1,A,1,T4,incomplete_evidence,2,1,1,0,0,0,0.2,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-CDSQ6C,AB-S1,B,1,T3,age_preference,3,1,1,0,0,0,0.2,420,74,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-CDSQ6C,AB-S1,B,1,T1,age_cap,4,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-QCDHK2,BA-S1,B,1,T1,age_cap,1,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-QCDHK2,BA-S1,B,1,T3,age_preference,2,1,1,0,0,0,0.3,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-QCDHK2,BA-S1,A,1,T4,incomplete_evidence,3,1,1,0,0,0,0.3,420,88,0,none,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-QCDHK2,BA-S1,A,1,T2,qualification_exception,4,1,1,0,0,0,0.3,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-NJAVUZ,AB-S2,A,1,T3,age_preference,1,1,1,0,0,0,0.5,420,284,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-NJAVUZ,AB-S2,A,1,T1,age_cap,2,1,1,0,0,0,0.5,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-NJAVUZ,AB-S2,B,1,T2,qualification_exception,3,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-NJAVUZ,AB-S2,B,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,420,74,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-CF38ME,AB-S1,A,1,T4,incomplete_evidence,1,1,1,0,0,0,0.5,420,282,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CF38ME,AB-S1,A,1,T2,qualification_exception,2,1,1,0,0,0,0.5,420,74,0,none,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-CF38ME,AB-S1,B,1,T1,age_cap,3,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CF38ME,AB-S1,B,1,T3,age_preference,4,1,1,0,0,0,0.2,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-WYBPS2,BA-S2,B,1,T4,incomplete_evidence,1,1,1,0,0,0,0.2,420,282,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-WYBPS2,BA-S2,B,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-WYBPS2,BA-S2,A,1,T3,age_preference,3,1,1,0,0,0,0.4,420,34,0,none,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-WYBPS2,BA-S2,A,1,T1,age_cap,4,1,1,0,0,0,0.2,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CMNMDC,BA-S1,B,1,T3,age_preference,1,1,1,0,0,0,0.6,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CMNMDC,BA-S1,B,1,T1,age_cap,2,1,1,0,0,0,0.2,420,88,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-CMNMDC,BA-S1,A,1,T4,incomplete_evidence,3,1,1,0,0,0,0.2,420,282,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-CMNMDC,BA-S1,A,1,T2,qualification_exception,4,1,1,0,0,0,0.2,420,285,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-JN9TPA,BA-S2,B,1,T4,incomplete_evidence,1,1,1,0,0,0,0.6,420,282,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-JN9TPA,BA-S2,B,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,34,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,0,1,0,0,0,0,,,,,,0,0,agree,1,0,0,0,0,0,completed,0
+SIM-JN9TPA,BA-S2,A,1,T1,age_cap,3,1,1,0,0,0,0.2,420,283,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-JN9TPA,BA-S2,A,1,T3,age_preference,4,1,1,0,0,0,0.5,420,88,0,none,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-W6XBWR,AB-S1,A,1,T4,incomplete_evidence,1,1,1,0,0,0,0.5,420,74,0,none,0,0,1,0,0,0,1,1,0,1,0,1,1,0,0,0,1,0,1,adjudicated,1,0,0,0,1,0,completed,0
+SIM-W6XBWR,AB-S1,A,1,T2,qualification_exception,2,1,1,0,0,0,0.2,420,285,0,none,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-W6XBWR,AB-S1,B,1,T3,age_preference,3,1,1,0,0,0,0.2,420,284,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-W6XBWR,AB-S1,B,1,T1,age_cap,4,1,1,0,0,0,0.2,420,283,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-G2UZFD,AB-S2,A,1,T1,age_cap,1,1,1,0,0,0,0.5,420,283,0,none,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,0,1,adjudicated,1,1,1,1,0,1,completed,0
+SIM-G2UZFD,AB-S2,A,1,T3,age_preference,2,1,1,0,0,0,0.3,420,284,0,none,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0
+SIM-G2UZFD,AB-S2,B,1,T4,incomplete_evidence,3,1,1,0,0,0,0.6,420,74,0,agelens-rules age-rules-2.0.0,0,0,1,0,0,0,1,1,0,0,0,1,,,,,,0,0,agree,1,0,0,0,1,0,completed,0
+SIM-G2UZFD,AB-S2,B,1,T2,qualification_exception,4,1,1,0,0,0,0.2,420,285,0,agelens-rules age-rules-2.0.0,0,0,1,1,1,1,0,1,1,1,1,0,,,,,,0,0,agree,1,1,1,1,0,1,completed,0

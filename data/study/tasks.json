@@ -1,0 +1,307 @@
+{
+  "_status": "DRAFT — NOT FROZEN, NOT APPROVED. All content below is FICTIONAL and written by the study team for this evaluation only. It is separate from the public demo cases and from the simulated ad dataset. Freezing = teacher approval + sha256 of this file recorded in data/study/APPROVAL.json.",
+  "version": "tasks-v0.2-draft",
+  "synthetic": true,
+  "time_limit_s": 420,
+  "design": {
+    "id": "crossover-rules-v1",
+    "summary": "Within-participant crossover. Every participant does all 4 tasks: 2 in condition A (ad only) and 2 in condition B (AgeLens evidence check, rules only). Sequence XY-Sk: the first two tasks are in condition X, the last two in Y; the tasks of set Sk get condition B, the other set gets A. Sequences are allocated in permuted blocks of 4 (one of each), seeded. Within each half the task order is shuffled (seeded per participant).",
+    "conditions": {
+      "A": {
+        "kind": "none",
+        "label": "Ad only"
+      },
+      "B": {
+        "kind": "agelens",
+        "label": "AgeLens evidence check"
+      }
+    },
+    "task_sets": {
+      "S1": [
+        "T1",
+        "T3"
+      ],
+      "S2": [
+        "T2",
+        "T4"
+      ]
+    },
+    "task_sets_note": "Each set pairs one clearer task (cap or preference) with one harder one (exception or incomplete text), so the sets are of similar difficulty; the pairing also alternates between participants.",
+    "sequences": [
+      "AB-S1",
+      "AB-S2",
+      "BA-S1",
+      "BA-S2"
+    ],
+    "primary_outcome": "Per participant: D = usable share on B tasks minus usable share on A tasks (each over 2 tasks; missing counts as not usable).",
+    "threshold": {
+      "min_effect": 0.2,
+      "ci_lower_gt": 0.0,
+      "ci": "95% percentile bootstrap over participants (20,000 resamples)",
+      "rule": "Success only if mean D >= +0.20 AND the 95% CI lower bound > 0. Anything else is reported as not meeting the threshold."
+    },
+    "recruitment_target": 24,
+    "legacy": "parallel-llm-v0 (template vs model-drafted help, one arm per participant) is kept in the code; it needs a connected model and is not the planned design."
+  },
+  "instructions": "You are helping the job seeker described in the task. Using ONLY the ad text and background shown, write the clarification request they would send to the employer's hiring contact before applying. Aim for 3 to 8 sentences. Do not type any real personal information (names, phone numbers, emails). You have the same time limit and the same page layout in every task.",
+  "consent_draft": "DRAFT for teacher / ethics approval — NOT APPROVED. Purpose: this classroom study tests whether AgeLens's evidence check helps people write a clear clarification request about the age wording in a fictional job ad. In two of the tasks you see the ad only; in the other two you also see AgeLens's evidence check for that ad. You will do four short writing tasks (about 7 minutes each, about 30 minutes in total). All ads and job seekers are fictional. We record your anonymous participant code, which tasks showed the evidence check, timing, and the text you write; we do not record your name, email or IP address. Please do not type real personal information. Your text is scored by two people who do not see which tasks showed the evidence check. Taking part is voluntary; you can stop at any time, and if you withdraw we delete the text you wrote and keep only the fact that you withdrew. Results are reported only in aggregate. This study cannot show effects on employment; it measures only the quality of the request you write.",
+  "template_aid": {
+    "label": "Fixed template",
+    "text": "Hello,\n\nI am writing about the position \"[job title]\" (ad [ad id]). My background: [your age, years of experience, occupation].\n\nThe ad says: \"[quote the age-related wording from the ad]\".\n\nBefore I apply, could you please tell me:\n1. [Is this wording a fixed requirement or a preference?]\n2. [Are there exceptions, and how are they decided?]\n3. [What information from me would you need to answer?]\n\nThank you,\n[no real name needed]"
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "kind": "age_cap",
+      "title": "Hard age cap",
+      "ad_id": "SIM-S01",
+      "job_title": "Procurement Specialist (fictional)",
+      "ad_text": "【虚构示例岗位】采购专员｜示例贸易有限公司（虚构）\n岗位职责：负责供应商询价、比价与合同跟进，维护采购台账。\n任职要求：\n1. 本科及以上学历；\n2. 3年以上采购相关工作经验；\n3. 年龄35周岁以下；\n4. 熟练使用办公软件。\n工作地点：上海（虚构）",
+      "gloss": "Study-team English gloss: Procurement Specialist at an invented trading company. Duties: supplier quotes, price comparison, contract follow-up, purchasing ledger. Requirements: (1) bachelor's degree or above; (2) 3+ years of procurement experience; (3) age 35 or under; (4) proficient with office software. Location: Shanghai (fictional).",
+      "profile": {
+        "age": 38,
+        "years_experience": 8,
+        "occupation": "Procurement",
+        "region": "Shanghai (fictional)"
+      },
+      "question": "I'm 38 with eight years of procurement experience. This ad says applicants should be 35 or under. What should I clarify before applying?",
+      "facts": {
+        "cap": 35,
+        "exception": null,
+        "quote": "年龄35周岁以下",
+        "unknowns": [
+          "whether the cap is applied strictly to this vacancy",
+          "whether any exception exists (the ad states none)"
+        ]
+      }
+    },
+    {
+      "id": "T2",
+      "kind": "qualification_exception",
+      "title": "Cap with a qualification exception",
+      "ad_id": "SIM-S02",
+      "job_title": "Operations Manager (fictional)",
+      "ad_text": "【虚构示例岗位】运营经理｜示例网络科技有限公司（虚构）\n岗位职责：统筹线上店铺日常运营，制定活动计划并跟进数据。\n任职要求：\n1. 本科及以上学历；\n2. 5年以上运营管理经验；\n3. 年龄一般不超过35周岁；具备中级及以上职称或8年以上相关行业经验者，年龄可放宽至40周岁；\n4. 良好的沟通与协调能力。\n工作地点：杭州（虚构）",
+      "gloss": "Study-team English gloss: Operations Manager at an invented web company. Duties: run online-store operations, plan campaigns, track data. Requirements: (1) bachelor's degree or above; (2) 5+ years of operations-management experience; (3) age generally not above 35; people with an intermediate professional title or 8+ years of relevant industry experience may be relaxed up to age 40; (4) good communication. Location: Hangzhou (fictional).",
+      "profile": {
+        "age": 38,
+        "years_experience": 9,
+        "occupation": "E-commerce operations",
+        "region": "Hangzhou (fictional)",
+        "note": "No professional title mentioned."
+      },
+      "question": "I'm 38 with nine years in e-commerce operations and no professional title. The ad says age 35 generally, but relaxable to 40 with 8+ years of relevant experience. What should I clarify?",
+      "facts": {
+        "cap": 35,
+        "exception": "relaxed to 40 with intermediate title or 8+ years relevant industry experience",
+        "relaxed_cap": 40,
+        "quote": "年龄一般不超过35周岁；具备中级及以上职称或8年以上相关行业经验者，年龄可放宽至40周岁",
+        "unknowns": [
+          "whether e-commerce operations counts as 'relevant industry experience'",
+          "how experience is verified",
+          "whether 'generally' makes the 35 figure flexible beyond the stated exception"
+        ]
+      }
+    },
+    {
+      "id": "T3",
+      "kind": "age_preference",
+      "title": "Age preference (not a hard limit)",
+      "ad_id": "SIM-S03",
+      "job_title": "Administrative Assistant (fictional)",
+      "ad_text": "【虚构示例岗位】行政助理｜示例咨询有限公司（虚构）\n岗位职责：负责会议安排、文件归档、来访接待及日常行政支持。\n任职要求：\n1. 大专及以上学历；\n2. 有行政或文秘工作经验者优先；\n3. 30岁以下优先；\n4. 工作细致，责任心强。\n工作地点：成都（虚构）",
+      "gloss": "Study-team English gloss: Administrative Assistant at an invented consultancy. Duties: meeting scheduling, filing, reception, daily admin support. Requirements: (1) associate degree or above; (2) administrative or secretarial experience preferred; (3) under 30 preferred; (4) careful and responsible. Location: Chengdu (fictional).",
+      "profile": {
+        "age": 41,
+        "years_experience": 12,
+        "occupation": "Administration",
+        "region": "Chengdu (fictional)"
+      },
+      "question": "I'm 41 with twelve years in administration. The ad says under 30 is preferred. Is that a limit? What should I clarify?",
+      "facts": {
+        "cap": null,
+        "preference": 30,
+        "exception": null,
+        "quote": "30岁以下优先",
+        "unknowns": [
+          "how much weight the preference carries",
+          "whether applicants over 30 are considered in the same round"
+        ]
+      }
+    },
+    {
+      "id": "T4",
+      "kind": "incomplete_evidence",
+      "title": "Incomplete ad text",
+      "ad_id": "SIM-S04",
+      "job_title": "Customer Service Supervisor (fictional)",
+      "ad_text": "【虚构示例岗位】客服主管｜示例零售有限公司（虚构）\n岗位职责：带领客服团队，处理升级投诉，优化服务流程。\n任职要求：\n1. 大专及以上学历；\n2. 年龄要求：28-3",
+      "gloss": "Study-team English gloss: Customer Service Supervisor at an invented retail company. Duties: lead the service team, handle escalated complaints, improve service processes. Requirements: (1) associate degree or above; (2) age requirement: 28-3 ... The stored ad text is CUT OFF at this point; the rest of the ad is not available.",
+      "profile": {
+        "age": 36,
+        "years_experience": 10,
+        "occupation": "Customer service",
+        "region": "not stated"
+      },
+      "question": "I'm 36 with ten years in customer service. The ad text I have stops in the middle of the age line. What should I clarify?",
+      "facts": {
+        "cap": null,
+        "truncated": true,
+        "exception": null,
+        "quote": "年龄要求：28-3",
+        "unknowns": [
+          "the upper age limit (the text is cut off at '28-3')",
+          "whether it is a requirement or a preference",
+          "any exception",
+          "location and other requirements (missing)"
+        ]
+      }
+    }
+  ],
+  "rubric": {
+    "version": "rubric-v0.1-draft",
+    "usable_rule": "A request is USABLE only if criteria 1-4 are all met AND no severe error is flagged. Raters judge each criterion yes/no from the ad text and profile shown with the answer. Judge what is written, not what the author probably meant. Do not guess which aid the author had.",
+    "criteria": [
+      {
+        "id": "c1",
+        "name": "Background accurate",
+        "definition": "Every fact about the job seeker that the request states (age, years of experience, occupation, title, region) matches the profile shown. Nothing is added or changed. The request gives at least the background fact the recipient needs to answer (usually age and/or years of experience).",
+        "met_example": "\"I am 38 and have eight years in procurement.\"",
+        "not_met_example": "\"I am 38 with ten years in procurement and a manager title.\" (years and title do not match the profile)"
+      },
+      {
+        "id": "c2",
+        "name": "Citation faithful",
+        "definition": "The request refers to the ad's actual wording (quote or close paraphrase) and gets it right: the number, the condition and any exception match the ad text. It does not cite wording that is not in the ad. A request with no reference to the ad's wording does not meet this criterion.",
+        "met_example": "T1: \"The ad lists 'age 35 or under' (年龄35周岁以下).\"",
+        "not_met_example": "T1: \"The ad says applicants must be under 30.\" (wrong number) or any request that never mentions what the ad says."
+      },
+      {
+        "id": "c3",
+        "name": "States uncertainty",
+        "definition": "The request says clearly what is not known or not settled from the ad (for example whether the wording is strict, whether an exception applies to this person, what the missing text said) instead of treating it as settled. It asks rather than concludes.",
+        "met_example": "\"I cannot tell from the ad whether the 35 limit is strict for this vacancy.\"",
+        "not_met_example": "\"The ad makes it clear I can apply.\" or \"I know I will not qualify.\""
+      },
+      {
+        "id": "c4",
+        "name": "Question specific and answerable",
+        "definition": "It contains at least one concrete question that the recipient could answer in a short reply, tied to the ad's own wording (for example: is the limit strict; does the stated exception cover my experience; what documents show it). Generic questions (\"Please tell me more about the job\") do not meet it.",
+        "met_example": "\"Does my nine years in e-commerce operations count as 'relevant industry experience' for the relaxation to 40?\"",
+        "not_met_example": "\"Can you give me more information about the age requirement?\""
+      }
+    ],
+    "severe_error": {
+      "definition": "Flag SEVERE UNSUPPORTED CLAIM if the request contains any of the following. A severe error makes the request unusable even if criteria 1-4 are met.",
+      "types": [
+        {
+          "id": "S1",
+          "name": "Invented fact",
+          "definition": "Invents a cap, an exception, an ad id, a job duty, an employer policy or any ad content that is not in the ad text shown (including filling in the cut-off part of T4).",
+          "example": "T4: \"The ad says the limit is 35.\" (the text is cut off at '28-3')"
+        },
+        {
+          "id": "S2",
+          "name": "Eligibility / outcome assertion",
+          "definition": "States as fact that the person is or is not eligible, will be rejected or will be hired, or predicts the employer's decision.",
+          "example": "\"Because I am 38 I will be rejected, so please confirm.\""
+        },
+        {
+          "id": "S3",
+          "name": "Legal conclusion or accusation",
+          "definition": "States or implies that the ad or employer is illegal, unlawful or discriminatory, or makes a legal claim.",
+          "example": "\"This ad is discriminatory and illegal.\""
+        },
+        {
+          "id": "S4",
+          "name": "Ignores or distorts a stated exception",
+          "definition": "Treats a cap as absolute when the ad states an exception (T2), or asserts that an exception applies to the person when the ad does not say so, or asserts that a preference is a hard limit (T3).",
+          "example": "T2: \"The ad says nobody over 35 is accepted.\""
+        }
+      ],
+      "not_severe_note": "Awkward wording, rudeness, spelling mistakes, or a missing greeting are not severe errors. They may still fail a criterion."
+    },
+    "disagreement_rule": "R1 and R2 score every non-empty answer independently and blind to arm and to each other. An answer is a DISAGREEMENT if the two raters differ on any of the four criteria or on the severe flag. Each disagreement is logged and scored independently by a third rater (R3) who sees neither R1/R2 scores nor arm. The FINAL value of each field is the majority of R1, R2, R3. If R3 has not yet scored, the answer is 'unresolved' and is reported, not guessed. Raters never edit a submitted score; discrepancies are discussed only after R3 has scored, and discussion does not change recorded values.",
+    "calibration_rule": "Before scoring real answers each rater scores the frozen calibration set below, sees the reference scores and rationale, and the team discusses disagreements about the rubric text (not about the real answers). Target: raw agreement with the reference on at least 90% of the 30 judgements (6 items x 4 criteria + severe flag) and every severe flag matched. If not reached, clarify the rubric wording and repeat with a new frozen set before real scoring. Scores from calibration are never mixed into study data."
+  },
+  "calibration": [
+    {
+      "id": "K1",
+      "task_id": "T1",
+      "answer": "Hello, I am writing about the Procurement Specialist post (ad SIM-S01). I am 38 and have eight years of procurement experience. The ad lists \"年龄35周岁以下\" (age 35 or under). I cannot tell from the ad whether this limit is strict for this vacancy or whether any exceptions exist. Could you tell me whether applicants who are 38 are considered, and if so what you would look at?",
+      "reference": {
+        "c1": true,
+        "c2": true,
+        "c3": true,
+        "c4": true,
+        "severe": false
+      },
+      "rationale": "Background matches; quotes the cap correctly; says it cannot tell if strict; asks a concrete answerable question."
+    },
+    {
+      "id": "K2",
+      "task_id": "T1",
+      "answer": "I am 38, so I will certainly be rejected under your age 35 rule. Please confirm that my application is pointless and that this rule is illegal.",
+      "reference": {
+        "c1": true,
+        "c2": true,
+        "c3": false,
+        "c4": false,
+        "severe": true
+      },
+      "rationale": "Asserts rejection (S2) and illegality (S3); no uncertainty; no real question."
+    },
+    {
+      "id": "K3",
+      "task_id": "T2",
+      "answer": "Hello, I am applying for the Operations Manager role (SIM-S02). I am 38 with nine years in e-commerce operations and no professional title. The ad says age is generally not above 35, but people with 8+ years of relevant industry experience may be relaxed to 40. I am not sure whether e-commerce operations counts as 'relevant industry experience'. Could you confirm whether my nine years would qualify me for the relaxation, and what proof you would need?",
+      "reference": {
+        "c1": true,
+        "c2": true,
+        "c3": true,
+        "c4": true,
+        "severe": false
+      },
+      "rationale": "Accurate, cites cap and exception, unsure whether experience counts, specific answerable question."
+    },
+    {
+      "id": "K4",
+      "task_id": "T2",
+      "answer": "I am 38 with nine years of operations experience. Your ad says people over 35 are not accepted. Can you tell me more about the age requirement?",
+      "reference": {
+        "c1": true,
+        "c2": false,
+        "c3": false,
+        "c4": false,
+        "severe": true
+      },
+      "rationale": "Ignores the stated exception to 40 (S4); misstates the ad; generic question; no uncertainty."
+    },
+    {
+      "id": "K5",
+      "task_id": "T3",
+      "answer": "Hello, I saw the Administrative Assistant ad (SIM-S03). I am 41 with twelve years in administration. The ad says \"30岁以下优先\" (under 30 preferred). Is that a preference only? I am unsure how it is weighed against experience. Are applicants over 30 reviewed in the same round?",
+      "reference": {
+        "c1": true,
+        "c2": true,
+        "c3": true,
+        "c4": true,
+        "severe": false
+      },
+      "rationale": "Correct preference wording, uncertainty, two concrete questions."
+    },
+    {
+      "id": "K6",
+      "task_id": "T4",
+      "answer": "Hi, I'm 36 with ten years in customer service. The ad says the age limit is 35 and that exceptions are possible for people with strong results. Please confirm I can apply.",
+      "reference": {
+        "c1": true,
+        "c2": false,
+        "c3": false,
+        "c4": false,
+        "severe": true
+      },
+      "rationale": "Invents a cap of 35 and an exception that are not in the cut-off text (S1); asserts eligibility; no real question."
+    }
+  ]
+}

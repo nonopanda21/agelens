@@ -1,0 +1,26 @@
+# SIMULATION — not study data | schema export-v2 | generated 2026-10-27T22:18:28Z | simulated=1
+participant_code,arm,simulated,block_no,tasks_attempted,tasks_submitted,tasks_missing,n_usable,usable_share,usable_ge3,total_elapsed_s,model_failures,participant_status,dropout,sequence,first_condition,usable_share_A,usable_share_B,diff_B_minus_A
+SIM-Y88FE9,AB-S2,1,0,4,4,0,3,0.75,1,1.3,0,completed,0,AB-S2,A,0.5,1.0,0.5
+SIM-89AS8S,BA-S1,1,0,4,4,0,3,0.75,1,1.8,0,completed,0,BA-S1,B,0.5,1.0,0.5
+SIM-FMVFMH,BA-S2,1,0,4,4,0,2,0.5,0,1.2,0,completed,0,BA-S2,B,0.5,0.5,0.0
+SIM-CUEMFU,AB-S1,1,0,4,4,0,3,0.75,1,1.1,0,completed,0,AB-S1,A,1.0,0.5,-0.5
+SIM-4R33XT,AB-S2,1,1,4,4,0,3,0.75,1,1.8,0,completed,0,AB-S2,A,0.5,1.0,0.5
+SIM-QB6B9X,AB-S1,1,1,4,4,0,3,0.75,1,1.1,0,completed,0,AB-S1,A,0.5,1.0,0.5
+SIM-4B6PGT,BA-S2,1,1,4,4,0,3,0.75,1,1.3,0,completed,0,BA-S2,B,0.5,1.0,0.5
+SIM-EH7M8C,BA-S1,1,1,4,4,0,3,0.75,1,1.4,0,completed,0,BA-S1,B,0.5,1.0,0.5
+SIM-YWGDSN,AB-S1,1,2,4,4,0,2,0.5,0,1.3,0,completed,0,AB-S1,A,0.0,1.0,1.0
+SIM-SGXW6B,AB-S2,1,2,4,4,0,3,0.75,1,1.1,0,completed,0,AB-S2,A,1.0,0.5,-0.5
+SIM-YQUUZC,BA-S1,1,2,4,4,0,2,0.5,0,1.3,0,completed,0,BA-S1,B,0.0,1.0,1.0
+SIM-CDVAMT,BA-S2,1,2,4,4,0,3,0.75,1,1.4,0,completed,0,BA-S2,B,0.5,1.0,0.5
+SIM-B29YWP,BA-S2,1,3,4,4,0,3,0.75,1,1.2,0,completed,0,BA-S2,B,1.0,0.5,-0.5
+SIM-EG36KQ,AB-S2,1,3,4,4,0,1,0.25,0,1.4,0,completed,0,AB-S2,A,0.5,0.0,-0.5
+SIM-3VWPGJ,BA-S1,1,3,4,4,0,2,0.5,0,0.8,0,completed,0,BA-S1,B,0.5,0.5,0.0
+SIM-CDSQ6C,AB-S1,1,3,4,4,0,2,0.5,0,1.1,0,completed,0,AB-S1,A,0.5,0.5,0.0
+SIM-QCDHK2,BA-S1,1,4,4,4,0,3,0.75,1,1.1,0,completed,0,BA-S1,B,0.5,1.0,0.5
+SIM-NJAVUZ,AB-S2,1,4,4,4,0,3,0.75,1,1.4,0,completed,0,AB-S2,A,1.0,0.5,-0.5
+SIM-CF38ME,AB-S1,1,4,4,4,0,3,0.75,1,1.4,0,completed,0,AB-S1,A,0.5,1.0,0.5
+SIM-WYBPS2,BA-S2,1,4,4,4,0,3,0.75,1,1.1,0,completed,0,BA-S2,B,0.5,1.0,0.5
+SIM-CMNMDC,BA-S1,1,5,4,4,0,3,0.75,1,1.2,0,completed,0,BA-S1,B,1.0,0.5,-0.5
+SIM-JN9TPA,BA-S2,1,5,4,4,0,2,0.5,0,1.5,0,completed,0,BA-S2,B,0.5,0.5,0.0
+SIM-W6XBWR,AB-S1,1,5,4,4,0,3,0.75,1,1.1,0,completed,0,AB-S1,A,0.5,1.0,0.5
+SIM-G2UZFD,AB-S2,1,5,4,4,0,3,0.75,1,1.5,0,completed,0,AB-S2,A,1.0,0.5,-0.5

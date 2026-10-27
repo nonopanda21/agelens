@@ -1,0 +1,53 @@
+/* study (participant + scoring desk). Tokens only; no second palette. Simulation banner is persistent and uses the warm token. */
+.st-banner{padding:10px var(--s5);font-size:13px;border-bottom:1px solid rgba(0,0,0,.06);background:#F5F5F7;color:var(--ink);text-align:center}.st-banner strong{font-weight:600}
+.st-banner.formal{background:var(--accent-soft);color:var(--ink);border-color:var(--accent-line)}
+.st-page{padding-top:var(--s6)}
+.st-page h1{font-size:clamp(1.8rem,3.6vw,2.6rem)}
+.st-page h2{font-size:1.2rem;letter-spacing:-.01em}
+.st-page .lead{font-size:1.08rem;color:var(--ink-soft)}
+.st-consent{max-width:760px;margin:var(--s5) 0}
+.st-consent p{max-width:65ch}
+.st-check{display:flex;gap:var(--s3);align-items:flex-start;margin:var(--s4) 0}
+.st-check input{width:20px;height:20px;margin-top:2px;flex:none}
+.st-check label{margin:0;font-weight:500}
+.st-head{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--s4);flex-wrap:wrap}
+.st-timer{display:flex;flex-direction:column;align-items:flex-end;min-width:96px}
+.st-clock{font-variant-numeric:tabular-nums;font-size:2rem;font-weight:600;letter-spacing:-.02em;border:1px solid var(--line-strong);border-radius:var(--r);padding:0 var(--s4)}
+.st-clock.low{color:var(--warm);border-color:var(--warm-line);background:var(--warm-soft)}
+.st-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s5);align-items:start}
+.st-facts,.st-write{display:grid;gap:var(--s4);min-width:0}
+.st-adtext,.st-aidtext{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:0 0 var(--s3);background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--s3) var(--s4);font-size:.95rem}
+.st-gloss{font-size:.92rem;color:var(--ink-soft)}
+.st-dl{display:grid;grid-template-columns:max-content 1fr;gap:var(--s1) var(--s4);margin:0 0 var(--s3)}
+.st-dl dt{color:var(--ink-soft);font-size:.9rem}.st-dl dd{margin:0}
+.st-q{margin:0}
+.st-actions{display:flex;gap:var(--s3);flex-wrap:wrap;margin-top:var(--s4)}
+.st-withdraw{margin-left:auto}
+.st-code{font-variant-numeric:tabular-nums;letter-spacing:.04em;background:var(--accent-soft);padding:2px 10px;border-radius:var(--r-sm)}
+.st-tabs{display:flex;gap:var(--s2);flex-wrap:wrap;margin:var(--s4) 0 var(--s5);border-bottom:1px solid var(--line);padding-bottom:var(--s3)}
+.st-tab{font:inherit;font-size:.92rem;padding:var(--s2) var(--s4);border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;color:var(--ink);transition:background var(--t-fast) var(--ease)}
+.st-tab:hover{background:var(--bg-alt)}
+.st-tab[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent-hover);font-weight:600}
+.st-signin{max-width:560px}
+.st-raters{border:0;padding:0;margin:var(--s4) 0}.st-raters legend{font-weight:600;font-size:.92rem;margin-bottom:var(--s2)}
+.st-radio{display:inline-flex;align-items:center;gap:var(--s2);font-weight:500;margin:0 var(--s4) var(--s1) 0;cursor:pointer;min-height:32px}
+.st-radio input{width:18px;height:18px;margin:0}
+.st-answer{margin:var(--s4) 0}
+.st-quote{margin:0;padding:var(--s3) var(--s4);border-left:0;border-radius:var(--r-sm);background:var(--bg-alt);white-space:pre-wrap;overflow-wrap:anywhere}
+.st-scoreform{max-width:760px}
+.st-crit{border:1px solid var(--line);border-radius:var(--r);padding:var(--s4);margin:0 0 var(--s4)}
+.st-crit legend{font-weight:600;padding:0 var(--s2)}
+.st-crit p{max-width:none}
+.st-yn{display:flex;gap:var(--s5)}
+.st-sev{padding-left:var(--s5);font-size:.9rem;color:var(--ink-soft)}
+.st-tablewrap{overflow-x:auto}
+.st-table{border-collapse:collapse;width:100%;font-size:.92rem}
+.st-table th,.st-table td{text-align:left;padding:var(--s2) var(--s3);border-bottom:1px solid var(--line)}
+.st-pane section.card{margin-bottom:var(--s4)}
+@media (max-width:860px){.st-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.st-banner{padding:var(--s2) var(--s4);font-size:.85rem}.st-timer{align-items:flex-start}.st-withdraw{margin-left:0}}
+.st-page{padding-left:var(--s5);padding-right:var(--s5)}
+.st-page .notice,.st-page li,.st-page p{overflow-wrap:anywhere}
+@media (max-width:640px){.st-page{padding-left:var(--s4);padding-right:var(--s4)}}
+/* QA: the DRAFT badge sat flush against the consent heading */
+.st-consent>.badge{margin-bottom:var(--s3)}

@@ -1,0 +1,16 @@
+/* about styles (own file; single owner) */
+.ab{}
+.ab h1{font-size:clamp(2rem,4.5vw,3rem)}
+.ab-lead{font-size:1.15rem;line-height:1.55;margin-bottom:var(--s6)}
+.ab-sec{border-top:1px solid var(--line);padding:var(--s5) 0 var(--s3)}
+.ab-sec h2{font-size:1.35rem;margin-bottom:var(--s3)}
+.ab-sec ul{padding-left:1.2em;max-width:68ch}.ab-sec li{margin-bottom:var(--s2)}
+.ab-dl{display:grid;grid-template-columns:11rem minmax(0,1fr);gap:var(--s2) var(--s5);margin:0}
+.ab-dl dt{font-weight:600}.ab-dl dd{margin:0 0 var(--s3);max-width:62ch}
+.ab-lit{list-style:none;padding:0!important}.ab-lit li{margin-bottom:var(--s4)}
+.ab-lit a{overflow-wrap:anywhere}
+.ab-lit .hint{margin:var(--s1) 0 0}
+.ab .lit-status{font-size:.8rem;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap;display:inline-block}
+.ab .lit-status.ok{background:var(--ok-soft);color:var(--ok)}
+.ab .lit-status.todo{background:var(--warm-soft);color:var(--warm);border:1px solid var(--warm-line)}
+@media (max-width:640px){.ab-dl{grid-template-columns:minmax(0,1fr);gap:0}.ab-dl dd{margin-bottom:var(--s4)}}

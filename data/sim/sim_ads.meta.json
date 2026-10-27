@@ -1,0 +1,24 @@
+{
+  "columns": [
+    "职位名称",
+    "公司",
+    "工作地点",
+    "发布日期",
+    "职位类别",
+    "职位描述",
+    "职位链接",
+    "来源",
+    "薪资",
+    "sim_scenario"
+  ],
+  "csv_sha256": "b5a229eadff5a8288b1ac5b2ab20194c243636b59faeeafc9b5febce4a528323",
+  "data_version": "sim-1.0.0-seed20261023",
+  "generator_version": "sim-1.0.0",
+  "label": "Demo · Synthetic data",
+  "raw_rows": 1018,
+  "seed": 20261023,
+  "simulated": true,
+  "source": "simulated",
+  "unique_ads_requested": 960,
+  "version": "sim-1.0.0"
+}

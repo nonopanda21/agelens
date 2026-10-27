@@ -1,0 +1,32 @@
+{
+  "model": "sonnet",
+  "effort": "medium",
+  "max_turns": 25,
+  "batch_timeout_min": 45,
+  "five_hour": {
+    "large_task_pct": 85,
+    "stop_new_pct": 95
+  },
+  "weekly": {
+    "reserve_pct": 5,
+    "end_reserve_pct": 2,
+    "end_window_hours": 12,
+    "front_load_pct": 12,
+    "urgent_priority": 1
+  },
+  "quota": {
+    "fresh_minutes": 20,
+    "unknown_mode": "wait",
+    "max_projected_batches": 1,
+    "reset_buffer_minutes": 3,
+    "unknown_interval_minutes": 180
+  },
+  "run_hours": {
+    "start": 0,
+    "end": 24
+  },
+  "poll_seconds": 30,
+  "max_consecutive_failures": 3,
+  "use_tmux": true,
+  "_note": "Thresholds are adjustable starting policy, NOT official limits. Only keys you list override the built-in defaults in agelens_auto.py."
+}

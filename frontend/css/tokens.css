@@ -1,0 +1,46 @@
+/* AgeLens design tokens: hand-drawn "sketchbook" style after the reference site (nonopanda20.github.io):
+   warm paper, dark-brown ink outlines with hard offset shadows, five pastel fills, Patrick Hand display type,
+   Press Start 2P pixel numerals, Nunito body. Pastels are FILLS only; text always uses the darker ink tones below
+   so contrast stays >= 4.5:1. Legacy names alias onto this palette so older CSS follows automatically. */
+:root{
+  /* pastels (fills, chips, bars) */
+  --pink:#FFB6C1; --lav:#D5C6E0; --blue:#A8D8EA; --yellow:#FFF5BA; --mint:#B5EAD7;
+  --pink-soft:#FFE6EA; --lav-soft:#F1EAF6; --blue-soft:#E3F3F9; --yellow-soft:#FFFBE3; --mint-soft:#E6F8F0;
+  /* ink */
+  --brown:#4A3728; --text:#5B4A3A; --text-light:#7A6A59;
+  /* text-safe accents on paper/white (>= 4.5:1) */
+  --pink-ink:#B23A5E; --lav-ink:#6E4F8C; --blue-ink:#22677F; --mint-ink:#2A6E55; --yellow-ink:#7A6312;
+
+  --paper:#FFF9F5; --bg:#FFF9F5; --bg-alt:#FFF3F1; --surface:#FFFFFF;
+  --ink:var(--brown); --ink-soft:var(--text-light); --line:rgba(74,55,40,.18); --line-strong:var(--brown);
+  --accent:var(--pink-ink); --accent-hover:#952E4D; --accent-soft:var(--pink-soft); --accent-line:var(--pink); --on-accent:var(--brown);
+  --violet:var(--lav-ink); --violet-deep:#5A3F75; --violet-soft:var(--lav-soft); --violet-line:var(--lav); --lavender:var(--lav);
+  --grad:linear-gradient(90deg,var(--pink),var(--lav));
+  --silver:#F4EEE9; --silver-deep:#8B7B6A;
+  --warm:var(--pink-ink); --warm-soft:var(--pink-soft); --warm-line:var(--pink);
+  --ok:#2A6E55; --ok-soft:var(--mint-soft); --err:#B3261E; --err-soft:#FDECEA;
+  --lilac:var(--lav-soft); --lilac-deep:var(--lav-ink); --sky:var(--blue-soft); --sky-deep:var(--blue-ink);
+  --mint-deep:var(--mint-ink); --butter:var(--yellow-soft); --warn-ink:var(--yellow-ink);
+
+  /* type */
+  --font:"Nunito","Nunito Var",system-ui,"Segoe UI","Noto Sans","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-sketch:"Patrick Hand","Nunito",cursive;
+  --font-pix:"Press Start 2P",ui-monospace,monospace;
+  --w-body:400; --w-med:600; --w-strong:700;
+  --fs-h1:clamp(2.6rem,5.2vw,3.6rem); --fs-h2:clamp(1.8rem,3.2vw,2.3rem); --fs-h3:1.4rem; --fs-body:1.05rem; --fs-cap:.85rem;
+  --tr-h1:0; --tr-h2:0; --tr-h3:0;
+
+  /* sketch outline + hard shadow */
+  --bw:2.5px; --border:var(--bw) solid var(--brown);
+  --r-sm:10px; --r:12px; --r-lg:16px; --r-pill:999px;
+  --shadow:2px 2px 0 var(--brown),-1.5px -1px 0 rgba(74,55,40,.2);
+  --shadow-hover:4px 4px 0 var(--brown),-1.5px -1px 0 rgba(74,55,40,.2);
+  --shadow-sm:1.5px 1.5px 0 var(--brown);
+  --hair:1px solid var(--line);
+  --btn:var(--pink); --btn-hover:#FFA3B3;
+
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:80px;--s9:120px;
+  --max:1120px; --ease:cubic-bezier(.25,.1,.25,1); --ease-out:cubic-bezier(.16,1,.3,1); --ease-pop:cubic-bezier(.34,1.56,.64,1);
+  --t-fast:200ms; --t-base:300ms; --t-slow:600ms;
+  --focus:var(--pink-ink);
+}

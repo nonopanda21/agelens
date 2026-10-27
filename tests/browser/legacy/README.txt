@@ -1,0 +1,1 @@
+Superseded tests kept for reference. hero_check.py targeted the round-2 hero before the Evidence lens moved into its own home section (home_lens.js) and the nebula hero replaced it; it expects its own server on port 8801 and old particle counts. Current coverage: tests/browser/sweep.py, perf.py, a11y_check.py, demo_cases.py.

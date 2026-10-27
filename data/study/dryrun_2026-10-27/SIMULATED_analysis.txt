@@ -1,0 +1,28 @@
+==============================================================================
+SIMULATED — software test only, not study data, not a result
+==============================================================================
+Design crossover-rules-v1 | export 2026-10-27T22:18:28Z | tasks tasks-v0.2-draft | rubric rubric-v0.1-draft
+
+Participants: enrolled 24, analysed 24, withdrawn 0, dropouts 0, incomplete 0, excluded (unscored/unresolved) 0; by sequence {'AB-S1': 6, 'AB-S2': 6, 'BA-S1': 6, 'BA-S2': 6}
+
+PRIMARY (within participant): usable share  ad only (A) 0.583   AgeLens (B) 0.750
+  mean D (B - A) = +0.167, 95% CI [-0.042, 0.354] (percentile bootstrap), n = 24
+  sign-flip randomisation p = 0.1706 ; paired t p = 0.1186 ; D distribution {'-1.0': 0, '-0.5': 7, '0.0': 4, '0.5': 11, '1.0': 2}
+  PRE-REGISTERED THRESHOLD: NOT MET: needs mean D >= +0.20 and CI lower bound > 0.00; got mean D +0.167, lower bound -0.042
+ORDER: mean D  AB group +0.083  BA group +0.250 ; order-balanced effect +0.167 ; difference -0.167 CI [-0.542, 0.208] n=[12, 12]
+SENSITIVITY period 1 only: ad-only first 0.625 vs AgeLens first 0.792, diff +0.167 CI [-0.042, 0.375] n=[12, 12]
+SENSITIVITY completers only: mean D +0.167 CI [-0.021, 0.354] n=24
+
+By condition (task level, descriptive): {'A': {'tasks': 48, 'usable': '28/48', 'c1': '48/48', 'c2': '28/48', 'c3': '28/48', 'c4': '28/48', 'severe': '11/48'}, 'B': {'tasks': 48, 'usable': '36/48', 'c1': '48/48', 'c2': '36/48', 'c3': '36/48', 'c4': '36/48', 'severe': '8/48'}}
+By task kind/condition (descriptive): {'age_cap/A': '10/12', 'age_cap/B': '10/12', 'age_preference/A': '6/12', 'age_preference/B': '10/12', 'incomplete_evidence/A': '4/12', 'incomplete_evidence/B': '6/12', 'qualification_exception/A': '8/12', 'qualification_exception/B': '10/12'}
+
+Inter-rater (R1 vs R2, before adjudication):
+  c1      n=96  kappa=None raw agreement=1.0
+  c2      n=96  kappa=1.0 raw agreement=1.0
+  c3      n=96  kappa=0.552 raw agreement=0.792
+  c4      n=96  kappa=1.0 raw agreement=1.0
+  severe  n=96  kappa=1.0 raw agreement=1.0
+
+Scoring status: {'items_disagreement': 20, 'unresolved': 0, 'adjudicated': 20, 'missing_answers': 0, 'timed_out': 0}
+
+This is a SIMULATED software test. It reports effect size, CI, sample size and dropouts; it makes no employment, hiring or legal claim.

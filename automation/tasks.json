@@ -1,0 +1,165 @@
+{
+  "tasks": [
+    {
+      "id": "T00",
+      "title": "Gate: round-2 build agents finished and lead integration done",
+      "kind": "human",
+      "priority": 0,
+      "size": "small",
+      "depends_on": [],
+      "status": "done",
+      "goal": "Human confirms no other Claude session is editing the project (B2 seeker/LLM and E study agents reported done; DB rebuilt from simulated data). Mark done with: python3 automation/agelens_auto.py tasks done T00",
+      "acceptance": []
+    },
+    {
+      "id": "T01",
+      "title": "README for round 2 (run, simulated data, study mode, automation)",
+      "kind": "work",
+      "priority": 1,
+      "size": "small",
+      "depends_on": [
+        "T00"
+      ],
+      "status": "done",
+      "max_turns": 12,
+      "goal": "Update README.md so a new teammate can run the app, rebuild simulated data (scripts/reset_sim.py + scripts/import_csv.py --source sim), run tests, find docs/ and automation/README.md. Keep it under 90 lines, English, no claims that were not verified in DEVELOPMENT_LOG.md.",
+      "acceptance": [
+        "grep -q 'reset_sim' README.md",
+        "grep -q 'automation/README.md' README.md",
+        "grep -q 'Demo · Synthetic data\\|simulated' README.md",
+        "test $(wc -l < README.md) -le 90"
+      ],
+      "attempts": 1,
+      "last_result": {
+        "at": 1792797452.8671038,
+        "kind": "ok",
+        "exit": 0,
+        "turns": 13,
+        "duration_s": 49.3,
+        "progress": true,
+        "checks": [
+          {
+            "cmd": "grep -q 'reset_sim' README.md",
+            "ok": true
+          },
+          {
+            "cmd": "grep -q 'automation/README.md' README.md",
+            "ok": true
+          },
+          {
+            "cmd": "grep -q 'Demo · Synthetic data\\|simulated' README.md",
+            "ok": true
+          },
+          {
+            "cmd": "test $(wc -l < README.md) -le 90",
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "T02",
+      "title": "Browser test: seeker UI -> reviewer UI -> seeker sees reply (new look)",
+      "kind": "work",
+      "priority": 1,
+      "size": "medium",
+      "depends_on": [
+        "T00"
+      ],
+      "status": "done",
+      "goal": "Write tests/browser/e2e_loop.py using ~/agelens-tools/pw/bin/python + Playwright that starts its own temp server (temp AGELENS_DB seeded via scripts/import_csv.py --source sim, free port, AGELENS_REVIEWER_TOKEN set), drives the Job Seeker UI through example question, search, brief and 'Submit for human review', then the Reviewer UI (separate context) asks for info, the seeker answers in My requests, reviewer publishes, the seeker sees only the published reply. Fix any defect it exposes in the frontend or backend (smallest change). Save screenshots to docs/screenshots/e2e/.",
+      "acceptance": [
+        "~/agelens-tools/pw/bin/python tests/browser/e2e_loop.py",
+        "test -n \"$(ls docs/screenshots/e2e/*.png 2>/dev/null)\""
+      ]
+    },
+    {
+      "id": "T03",
+      "title": "Layout sweep: no horizontal overflow or console errors on every route at 1280 and 360",
+      "kind": "work",
+      "priority": 2,
+      "size": "medium",
+      "depends_on": [
+        "T00"
+      ],
+      "status": "done",
+      "goal": "Write tests/browser/sweep.py that loads #/ #/explore #/seeker #/requests #/reviewer #/study #/study/score #/about at 1280 and 360 px against its own temp server, fails on console errors, 404s other than documented, or horizontal overflow, and saves screenshots to docs/screenshots/sweep/. Fix what it finds with minimal CSS/JS changes in the owning files.",
+      "acceptance": [
+        "~/agelens-tools/pw/bin/python tests/browser/sweep.py"
+      ]
+    },
+    {
+      "id": "T04",
+      "title": "UI audit against Web Interface Guidelines (docs/web-interface-guidelines.md)",
+      "kind": "work",
+      "priority": 3,
+      "size": "medium",
+      "depends_on": [
+        "T03"
+      ],
+      "status": "done",
+      "goal": "Audit frontend/pages/*.js, frontend/js/*.js and frontend/css/*.css against docs/web-interface-guidelines.md. Write docs/UI_AUDIT.md (file:line findings, severity, fixed/not fixed). Fix only high-severity accessibility issues (labels, focus, contrast, keyboard) and re-run the sweep.",
+      "acceptance": [
+        "test -s docs/UI_AUDIT.md",
+        "~/agelens-tools/pw/bin/python tests/browser/sweep.py"
+      ]
+    },
+    {
+      "id": "T05",
+      "title": "Performance note: hero vs map render loops, measured",
+      "kind": "work",
+      "priority": 3,
+      "size": "medium",
+      "depends_on": [
+        "T03"
+      ],
+      "status": "done",
+      "goal": "Write tests/browser/perf.py that, in headless Chromium with software WebGL, records AgeLens.gfx.stats and render-call counts to show only one heavy loop is active (hero visible, map expanded and visible, tab hidden, motion paused, route change). Write docs/PERFORMANCE.md with the measured numbers and the explicit caveat that software WebGL is not a real GPU; no FPS claims.",
+      "acceptance": [
+        "~/agelens-tools/pw/bin/python tests/browser/perf.py",
+        "grep -qi 'software' docs/PERFORMANCE.md",
+        "grep -qi 'not a real GPU\\|not representative' docs/PERFORMANCE.md"
+      ]
+    },
+    {
+      "id": "T06",
+      "title": "Refresh docs/COURSE_CHECKLIST.md statuses from the repository",
+      "kind": "verify",
+      "priority": 4,
+      "size": "small",
+      "depends_on": [
+        "T02",
+        "T03"
+      ],
+      "status": "done",
+      "max_turns": 15,
+      "goal": "Re-read the checklist rows, check each referenced artifact exists and whether DEVELOPMENT_LOG.md records a real verification; update the status column using only the four allowed labels. Do not invent dates, spend, pitch contents or teacher approvals.",
+      "acceptance": [
+        "grep -q 'done and verified' docs/COURSE_CHECKLIST.md",
+        "grep -q 'needs teacher' docs/COURSE_CHECKLIST.md"
+      ]
+    },
+    {
+      "id": "H01",
+      "title": "Human: Lin (2025) full text via CNKI to complete the second literature figure",
+      "kind": "human",
+      "priority": 5,
+      "size": "small",
+      "depends_on": [],
+      "status": "pending",
+      "goal": "Someone with CNKI access confirms sample, outcome definition, figure.",
+      "acceptance": []
+    },
+    {
+      "id": "H02",
+      "title": "Human: fill incurred spend, memberships held, pitch contents, midterm advice; teacher items in docs/PENDING_TEACHER.md",
+      "kind": "human",
+      "priority": 5,
+      "size": "small",
+      "depends_on": [],
+      "status": "pending",
+      "goal": "Team-only facts that must not be invented.",
+      "acceptance": []
+    }
+  ]
+}

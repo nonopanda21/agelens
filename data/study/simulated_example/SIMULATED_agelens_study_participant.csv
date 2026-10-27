@@ -1,0 +1,18 @@
+# SIMULATION — not study data | schema export-v1 | generated 2026-10-27T17:04:03Z | simulated=1
+participant_code,arm,simulated,block_no,tasks_attempted,tasks_submitted,tasks_missing,n_usable,usable_share,usable_ge3,total_elapsed_s,model_failures,participant_status,dropout
+SIM-MTAKV8,template,1,0,4,4,0,2,0.5,0,1.4,0,completed,0
+SIM-CE82NB,assisted,1,0,4,4,0,2,0.5,0,2.2,0,completed,0
+SIM-RMG5JW,assisted,1,0,4,4,0,3,0.75,1,1.8,0,completed,0
+SIM-M429FE,template,1,0,4,4,0,3,0.75,1,1.3,0,completed,0
+SIM-AN5FPY,template,1,1,4,4,0,3,0.75,1,1.2,0,completed,0
+SIM-B5J2UB,template,1,1,4,4,0,3,0.75,1,1.3,0,completed,0
+SIM-QRNF42,assisted,1,1,4,4,0,3,0.75,1,2.1,0,completed,0
+SIM-T38X4E,assisted,1,1,4,4,0,2,0.5,0,1.7,0,completed,0
+SIM-MZ3G5N,template,1,2,4,4,0,2,0.5,0,1.4,0,completed,0
+SIM-4PHCVT,template,1,2,4,4,0,3,0.75,1,1.8,0,completed,0
+SIM-57AJC9,assisted,1,2,4,4,0,3,0.75,1,2.4,0,completed,0
+SIM-DEMJ8Z,assisted,1,2,4,4,0,2,0.5,0,1.9,0,completed,0
+SIM-FZYM7E,assisted,1,3,4,4,0,2,0.5,0,2.1,0,completed,0
+SIM-NWDUFX,template,1,3,4,4,0,3,0.75,1,1.0,0,completed,0
+SIM-TEWUS9,assisted,1,3,4,4,0,3,0.75,1,2.3,0,completed,0
+SIM-R92KNU,template,1,3,4,4,0,2,0.5,0,1.0,0,completed,0

@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+data/*.db*
+data/uploads/
+data/reviewer_token
+data/raw/
+# --- added 2026-10-27 for the public repository (never publish secrets, run data or local tooling) ---
+*.pyc
+data/study/study_token
+data/server.log
+data/diag.json
+data/invites.local.json
+data/*.log
+automation/runs/
+automation/events.jsonl
+automation/state.json
+automation/checkpoint.md
+.claude/
+automation/.lock
