@@ -10,6 +10,8 @@ Status 2026-10-27: everything below up to step 3 is prepared and rehearsed local
 | who gets in | anyone with the link | only people with a code |
 | reviewer / study desks | closed: a random token nobody knows is generated at each start (set `AGELENS_REVIEWER_TOKEN` / `AGELENS_STUDY_TOKEN` to open them) | reviewer codes open the reviewer workspace |
 
+Pro codes (full Word report, `docs/PRO.md`): add `AGELENS_PRO_CODES` (output of `python3 scripts/pro_code.py env`) the same way. Without it, the report preview still works, but no code unlocks the report.
+
 Switching from open to invite-only later: Render → the service → **Environment** → add `AGELENS_INVITES` → **Save**. Render restarts the service and the invite page appears. No code change is needed.
 
 ## What the public demo is

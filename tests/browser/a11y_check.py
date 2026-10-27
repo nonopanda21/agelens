@@ -125,7 +125,7 @@ try:
                                  "evidence": [api("/api/ads/" + a["id"]) for a in ads]}, {"X-Idempotency-Key": "a11y-" + str(os.getpid())})
     routes = [("home", "#/"), ("explore", "#/explore"), ("seeker", "#/seeker"), ("seeker_result", "#/seeker"), ("evidence", "#/evidence/" + ads[0]["id"]),
               ("requests", "#/requests"), ("request_detail", "#/requests/" + made["code"]), ("reviewer_signin", "#/reviewer"), ("reviewer", "#/reviewer"),
-              ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access")]
+              ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access"), ("pro", "#/pro")]
     with sync_playwright() as pw:
         br = pw.chromium.launch(args=["--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"])
         for w, hgt in ((1280, 900), (360, 780)):

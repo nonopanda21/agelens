@@ -39,6 +39,7 @@ AGELENS_DB=/tmp/agelens-copy.db .venv/bin/python app.py --port 8815 &
 | `sweep.py` | every route at 1280/360: console errors, 4xx/5xx, overflow, CJK outside evidence (own server) |
 | `a11y_check.py`, `palette_check.py` | scripted accessibility checks; text contrast in map/heatmap/charts |
 | `e2e_loop.py` | seeker → reviewer → seeker loop through the UI |
+| `pro_flow.py` | Pro: report preview, Pro code, Word download, credits, Pro page (own server) |
 | `public_demo.py` | public demo with invite codes: gate, roles, personal vs shared codes, reviewer code, sign out (own server on 127.0.0.1) |
 | `demo_cases.py` | "Try a demo case" and "Paste an ad to check" at 1280/360 |
 | `seeker_flow.py` | Job Seeker form, CV drop, answer, errors, download |
@@ -56,6 +57,7 @@ AGELENS_DB=/tmp/agelens-copy.db .venv/bin/python app.py --port 8815 &
 - **Explore data `#/explore`**: filters, charts, ad list; each ad links to `#/evidence/<id>` (original text with highlighted wording).
 - **Job Seeker `#/seeker`**: question first, background (optional CV drop: PDF/DOCX/TXT, fields editable and confirmed, never stored), answer under five headings with tags Ad text / You said / Rules, Markdown download, "Submit for human review". **Try a demo case**: six one-click fictional cases for presenters (procurement, hidden instruction, contradictory wording, cut-off text, no match, no model). **Paste an ad to check (optional)**: one pasted ad (≤ 4000 characters) checked in memory by the same rules, not stored, not sendable for review.
 - **My requests `#/requests`**: replies and reviewer questions; owner keys live in this browser; on the public demo, requests sent with a personal invite code open in any browser with that code.
+- **Pro `#/pro`** (stage 1, no payment): free vs Pro; a Pro code (`scripts/pro_code.py`) unlocks the full Word report made from a Job Seeker answer ("Full report" button; free preview). `docs/PRO.md`.
 - **Invite code `#/access`** (public demo only): the invite page shown before anything else, and afterwards the current code's label, role and expiry with sign out.
 - **Reviewer `#/reviewer`**: sign in with the reviewer token; queue, ask for info, draft, publish, close.
 - **Study tools `#/study`** (participants) and **Scoring `#/study/score`** (raters, operator): crossover study (2 tasks ad only, 2 with the AgeLens evidence check; `docs/EVAL_PLAN.md`); simulation mode only; formal mode is refused without `data/study/APPROVAL.json`, which does not exist.
@@ -74,6 +76,7 @@ AGELENS_DB=/tmp/agelens-copy.db .venv/bin/python app.py --port 8815 &
 | `docs/PENDING_TEACHER.md` | items awaiting teacher decisions |
 | `docs/DEMO_SCRIPT.md` | midterm/final live-demo outline, adversarial handling |
 | `docs/SPEC.md`, `docs/SPEC2.md`, `docs/CONTRACT.md` | round-1 and round-2 briefs, API contract (+ round-3 addendum) |
+| `docs/PRO.md` | Pro stage 1: free vs Pro, Pro codes and credits, the Word report, what was verified |
 | `docs/DEPLOY.md` | public demo: invite codes, Render deployment steps, free-plan limits, what was verified |
 | `docs/SIMULATION.md`, `docs/REAL_DATA.md` | simulated data; onboarding real data |
 | `docs/MODEL_CONFIG.md`, `backend/prompts/` | model adapter config, prompt versions |

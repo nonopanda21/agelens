@@ -11,7 +11,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 ad_id = json.load(urllib.request.urlopen(BASE + "/api/ads"))["items"][0]["id"]
 ROUTES = [("home", "#/"), ("seeker", "#/seeker"), ("evidence", "#/evidence/" + ad_id), ("explore", "#/explore"),
-          ("requests", "#/requests"), ("reviewer", "#/reviewer"), ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access")]
+          ("requests", "#/requests"), ("reviewer", "#/reviewer"), ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access"), ("pro", "#/pro")]
 
 problems = []
 

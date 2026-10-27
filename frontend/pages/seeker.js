@@ -205,6 +205,7 @@
   async function buildBrief() {
     const body = { question: S.p.question, profile: profileOut(), filters: searchFilters() };
     if (S.basis === 'selected' && S.selected.size) body.evidence_ids = [...S.selected.keys()];
+    S.briefBody = body;  // the Pro report is built from exactly this request
     S.brief = await call('/api/brief', { json: body, timeout: 45000 });
     if (!S.brief || !S.brief.answer) throw Object.assign(new Error('parse'), { kind: 'parse' });
   }
@@ -275,7 +276,13 @@
       h('div.answer-actions.no-print', {},
         h('button.btn.btn-primary', { type: 'button', onclick: () => downloadMd(b) }, 'Download brief (Markdown)'),
         h('button.btn.btn-secondary', { type: 'button', onclick: printBrief }, 'Print or save as PDF'),
-        h('button.btn.btn-secondary', { type: 'button', onclick: () => { const r5 = $('review-sec'); if (r5) { r5.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth' }); const t = $('clar') || r5.querySelector('h2'); if (t) { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); } } } }, 'Ask a human reviewer'))));
+        !paste && S.briefBody ? h('button.btn.btn-secondary.pro-open', { type: 'button', 'aria-controls': 'pro-panel', onclick: (ev) => {
+          const box = $('pro-panel'); if (!box) return;
+          box.hidden = false; ev.currentTarget.setAttribute('aria-expanded', 'true');
+          AgeLens.reportPanel(box, S.briefBody).then(() => { const t = box.querySelector('h3'); if (t) { t.setAttribute('tabindex', '-1'); t.focus(); } });
+        } }, 'Full report ', h('span.badge.pro-badge', {}, 'Pro')) : null,
+        h('button.btn.btn-secondary', { type: 'button', onclick: () => { const r5 = $('review-sec'); if (r5) { r5.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth' }); const t = $('clar') || r5.querySelector('h2'); if (t) { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); } } } }, 'Ask a human reviewer')),
+      h('section.pro-panel#pro-panel', { hidden: true, 'aria-label': 'Full report' })));
   }
   function provenance(b) {
     const s = b.scope;

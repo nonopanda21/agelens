@@ -8,7 +8,7 @@
   function fmt(iso) {
     if (!iso) return 'no end date';
     const d = new Date(iso.length === 10 ? iso + 'T00:00:00Z' : iso);
-    return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: iso.length === 10 ? 'UTC' : undefined });
   }
 
   function gate(el, done) {

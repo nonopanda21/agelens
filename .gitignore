@@ -17,3 +17,4 @@ automation/state.json
 automation/checkpoint.md
 .claude/
 automation/.lock
+data/pro_codes.local.json

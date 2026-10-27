@@ -60,6 +60,23 @@
     clear() { try { localStorage.removeItem('al_session'); } catch (e) {} sessionListeners.forEach((f) => f()); },
     onChange(fn) { sessionListeners.push(fn); },
   };
+  /* Pro (pages/pro.js, backend/api_pro.py): this browser keeps the Pro session token and the code's label, never the code.
+     status() asks the server for the wallet (credits left); the server alone decides whether a report may be made. */
+  const proListeners = [];
+  AgeLens.pro = {
+    read() { try { return JSON.parse(safeStore.get('al_pro') || 'null'); } catch (e) { return null; } },
+    token() { const v = this.read(); return v ? v.token : ''; },
+    set(token, label) { safeStore.set('al_pro', JSON.stringify({ token, label })); proListeners.forEach((f) => f()); },
+    clear() { try { localStorage.removeItem('al_pro'); } catch (e) {} proListeners.forEach((f) => f()); },
+    onChange(fn) { proListeners.push(fn); },
+    headers() { const t = this.token(); return t ? { 'X-Pro-Token': t } : {}; },
+    async status() {
+      if (!this.token()) return { active: false };
+      const s = await AgeLens.api('/api/pro/status', { headers: this.headers() });
+      if (!s.active) this.clear();  // revoked, expired or signed out elsewhere
+      return s;
+    },
+  };
   /** True when the public demo needs an invite and this browser has no valid session. */
   AgeLens.needsInvite = () => !!AgeLens.access.invite && !AgeLens.session.token();
 
@@ -110,7 +127,7 @@
   const routes = [
     [/^\/?$/, 'home'], [/^\/explore$/, 'explore'], [/^\/seeker$/, 'seeker'],
     [/^\/evidence\/([\w-]+)$/, 'evidence'], [/^\/requests(?:\/([\w-]+))?$/, 'requests'], [/^\/reviewer(?:\/([\w-]+))?$/, 'reviewer'],
-    [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/access$/, 'access'],
+    [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
   ];
   /** Small line icon for centred states (empty / sign-in / not found). Static SVG markup, no user text. */
   const ICONS = {

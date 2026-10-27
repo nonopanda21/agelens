@@ -448,3 +448,22 @@ Checked from this machine (read-only: nothing was submitted):
 - Headers: HTTPS (HTTP/2) with HSTS, X-Frame-Options DENY, Referrer-Policy no-referrer, X-Robots-Tag noindex.
 - Real Chromium at 1280 and 390: home with all 9 sections and the map drawn; Explore, an evidence page, Job Seeker "Use an example" answer (5 sections), Quick check, My requests, About and Study load; no console errors, no 4xx/5xx, no horizontal overflow. Screenshots viewed (home 1280, Job Seeker 390).
 - The instance was awake (first load 1.6 s); the free plan's sleep/wake delay and data reset on restart were not measured.
+
+## 2026-10-27 · Pro stage 1: free features + paid-style full report, no payment, no API
+User decision: stage 1 only, no model API. Defaults taken: 5 credits per code (`--credits`), human review stays free, reports only for searched answers (a pasted ad is not stored).
+**Implemented.**
+- `backend/report.py`: Word report from `brief.build_brief(allow_model=False)` plus dataset context. Contents: cover; summary numbers; five answer sections with verbatim quotes; region and occupation comparison; questions plus a draft message; evidence appendix; method. Captions separate the tables.
+- `backend/api_pro.py`: Pro codes from env `AGELENS_PRO_CODES`, or locally `data/pro_codes.local.json`; hashed Pro sessions (`X-Pro-Token`); per-code credits; free `/api/report/preview`.
+- `/api/report` returns 402 without Pro and 403 at 0 credits. The credit is taken in one IMMEDIATE transaction after a successful build (empty or failed reports are free). Limits: wrong codes 10 per client per 5 min, builds 20 per min.
+- `scripts/pro_code.py` (new/list/revoke/env; the local list is git-ignored).
+- Frontend: `AgeLens.pro`; `pages/pro.js` (free vs Pro table, code form, wallet, remove; `AgeLens.reportPanel` with the preview, code form, generate and download); "Full report · Pro" button on the Job Seeker answer; nav "Pro"; `css/pro.css`.
+- `docs/PRO.md`; DEPLOY/README updated; sweep, a11y and theme route lists include `#/pro`.
+**Fixed during testing.**
+- test_pro first shared the suite's temp DB (other modules' ads) and found no matching ads in the full run; it now uses its own DB.
+- UTC expiry date shown a day early in negative-offset time zones (pro.js, access.js).
+- In the report rendered via LibreOffice, adjacent tables looked like one table and median ages were formatted inconsistently (35.0 vs 35); both fixed.
+**Verified.**
+- Unit tests 259 OK (16 new). Highlights: atomic last credit (4 concurrent → exactly one 200); outcome/legal phrases absent; every ad's age wording quoted; deterministic.
+- Browser: pro_flow 27/27 (1280/360: two real .docx downloads, credits 2→1→0, disabled at 0); sweep 120/120; a11y 0 high; theme ok; e2e 22/22; demo_cases and seeker_flow ok; review_loop 37/37; public_demo 33/33.
+- Report rendered to PDF and viewed: 7 pages for 10 ads.
+**Not done.** Payment (stages 2/3); persistence of used credits on the free host (resets at restart); the Pro codes are not yet set on Render (needs the team: `AGELENS_PRO_CODES`).
