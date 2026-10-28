@@ -478,3 +478,11 @@ Looked at real-phone emulation (Playwright "iPhone 13": 390×664 viewport, DPR 3
 - Footer links and the animation toggle were 26–28 px tall; now at least 40 px on phones.
 Tests updated for the Menu: `public_demo.py` checks `hidden` attributes instead of visibility (the chip lives in the Menu on phones) and opens Quick check through the Menu.
 Verified: sweep 120/120, a11y 0 high, theme ok, labels 0, e2e 22/22, demo_cases, seeker_flow, review_loop 37/37, public_demo 33/33, pro_flow 27/27, perf, map_v2; unit tests 259 OK. Phone screenshots viewed after the changes (menu closed and open, Quick check, home, map, Pro). Not checked on a physical phone or in Safari.
+
+## 2026-10-27 · Live check after the push of ae08aa0 (Pro stage 1 + phone layout)
+https://agelens-sepol425.onrender.com served the new code about 1 minute after the push was confirmed (`git ls-remote` = ae08aa0). Read-only checks from this machine:
+- API: /api/health 960 ads; /api/report without Pro 402; /api/report/preview 10 sections for a Shanghai procurement profile; a fake Pro code 401.
+- iPhone 13 emulation: one-row nav with Menu; the Menu lists Overview, Explore data, Job Seeker, My requests, Pro and Quick check (Reviewer hidden on the public host); Quick check works from the Menu; report preview panel with 10 sections; Pro page renders.
+- Desktop 1280: edge Quick check tab and report preview work.
+- Both: no console errors, no 4xx/5xx, no horizontal overflow; phone screenshots viewed.
+- `AGELENS_PRO_CODES` is not set on Render yet, so no code unlocks the report there (expected until the team adds it).
