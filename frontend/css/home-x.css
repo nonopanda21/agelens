@@ -240,7 +240,8 @@ body:not([data-route="home"]) .x-progress{display:none}
   .xh-actions{gap:14px}.xh-actions .xbtn{flex:1 1 100%}
   .xc{padding:24px 20px 20px}
   .xf-inner{grid-template-columns:1fr;gap:26px}.xf-bar .wrap{flex-direction:column;gap:4px}
-  .xs-head{margin-bottom:36px}
+  .xs-head{margin-bottom:26px}
+  :root{--xpad:clamp(40px,11vw,56px)}  /* tighter section spacing on phones */
   .x-top{right:16px;bottom:18px}
 }
 

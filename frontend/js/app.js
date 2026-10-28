@@ -216,12 +216,28 @@
       const rv = document.querySelector('.nav-reviewer'); if (rv) rv.hidden = !!AgeLens.access.public && i.role !== 'reviewer';  // public: desk not offered to visitors
     };
     if (nav) { nav.append(chip); AgeLens.session.onChange(paint); paint(); }
+    // phones: the links fold into a "Menu" button; Quick check moves into the menu instead of floating over the page
+    const header = document.getElementById('nav');
+    if (nav && header) {
+      nav.id = 'primary-nav';
+      const menuBtn = AgeLens.h('button.nav-menu', { type: 'button', 'aria-expanded': 'false', 'aria-controls': 'primary-nav' },
+        AgeLens.h('span.nav-menu-ico', { 'aria-hidden': 'true' }, AgeLens.h('i'), AgeLens.h('i'), AgeLens.h('i')), AgeLens.h('span.nav-menu-txt', {}, 'Menu'));
+      const setMenu = (open) => { document.body.classList.toggle('nav-open', open); menuBtn.setAttribute('aria-expanded', String(open)); menuBtn.lastChild.textContent = open ? 'Close' : 'Menu'; };
+      menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('nav-open')));
+      header.insertBefore(menuBtn, nav);
+      const qc = AgeLens.h('button.nav-qc', { type: 'button' }, 'Quick check');
+      qc.addEventListener('click', () => { setMenu(false); if (AgeLens.quickCheck) AgeLens.quickCheck.open(menuBtn); });
+      nav.append(qc);
+      nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+      addEventListener('hashchange', () => setMenu(false));
+      addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.body.classList.contains('nav-open')) { setMenu(false); menuBtn.focus(); } });
+      document.addEventListener('click', (e) => { if (document.body.classList.contains('nav-open') && !header.contains(e.target)) setMenu(false); });
+    }
     document.body.classList.toggle('public-demo', !!AgeLens.access.public);
     apply();
     // floating round "back to top" button (sketch style), shown after the first screen
-    const top = AgeLens.h('button.float-top', { type: 'button', 'aria-label': 'Back to top', title: 'Back to top', onclick: () => { window.scrollTo({ top: 0, behavior: AgeLens.motion.reduced() ? 'auto' : 'smooth' }); document.getElementById('main').focus({ preventScroll: true }); } }, '↑');
-    document.body.append(top);
-    const onScroll = () => { document.body.classList.toggle('nav-scrolled', window.scrollY > 24); top.classList.toggle('show', window.scrollY > 700); };
+    // back-to-top lives in js/fx.js (.x-top); this used to add a second, overlapping one
+    const onScroll = () => { document.body.classList.toggle('nav-scrolled', window.scrollY > 24); };
     window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
     window.addEventListener('hashchange', render); render();
     if (/[?&]diag=1/.test(location.hash)) runDiag();

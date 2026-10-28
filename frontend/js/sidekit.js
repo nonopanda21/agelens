@@ -65,10 +65,15 @@
     h('a.sk-more', { href: '#/seeker' }, 'Check a whole ad and ask a reviewer', h('span.xarrow', { 'aria-hidden': 'true' }, '›')));
   document.body.append(tab, panel);
 
-  const setOpen = (open) => {
+  let opener = tab;  // where focus returns on close: the edge tab, or the phone menu's "Quick check" item
+  const setOpen = (open, from) => {
+    if (open) opener = from || tab;
     panel.hidden = !open; tab.setAttribute('aria-expanded', String(open)); document.body.classList.toggle('sk-open', open);
-    if (open) input.focus(); else tab.focus();
+    if (open) input.focus();
+    else if (opener && opener.offsetParent) opener.focus();
+    else { const m = document.getElementById('main'); if (m) m.focus({ preventScroll: true }); }
   };
+  AgeLens.quickCheck = { open: (from) => setOpen(true, from), available: () => !tab.hidden };
   tab.addEventListener('click', () => setOpen(panel.hidden));
   panel.querySelector('.sk-x').addEventListener('click', () => setOpen(false));
   panel.querySelector('.sk-more').addEventListener('click', () => setOpen(false));
@@ -99,6 +104,7 @@
   const route = () => {
     const study = ['study', 'score'].includes(document.body.dataset.route);
     tab.hidden = study; if (study && !panel.hidden) setOpen(false);
+    const item = document.querySelector('.nav-qc'); if (item) item.hidden = study;  // the phone menu's entry follows the same rule
     rail.hidden = document.body.dataset.route !== 'home';
   };
   addEventListener('hashchange', () => setTimeout(route, 0));

@@ -467,3 +467,14 @@ User decision: stage 1 only, no model API. Defaults taken: 5 credits per code (`
 - Browser: pro_flow 27/27 (1280/360: two real .docx downloads, credits 2→1→0, disabled at 0); sweep 120/120; a11y 0 high; theme ok; e2e 22/22; demo_cases and seeker_flow ok; review_loop 37/37; public_demo 33/33.
 - Report rendered to PDF and viewed: 7 pages for 10 ads.
 **Not done.** Payment (stages 2/3); persistence of used credits on the free host (resets at restart); the Pro codes are not yet set on Render (needs the team: `AGELENS_PRO_CODES`).
+
+## 2026-10-27 · Phone layout pass (user: "用手机看很奇怪")
+Looked at real-phone emulation (Playwright "iPhone 13": 390×664 viewport, DPR 3, touch, mobile UA), viewport by viewport (18 screens of home plus the main pages). Earlier phone checks only covered overflow and errors at 360/390. Found and fixed:
+- Nav took two rows and hid Pro/Reviewer in a sideways scroll. It is now one row (brand + "Menu" button); the links open as a list (aria-expanded/aria-controls, closes on link, route change, Esc or outside tap; focus returns to the button).
+- Quick check's bottom-left pill and back-to-top covered text (e.g. the hero's "960"). On phones Quick check is a Menu item (`AgeLens.quickCheck.open()`, hidden on the study pages like the tab).
+- There were two back-to-top buttons in the same place (`app.js .float-top` and `fx.js .x-top`); removed the app.js one.
+- Section spacing on phones: `--xpad` 40–56 px instead of 64–104 px; tighter heading gap; `scroll-padding-top` 76 px for the one-row nav.
+- Map metric/industry chips were cut at the right edge in a hidden scroll; they now wrap.
+- Footer links and the animation toggle were 26–28 px tall; now at least 40 px on phones.
+Tests updated for the Menu: `public_demo.py` checks `hidden` attributes instead of visibility (the chip lives in the Menu on phones) and opens Quick check through the Menu.
+Verified: sweep 120/120, a11y 0 high, theme ok, labels 0, e2e 22/22, demo_cases, seeker_flow, review_loop 37/37, public_demo 33/33, pro_flow 27/27, perf, map_v2; unit tests 259 OK. Phone screenshots viewed after the changes (menu closed and open, Quick check, home, map, Pro). Not checked on a physical phone or in Safari.

@@ -67,6 +67,12 @@ try:
             pg.on("console", lambda m: errs.append(m.text) if m.type == "error" and not any(x in m.text for x in EXPECTED) else None)
             return pg
 
+        def open_quick_check(pg):  # an edge tab on wide screens, an item in the Menu on phones
+            if pg.is_visible(".sk-tab"):
+                pg.click(".sk-tab")
+            else:
+                pg.click(".nav-menu"); pg.click(".nav-qc")
+
         def enter(pg, code):
             pg.fill("#inv-code", code.lower()); pg.click("form.inv-form button[type=submit]")
 
@@ -77,19 +83,19 @@ try:
             for route in ("#/", "#/explore", "#/requests", "#/reviewer", "#/study"):
                 pg.goto(BASE + "/" + route); pg.wait_for_selector(".inv-form")
             check(f"{tag}: every route shows the invite page first", pg.locator(".inv-form").count() == 1)
-            check(f"{tag}: no identity chip and no Reviewer link before entering", not pg.is_visible(".nav-access") and not pg.is_visible(".nav-reviewer"))
+            check(f"{tag}: no identity chip and no Reviewer link before entering", pg.evaluate("document.querySelector('.nav-access').hidden && document.querySelector('.nav-reviewer').hidden"))
             pg.wait_for_timeout(500); pg.screenshot(path=str(SHOTS / f"gate_{w}.png"), full_page=True)
             enter(pg, "AL-WRON-GXXX"); pg.wait_for_selector(".inv-form .rq-status.error")
             check(f"{tag}: wrong code refused", "not valid" in pg.inner_text(".inv-form .rq-status"))
-            enter(pg, CODES["teacher"]); pg.wait_for_selector(".nav-access:visible")
+            enter(pg, CODES["teacher"]); pg.wait_for_selector(".nav-access:not([hidden])", state="attached")
             pg.goto(BASE + "/#/"); pg.wait_for_selector(".xh", timeout=15000)
             check(f"{tag}: viewer code opens the site", pg.locator(".inv-form").count() == 0)
-            check(f"{tag}: nav shows label · role", pg.inner_text(".nav-access") == "Teacher · viewer")
-            check(f"{tag}: Reviewer link hidden for viewers", not pg.is_visible(".nav-reviewer"))
+            check(f"{tag}: nav shows label · role", pg.evaluate("document.querySelector('.nav-access').textContent") == "Teacher · viewer")  # inside the Menu on phones
+            check(f"{tag}: Reviewer link hidden for viewers", pg.evaluate("document.querySelector('.nav-reviewer').hidden"))
             check(f"{tag}: session keeps no invite code", CODES["teacher"].lower() not in (pg.evaluate("localStorage.getItem('al_session')") or "").lower())
             pg.wait_for_timeout(800); pg.screenshot(path=str(SHOTS / f"home_{w}.png"))
             pg.goto(BASE + "/#/explore"); pg.wait_for_selector(".ex-ads .card, .ex-list .card, article", timeout=15000)
-            pg.click(".sk-tab"); pg.click(".sk-chip >> nth=0"); pg.wait_for_selector(".sk-cls")
+            open_quick_check(pg); pg.click(".sk-chip >> nth=0"); pg.wait_for_selector(".sk-cls")
             check(f"{tag}: Quick check works behind the gate", pg.inner_text(".sk-cls") == "Cap with an exception")
             pg.keyboard.press("Escape")
             # a request sent with the personal code opens in another browser with the same code
@@ -97,7 +103,7 @@ try:
             made = pg.evaluate("(ad)=>AgeLens.api('/api/requests',{json:{question:'Is the stated age a hard cap? (%s)',evidence:[ad]}}).then(r=>{AgeLens.ownerTokens.add(r.code,r.token);return r})" % w, ad)
             check(f"{tag}: personal-code request kept on the code", made["on_invite"] is True)
             ctx2 = mk(); ctx2.add_init_script("sessionStorage.setItem('al_splash_seen','1')"); pg2 = page(ctx2)
-            pg2.goto(BASE + "/#/requests"); pg2.wait_for_selector(".inv-form"); enter(pg2, CODES["teacher"]); pg2.wait_for_selector(".nav-access:visible")
+            pg2.goto(BASE + "/#/requests"); pg2.wait_for_selector(".inv-form"); enter(pg2, CODES["teacher"]); pg2.wait_for_selector(".nav-access:not([hidden])", state="attached")
             pg2.goto(BASE + "/#/requests"); pg2.wait_for_selector(".rq-item")
             check(f"{tag}: same personal code in another browser lists the request", made["code"] in pg2.inner_text(".rq-list") and pg2.locator(".rq-acc").count() >= 1)
             pg2.goto(BASE + "/#/requests/" + made["code"]); pg2.wait_for_selector(".rq-head")
@@ -105,23 +111,23 @@ try:
             pg2.screenshot(path=str(SHOTS / f"request_other_browser_{w}.png"), full_page=True)
             ctx2.close()
             # shared code: a request is NOT visible to another holder of the same code
-            ctx3 = mk(); pg3 = page(ctx3); pg3.goto(BASE + "/"); pg3.wait_for_selector(".inv-form"); enter(pg3, CODES["class"]); pg3.wait_for_selector(".nav-access:visible")
+            ctx3 = mk(); pg3 = page(ctx3); pg3.goto(BASE + "/"); pg3.wait_for_selector(".inv-form"); enter(pg3, CODES["class"]); pg3.wait_for_selector(".nav-access:not([hidden])", state="attached")
             shared = pg3.evaluate("(ad)=>AgeLens.api('/api/requests',{json:{question:'Shared code question (%s)',evidence:[ad]}})" % w, ad)
-            ctx4 = mk(); pg4 = page(ctx4); pg4.goto(BASE + "/"); pg4.wait_for_selector(".inv-form"); enter(pg4, CODES["class"]); pg4.wait_for_selector(".nav-access:visible")
+            ctx4 = mk(); pg4 = page(ctx4); pg4.goto(BASE + "/"); pg4.wait_for_selector(".inv-form"); enter(pg4, CODES["class"]); pg4.wait_for_selector(".nav-access:not([hidden])", state="attached")
             st = pg4.evaluate("(c)=>AgeLens.api('/api/requests/'+c).then(()=>200).catch(e=>e.status)", shared["code"])
             check(f"{tag}: shared code never shows another person's request", shared["on_invite"] is False and st in (401, 404), st)
             ctx3.close(); ctx4.close()
             # reviewer code: workspace without the shared token
-            ctx5 = mk(); pg5 = page(ctx5); pg5.goto(BASE + "/#/reviewer"); pg5.wait_for_selector(".inv-form"); enter(pg5, CODES["rev"]); pg5.wait_for_selector(".nav-access:visible")
+            ctx5 = mk(); pg5 = page(ctx5); pg5.goto(BASE + "/#/reviewer"); pg5.wait_for_selector(".inv-form"); enter(pg5, CODES["rev"]); pg5.wait_for_selector(".nav-access:not([hidden])", state="attached")
             pg5.goto(BASE + "/#/reviewer"); pg5.wait_for_selector(".rv-queue .rv-item, .rv-queue", timeout=15000); pg5.wait_for_timeout(600)
-            check(f"{tag}: reviewer code opens the workspace without the token form", pg5.locator("#rvtok").count() == 0 and pg5.is_visible(".nav-reviewer"))
+            check(f"{tag}: reviewer code opens the workspace without the token form", pg5.locator("#rvtok").count() == 0 and not pg5.evaluate("document.querySelector('.nav-reviewer').hidden"))
             check(f"{tag}: reviewer sees the new requests", made["code"] in pg5.inner_text(".rv-queue"))
             pg5.screenshot(path=str(SHOTS / f"reviewer_{w}.png"), full_page=True)
             ctx5.close()
             # sign out
             pg.goto(BASE + "/#/access"); pg.wait_for_selector(".inv-card")
             pg.click("text=Sign out of this browser"); pg.wait_for_selector(".inv-form")
-            check(f"{tag}: sign out returns to the invite page", not pg.is_visible(".nav-access"))
+            check(f"{tag}: sign out returns to the invite page", pg.evaluate("document.querySelector('.nav-access').hidden"))
             ov = pg.evaluate("document.documentElement.scrollWidth - innerWidth")
             check(f"{tag}: no horizontal overflow", ov <= 0, ov)
             ctx.close()

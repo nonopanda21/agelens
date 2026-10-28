@@ -62,10 +62,8 @@ body.sk-open .sk-tab{background:var(--pink)}
 .sk-more{display:inline-flex;align-items:center;gap:4px;margin-top:14px;font-weight:700;font-size:.9rem;color:var(--pink-ink)}
 
 @media (max-width:640px){
-  /* on phones the edge tab would sit over form fields: it becomes a small pill at the bottom-left (back-to-top is bottom-right) */
-  .sk-tab{writing-mode:horizontal-tb;top:auto;bottom:18px;right:auto;left:16px;translate:none;padding:9px 14px;font-size:.95rem;border:2px solid var(--brown);border-radius:999px;box-shadow:2px 2px 0 var(--brown)}
-  .sk-tab:hover{padding-right:14px}
-  body.sk-open .sk-tab{display:none}
+  /* on phones Quick check lives in the Menu (app.js), so nothing floats over the text */
+  .sk-tab{display:none!important}
   .sk-panel{right:12px;left:12px;width:auto;top:auto;bottom:16px;translate:none;max-height:calc(100vh - 110px)}
 }
 html[data-motion="reduced"] :is(.sk-panel,.sk-res){animation:none}

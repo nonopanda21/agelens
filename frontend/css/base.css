@@ -100,9 +100,8 @@ mark.age{background:linear-gradient(transparent 52%,var(--pink) 52%);color:var(-
 .foot .foot-mark{display:block;margin:0 auto var(--s3);width:max-content;font-family:var(--font-sketch);font-size:1.3rem;color:var(--brown)}
 
 /* floating round button (back to top) */
-.float-top{position:fixed;right:24px;bottom:24px;z-index:40;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--brown);border:2px solid var(--brown);box-shadow:2px 2px 0 var(--brown);font:400 1.3rem/1 var(--font-sketch);cursor:pointer;opacity:0;visibility:hidden;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .3s var(--ease),transform .3s var(--ease-pop),visibility .3s}
-.float-top.show{opacity:1;visibility:visible;transform:none;pointer-events:auto}
-.float-top:hover{transform:scale(1.1);animation:wobble .3s ease}
+/* the menu button only exists on phones (see the 640px block) */
+.nav-menu,.nav-qc{display:none}
 
 /* ---------- disclosure kit: one sketch chevron for every <summary> ---------- */
 details:not(.xfaq-i):not(.faq-item)>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:var(--s2);font-weight:700;color:var(--brown)}summary::-webkit-details-marker{display:none}
@@ -116,17 +115,25 @@ details:not(.xfaq-i):not(.faq-item)>summary:hover{color:var(--pink-ink)}
 .tnum{font-variant-numeric:tabular-nums}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:640px){
-  .nav{padding:8px var(--s3) 2px;flex-direction:column;align-items:flex-start;gap:2px}
+  /* phone nav: one row (brand + Menu); the links open as a list under it */
+  .nav{padding:8px var(--s4);flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0;min-height:56px}
   .nav a.brand{font-size:1.3rem}.nav .brand-mark{width:30px;height:26px}
-  .nav nav{width:100%;min-height:42px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:28px}
-  .nav nav::-webkit-scrollbar{display:none}.nav nav a{flex:none;white-space:nowrap;font-size:.88rem}.nav nav a{padding:6px 9px}
+  .nav-menu{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 14px;border:2px solid var(--brown);border-radius:999px;background:var(--surface);color:var(--brown);font:400 1.05rem/1 var(--font-sketch);box-shadow:var(--shadow-sm);cursor:pointer}
+  .nav-menu-ico{display:grid;gap:3px;width:16px}.nav-menu-ico i{display:block;height:2px;border-radius:2px;background:currentColor;transition:transform .2s var(--ease),opacity .2s}
+  body.nav-open .nav-menu-ico i:nth-child(1){transform:translateY(5px) rotate(45deg)}body.nav-open .nav-menu-ico i:nth-child(2){opacity:0}body.nav-open .nav-menu-ico i:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+  .nav nav{display:none;width:100%;flex-direction:column;align-items:stretch;gap:2px;padding:8px 0 6px;margin-top:8px;border-top:1.5px dashed rgba(74,55,40,.25)}
+  body.nav-open .nav nav{display:flex}
+  .nav nav a,.nav .nav-qc{display:block;padding:12px 14px;font-size:1.02rem;border-radius:12px;text-align:left}
+  .nav .nav-qc:not([hidden]){display:block;font:inherit;font-size:1.02rem;color:var(--brown);background:var(--yellow-soft);border:0;cursor:pointer;margin-top:4px}
+  .nav nav a.nav-access{margin:6px 0 0;max-width:none;text-align:left}
   .wrap{padding:0 var(--s4)}.section{padding-block:var(--s7)}.foot>*{width:calc(100% - 2*var(--s4))}
-  .float-top{right:14px;bottom:14px}
 }
 html[data-motion="reduced"] *,html[data-motion="reduced"] *::before,html[data-motion="reduced"] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 html[data-motion="reduced"] .reveal{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
-@media print{.nav,.foot,.float-top,.no-print{display:none!important}body{background:#fff}}
+@media print{.nav,.foot,.x-top,.sk-tab,.no-print{display:none!important}body{background:#fff}}
 /* QA: the sticky header must not cover a focused element or a jumped-to heading */
 html{scroll-padding-top:92px}
-@media (max-width:640px){html{scroll-padding-top:116px}}
+@media (max-width:640px){html{scroll-padding-top:76px}}
+/* phones: footer links and the animation toggle are comfortable to tap (at least 40px tall) */
+@media (max-width:640px){.foot-links a,.foot .motion-toggle,.xf-col a,.xf-bar .motion-toggle{display:inline-block;padding:10px 6px;min-height:40px}}

@@ -19,3 +19,4 @@ body[data-route="access"] .inv-form{max-width:440px;display:grid;gap:var(--s3);m
 /* the gate shows only the invite form: no margin widgets */
 body[data-route="access"].public-demo :is(.sk-tab,.sk-rail){display:none!important}
 .rq-acc{background:var(--mint-soft);color:var(--brown);border-color:var(--brown)}
+@media (max-width:640px){.nav nav a.nav-access{margin:6px 0 0;max-width:none;padding:12px 14px;text-align:left}}
