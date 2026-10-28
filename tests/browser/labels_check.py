@@ -16,7 +16,7 @@ BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8812'
 TAG = sys.argv[2] if len(sys.argv) > 2 else 'after'
 OUT = os.path.join(ROOT, 'docs', 'screenshots', 'labels'); os.makedirs(OUT, exist_ok=True)
 RVTOK = os.environ.get('AGELENS_REVIEWER_TOKEN', '')
-EVIDENCE = '.orig, .ex-snip, .ex-ad-t, .ev-title, .rq-ev-title, .st-adtext, mark.age, .zh-orig'
+EVIDENCE = '.orig, .ex-snip, .ex-ad-t, .ev-title, .rq-ev-title, .st-adtext, mark.age, .zh-orig, [lang^="zh"]'  # quoted ad wording marked lang=zh (as in sweep.py)
 
 COUNT_JS = r"""(ev) => {
   const CJK = /[㐀-鿿豈-﫿　-〿＀-￯]/g;

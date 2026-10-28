@@ -21,7 +21,7 @@ Written 2026-10-24 by agent D3 from `DEVELOPMENT_LOG.md` and the files present o
 | 14 | Per-stage record (implemented / verified / planned / blocked) | `DEVELOPMENT_LOG.md`, `docs/CHANGELOG.md` | done and verified | Log sections list verified and not-verified items per agent. |
 
 ## Not delivered or open
-- Second literature figure (Lin 2025): not delivered; full text not accessible (log L; PENDING_TEACHER 11).
+- Second literature figure (Lin 2025): delivered 2026-10-28. The team supplied the full text; the figure uses printed values only (docs/LITERATURE.md). PENDING_TEACHER 11 is resolved.
 - Formal trial, results, effect sizes: none exist and none may be reported.
 - Real-GPU performance figures: not measured (`docs/PERFORMANCE.md`).
 - Human observation recorded separately from automated tests (SPEC2 section 13): the browser runs are automated; human viewing of screenshots is noted in the log, but no separate human walkthrough by team members is recorded.

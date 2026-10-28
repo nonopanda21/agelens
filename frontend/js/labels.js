@@ -9,6 +9,7 @@
     '财务': 'Finance', '运营管理': 'Operations', '市场营销': 'Marketing', '生产制造': 'Manufacturing', '行政': 'Administration',
     '人力资源': 'Human resources', '设计': 'Design', '数据分析': 'Data analysis', '教育培训': 'Education & training',
     '医疗护理': 'Healthcare & nursing', '法务合规': 'Legal & compliance',
+    '其他': 'Other',
     // round-1 demo categories (kept so older data still reads in English)
     '运营': 'Operations', '技术': 'Engineering', '行政人事': 'Admin & HR', '市场': 'Marketing', '客服': 'Customer service',
   };

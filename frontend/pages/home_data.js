@@ -83,9 +83,18 @@
       if (io) io.observe(panel); else { seen = true; load(); }
       AL.onLeave(() => { gone = true; if (io) io.disconnect(); if (view) { view.dispose(); view = null; AL._mapView = null; } });
 
+      // the tiles and the explorer use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
+      const realBadge = h('span.badge.mint', { hidden: true });  // same style as the map's real-data badge
+      const realLine = h('span');
+      AL.api('/api/real/status').then((st) => {
+        if (!st || !st.available) return;
+        const y = Array.isArray(st.years) && st.years.length ? st.years[0] + '–' + st.years[st.years.length - 1] : '';
+        realBadge.textContent = 'Map: real data'; realBadge.hidden = false;
+        realLine.textContent = ' The map defaults to ' + (st.rows_used / 1e6).toFixed(1) + ' million real Zhaopin job ads posted ' + y + '; you can switch it back to the simulated set.';
+      }).catch(() => {});
       el.append(h('div.wrap.section.dt', {},
-        h('div.dt-head', {}, h('h2', {}, 'The simulated data at a glance'), h('span.badge.sim', {}, 'Demo · Synthetic data')),
-        h('p.dt-lead', {}, 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '. These are counts of ad wording, not unemployment, hiring or rejection rates.'),
+        h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), h('span.badge.sim', {}, 'Demo · Synthetic data'), realBadge),
+        h('p.dt-lead', {}, 'The tiles below and the evidence explorer use a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.', realLine, ' All of these are counts of ad wording, not unemployment, hiring or rejection rates.'),
         tiles,
         h('div.dt-actions', {}, jump, h('a.btn.btn-secondary', { href: '#/explore' }, 'Open the evidence explorer')),
         h('div.dt-maphead', {}, h('div', {}, h('h3', {}, 'Where and in which jobs age wording appears'),

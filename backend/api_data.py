@@ -1,6 +1,66 @@
-"""Read-only data endpoints. Same filter query params everywhere."""
+"""Read-only data endpoints. Same filter query params everywhere.
+/api/stats/matrix?source=real serves a precomputed real-data matrix (newest data/real/matrix_*.json, same shape as the
+simulated one plus `meta`); /api/real/status says whether one exists. The directory is AGELENS_REAL_DIR (default data/real);
+files starting with "_" (fixtures) are skipped unless AGELENS_REAL_FIXTURE=1."""
+import json, os, threading
+from pathlib import Path
+
 from . import evidence as ev
 from .server import HTTPError
+
+_ROOT = Path(__file__).resolve().parent.parent
+_REAL_CACHE = {}          # path -> (mtime_ns, size, parsed json)
+_REAL_LOCK = threading.Lock()
+
+
+def real_dir():
+    return Path(os.environ.get("AGELENS_REAL_DIR") or (_ROOT / "data" / "real"))
+
+
+def real_file():
+    """Newest matrix_*.json in the real-data directory (by mtime, then name), or None."""
+    d = real_dir()
+    if not d.is_dir():
+        return None
+    allow_fixture = os.environ.get("AGELENS_REAL_FIXTURE") == "1"
+    found = []
+    for f in d.iterdir():
+        n = f.name
+        if not n.endswith(".json") or not f.is_file():
+            continue
+        if n.startswith("matrix_") or (allow_fixture and n.startswith("_") and "matrix" in n):
+            try:
+                found.append((f.stat().st_mtime_ns, n, f))
+            except OSError:
+                continue
+    return max(found)[2] if found else None
+
+
+def load_real():
+    """Parsed real matrix (cached per file, re-read when its mtime or size changes), or None when there is none / it is unreadable."""
+    f = real_file()
+    if f is None:
+        return None
+    try:
+        st = f.stat()
+    except OSError:
+        return None
+    key = (st.st_mtime_ns, st.st_size)
+    with _REAL_LOCK:
+        hit = _REAL_CACHE.get(str(f))
+        if hit and hit[0] == key:
+            return hit[1]
+    try:
+        with open(f, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict) or not isinstance(data.get("cells"), list):
+        return None
+    with _REAL_LOCK:
+        _REAL_CACHE.clear()
+        _REAL_CACHE[str(f)] = (key, data)
+    return data
 
 FILTER_KEYS = ("province", "city", "occupation", "age_status", "max_age_lte", "max_age_gte", "has_exception",
                "date_from", "date_to", "q", "include_demo", "age_class", "conflict")
@@ -46,8 +106,28 @@ def register(router):
 
     @router.get("/api/stats/matrix")
     def matrix(req):
-        """Province x occupation cells (one grouped query) with row/column totals; same filters as the other stats."""
+        """Province x occupation cells (one grouped query) with row/column totals; same filters as the other stats.
+        ?source=real returns the precomputed real-data matrix instead (filters do not apply to it)."""
+        src = req.query.get("source", "") or "demo"
+        if src == "real":
+            data = load_real()
+            if data is None:
+                raise HTTPError(404, "No real-data matrix is available (expected data/real/matrix_*.json).")
+            return data
+        if src != "demo":
+            raise HTTPError(400, "Unknown source; use source=real or source=demo.")
         return ev.matrix(_filters(req))
+
+    @router.get("/api/real/status")
+    def real_status(req):
+        """Whether a real-data matrix exists, and its headline facts (from its meta)."""
+        data = load_real()
+        if data is None:
+            return {"available": False, "label": None, "years": None, "rows_used": None, "generated_at": None, "method": None}
+        meta = data.get("meta") or {}
+        return {"available": True, "label": data.get("label"), "years": meta.get("years"), "rows_used": meta.get("rows_used"),
+                "generated_at": meta.get("generated_at"), "method": meta.get("method"), "source": meta.get("source"),
+                "total_ads": (data.get("total") or {}).get("ads")}
 
     @router.get("/api/status")
     def status(req):

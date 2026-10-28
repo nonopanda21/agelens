@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" role="img" aria-labelledby="lt ld" class="lit-svg lin-svg">
+<title id="lt">Age 35 in job ads and job loss just after 35 (Lin 2025, redrawn from printed numbers)</title>
+<desc id="ld">Panel a: among job ads with an upper age limit, the share whose limit is 35 on three Chinese recruitment sites. 2016 to 2021: 51job 30.74 percent, Liepin 32.06 percent, Zhaopin 27.88 percent. 2022 to 2024: 28.06, 31.64 and 27.09 percent. Panel b: in the 2015 census, the share of working-age respondents who lost their job for an employer reason is 0.397 percent just under age 35 and 0.537 percent just over it, a jump of 0.14 percentage points (standard error 0.059). All values are printed in the paper.</desc>
+<style>.lin-svg text{font-family:Nunito,system-ui,"Segoe UI","Noto Sans",Arial,sans-serif;fill:#4A3728}.lin-svg .s{fill:#6E5D4C;font-size:11.5px}.lin-svg .t{font-family:"Patrick Hand",Nunito,cursive;font-size:16px;font-weight:400}.lin-svg .v{font-size:12.5px;font-weight:800}.lin-svg .vb{font-size:15px;font-weight:800}.lin-svg .a{fill:#A8D8EA;stroke:#4A3728;stroke-width:2}.lin-svg .b{fill:#FFB6C1;stroke:#4A3728;stroke-width:2}.lin-svg .ax{stroke:#4A3728;stroke-width:2;stroke-dasharray:6 5}.lin-svg .br{fill:none;stroke:#B23A5E;stroke-width:2}</style>
+<g>
+<text class="t" x="15" y="24">(a) How often the cap is 35</text>
+<text class="s" x="15" y="41">share of ads with an upper age limit whose limit is 35</text>
+<rect class="a" x="15" y="52" width="12" height="12" rx="2"/><text class="s" x="32" y="62">2016–2021</text>
+<rect class="b" x="108" y="52" width="12" height="12" rx="2"/><text class="s" x="125" y="62">2022–2024 (recheck)</text>
+<line class="ax" x1="15" y1="215" x2="345" y2="215"/>
+<rect class="a" x="38" y="107.4" width="38" height="107.6" rx="3"/><rect class="b" x="80" y="116.8" width="38" height="98.2" rx="3"/>
+<text class="v" x="57" y="101" text-anchor="middle">30.7%</text><text class="v" x="99" y="110" text-anchor="middle">28.1%</text>
+<rect class="a" x="143" y="102.8" width="38" height="112.2" rx="3"/><rect class="b" x="185" y="104.3" width="38" height="110.7" rx="3"/>
+<text class="v" x="162" y="96" text-anchor="middle">32.1%</text><text class="v" x="204" y="98" text-anchor="middle">31.6%</text>
+<rect class="a" x="248" y="117.4" width="38" height="97.6" rx="3"/><rect class="b" x="290" y="120.2" width="38" height="94.8" rx="3"/>
+<text class="v" x="267" y="111" text-anchor="middle">27.9%</text><text class="v" x="309" y="114" text-anchor="middle">27.1%</text>
+<text class="s" x="78" y="232" text-anchor="middle">51job</text><text class="s" x="183" y="232" text-anchor="middle">Liepin</text><text class="s" x="288" y="232" text-anchor="middle">Zhaopin</text>
+<text class="s" x="15" y="259">Bars start at 0; full height = 40%. Only the three sites</text>
+<text class="s" x="15" y="274">whose shares are printed in the text (p. 106) are drawn.</text>
+</g>
+<g>
+<text class="t" x="385" y="24">(b) Job loss just under vs just over 35</text>
+<text class="s" x="385" y="41">2015 census: lost job for an employer reason, % of respondents</text>
+<line class="ax" x1="385" y1="215" x2="705" y2="215"/>
+<rect class="a" x="425" y="122.4" width="80" height="92.6" rx="3"/>
+<rect class="b" x="565" y="89.6" width="80" height="125.4" rx="3"/>
+<text class="vb" x="465" y="114" text-anchor="middle">0.397%</text>
+<text class="vb" x="605" y="81" text-anchor="middle">0.537%</text>
+<path class="br" d="M512 122.4 H532 V89.6 H555"/>
+<text class="v" x="515" y="66" text-anchor="middle" style="fill:#B23A5E">+0.14 pp (SE 0.059)</text>
+<text class="s" x="465" y="232" text-anchor="middle">just under 35</text><text class="s" x="605" y="232" text-anchor="middle">just over 35</text>
+<text class="s" x="385" y="259">Bars start at 0; full height = 0.6%. Local linear RD,</text>
+<text class="s" x="385" y="274">45 months, n = 205,967 (Tables 1–2, pp. 108–109).</text>
+</g>
+<text class="s" x="15" y="304">Redrawn by the AgeLens team from values printed in Lin (2025). No values were read off the original charts.</text>
+<text class="s" x="15" y="320">“Just over 35” = 0.3970 + 0.1403 = 0.5373%, as stated by the author on p. 109.</text>
+</svg>

@@ -6,7 +6,7 @@ AgeLens.pages.about = {
     const sec = (title, ...kids) => h('section.ab-sec', {}, h('h2', {}, title), ...kids);
     const lit = [
       ['Feng, Lefgren, Liu, Platt, Xia (2026), NBER Working Paper 35709', 'https://www.nber.org/papers/w35709', 'Full text read. Figure 1 estimates checked against the PDF and redrawn. Working paper, not peer-reviewed.', 'ok', 'Checked in full text'],
-      [['Lin Wenlian (2025), China Economic Quarterly 25(1) ', h('span.zh-orig', { lang: 'zh-CN' }, '(林文炼, 经济学（季刊）)'), ', DOI 10.13821/j.cnki.ceq.2025.01.07'], 'https://doi.org/10.13821/j.cnki.ceq.2025.01.07', 'Title, author and abstract read on CNKI. The full text was not accessible, so the 0.40% to 0.54% result is quoted from the abstract only and no figure is shown.', 'todo', 'Abstract only, to be verified'],
+      [['Lin Wenlian (2025), China Economic Quarterly 25(1) ', h('span.zh-orig', { lang: 'zh-CN' }, '(林文炼, 经济学（季刊）)'), ', DOI 10.13821/j.cnki.ceq.2025.01.07'], 'https://doi.org/10.13821/j.cnki.ceq.2025.01.07', 'Full text read (supplied by the team, 2026-10-28). The 0.40% to 0.54% jump at age 35 (Tables 1–2, pp. 108–109) and the ad shares (pp. 105–106) checked against the printed pages; the figure on the home page uses printed values only. Not significant for college graduates (p. 117).', 'ok', 'Checked in full text'],
     ];
     el.append(h('div.wrap.section.ab', {},
       h('h1', {}, 'Method and ', h('span.ink-pink', {}, 'sources')),

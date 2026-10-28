@@ -2,7 +2,9 @@
    3D (Three.js) and 2D (SVG) engines.
    AgeLens.mapView(host, {force?: '2d'|'3d'}) -> Promise<{setVisible(bool), dispose(), engineName(), stats(), select(name), state()}>
    Data: ONE call to /api/stats/matrix (province x occupation cells + row/column totals); every view (map, ranking, spread,
-   detail, heatmap) is derived from it in the browser, so they always agree.
+   detail, heatmap) is derived from it in the browser, so they always agree. When /api/real/status says a precomputed real
+   matrix exists (Zhaopin ads), a "Data" pill switch offers it (?source=real) and is the default; the choice is kept per tab
+   (sessionStorage al_map_source). Switching re-fetches the matrix and re-renders every view.
    Engines (map3d.js / map2d.js) load on demand: AgeLens.map3d.create(opts) / AgeLens.map2d.create(opts) ->
    {setModel(model), setSelected(name, {fly}), setHover(name), resetView(), zoom(f), rotate(dx,dy), setActive(bool), resize(),
     noteInteraction(), dispose(), stats, name}. Keyboard handling lives here (one behaviour for both engines). */
@@ -61,7 +63,8 @@
   const AGE_BASE = 18;          // median-age bars are measured from age 18 (the legend says so)
   const METRICS = {
     ads: { short: 'Ad count', title: 'Ad count', scale: 'count', num: (c) => c.ads, den: (c) => c.ads,
-      unit: 'simulated ads', desc: 'Number of simulated ads (duplicates merged). Counts are not estimates, so there is no small-sample flag.' },
+      unit: 'simulated ads', desc: 'Number of simulated ads (duplicates merged). Counts are not estimates, so there is no small-sample flag.',
+      realDesc: 'Number of real Zhaopin ads in the dataset. Counts are not estimates, so there is no small-sample flag.' },
     aw: { short: 'Any age wording', title: 'Share of ads with any age wording', scale: 'share', num: (c) => c.age_wording, den: (c) => c.ads,
       unit: '% of ads', numWord: 'with age wording', desc: 'Ads containing any age wording (an explicit condition, unclear wording or a preference) ÷ all ads in scope.' },
     cap: { short: 'Explicit cap', title: 'Share of ads stating an explicit maximum age', scale: 'share', num: (c) => c.cap, den: (c) => c.ads,
@@ -131,7 +134,8 @@
       if (!byProv.has(c.province)) byProv.set(c.province, new Map()); byProv.get(c.province).set(c.occupation, c);
     });
     (mx.provinces || []).forEach((r) => rowTot.set(r.province, r));
-    const occs = (mx.occupations || []).filter((o) => o.occupation != null && o.ads > 0);
+    // "Other" (titles the keyword rules could not place) is listed last, whatever its size
+    const occs = (mx.occupations || []).filter((o) => o.occupation != null && o.ads > 0).sort((a, b) => (a.occupation === '其他') - (b.occupation === '其他'));
     return { byOcc, byProv, rowTot, occs, colTot: new Map((mx.occupations || []).map((o) => [o.occupation, o])), total: mx.total || { ads: 0 } };
   }
   /** Colour/height domain: items in the most reliable tier that still has >= 3 regions (fewer -> widen). */
@@ -184,13 +188,32 @@
     return [it.en, METRICS[m].short + ': ' + fmtVal(m, it.value, true), denText(m, it) + (it.tier ? ' · small sample, unstable' : '')];
   }
 
+  /* ---------- data source (real vs simulated), remembered per tab ---------- */
+  const SRC_KEY = 'al_map_source';
+  function readSource() { try { return sessionStorage.getItem(SRC_KEY); } catch (e) { return null; } }
+  function writeSource(v) { try { sessionStorage.setItem(SRC_KEY, v); } catch (e) { /* storage blocked: choice lasts for this view only */ } }
+  /** "2021–2024" from meta.years (list of years, [from, to], or a string) */
+  function realYears(meta) {
+    const y = meta && meta.years;
+    if (Array.isArray(y) && y.length) { const ns = y.map(Number).filter((v) => !isNaN(v)); if (!ns.length) return ''; const a = Math.min(...ns), b = Math.max(...ns); return a === b ? String(a) : a + '–' + b; }
+    return typeof y === 'string' ? y.replace('-', '–') : '';
+  }
+
   /* ---------- controller ---------- */
   async function mapView(host, o) {
     o = o || {};
-    const [geo, mx, canonRaw, status] = await Promise.all([loadGeo(), AL.api('/api/stats/matrix'), AL.api('/api/provinces').catch(() => []), AL.api('/api/status').catch(() => null)]);
+    const [geo, canonRaw, status, realRaw] = await Promise.all([loadGeo(), AL.api('/api/provinces').catch(() => []), AL.api('/api/status').catch(() => null),
+      AL.api('/api/real/status').catch(() => null)]);
+    const real = realRaw && realRaw.available ? realRaw : null;
+    let source = real ? (readSource() === 'demo' ? 'demo' : 'real') : 'demo';
+    let mx = null;
+    if (source === 'real') { try { mx = await AL.api('/api/stats/matrix?source=real'); } catch (e) { mx = null; source = 'demo'; } }
+    if (!mx) mx = await AL.api('/api/stats/matrix');
     const canon = Array.isArray(canonRaw) ? canonRaw : [];
-    const S = { regions: buildRegions(geo), ix: indexMatrix(mx), canon, metric: 'aw', industry: null, selected: null, hover: null,
-      engine: null, engineName: null, visible: true, destroyed: false, model: null, token: 0, kbd: -1 };
+    const S = { regions: buildRegions(geo), ix: indexMatrix(mx), mx, source, real, canon, metric: 'aw', industry: null, selected: null, hover: null,
+      engine: null, engineName: null, visible: true, destroyed: false, model: null, token: 0, kbd: -1, srcTok: 0 };
+    const isReal = () => S.source === 'real';
+    const dataWord = () => (isReal() ? 'real Zhaopin' : 'simulated');
     const canonBy = new Map(canon.map((c) => [c.name, c]));
     const provEn = (n) => (canonBy.get(n) || {}).en || enName(n);
     const inGeo = new Set(S.regions.map((r) => r.name));
@@ -229,15 +252,24 @@
       g.sync = (c) => { bs.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === c))); };
       g.sync(cur); return g;
     };
+    const yrs = realYears(S.mx.meta || real);
+    const sourceSeg = real ? seg('Data source', [['real', 'Real (Zhaopin' + (yrs ? ' ' + yrs : '') + ')', 'Aggregates of real Zhaopin job ads' + (real.rows_used ? ' (' + fmt(real.rows_used) + ' ads)' : '')],
+      ['demo', 'Simulated demo', 'The simulated sample used everywhere else in the app']], S.source, (v) => setSource(v), 'mp-source') : null;
+    const badge = h('span.badge');
+    const realCap = h('p.mp-realcap', { hidden: '' });
     const metricSeg = seg('Metric', METRIC_KEYS.map((k) => [k, METRICS[k].short, METRICS[k].title]), S.metric, (v) => setMetric(v), 'mp-metrics');
     const viewSeg = seg('Map view', [['3d', '3D'], ['2d', '2D']], '3d', (v) => switchEngine(v, true));
     const chips = h('div.mp-chips', { role: 'group', 'aria-label': 'Industry' });
-    const chipBtns = [[null, 'All industries', S.ix.total.ads]].concat(S.ix.occs.map((r) => [r.occupation, occName(r.occupation), r.ads]))
-      .map(([v, t, n]) => { const b = h('button.mp-chip', { type: 'button', 'aria-pressed': 'false', title: fmt(n) + ' ads', onclick: () => setIndustry(v) }, t, h('span.mp-chip-n', { 'aria-hidden': 'true' }, fmt(n))); b._v = v; return b; });
-    chips.append(...chipBtns);
+    let chipBtns = [];
+    function buildChips() {
+      chipBtns = [[null, 'All industries', S.ix.total.ads]].concat(S.ix.occs.map((r) => [r.occupation, occName(r.occupation), r.ads]))
+        .map(([v, t, n]) => { const b = h('button.mp-chip', { type: 'button', 'aria-pressed': 'false', title: fmt(n) + ' ads', onclick: () => setIndustry(v) }, t, h('span.mp-chip-n', { 'aria-hidden': 'true' }, fmt(n))); b._v = v; return b; });
+      chips.replaceChildren(...chipBtns);
+    }
+    buildChips();
     const metricDesc = h('p.mp-mdesc');
     const explain = h('p.mp-explain');
-    const explainTxt = (is3) => (is3 ? 'Each province rises from the same paper base; its extra height and top colour show the selected metric.' : 'Fill colour shows the selected metric.') + ' Every number is a simulated count of ad wording, not a hiring, rejection or unemployment rate.';
+    const explainTxt = (is3) => (is3 ? 'Each province rises from the same paper base; its extra height and top colour show the selected metric.' : 'Fill colour shows the selected metric.') + (isReal() ? ' Every number is a count of age wording in real Zhaopin job ads, not a hiring, rejection or unemployment rate.' : ' Every number is a simulated count of ad wording, not a hiring, rejection or unemployment rate.');
     explain.textContent = explainTxt(true);
     const btn = (label, txt, fn, cls) => h('button.btn.btn-quiet.mp-ib' + (cls ? '.' + cls : ''), { type: 'button', 'aria-label': label, title: label, onclick: () => { fn(); if (S.engine) S.engine.noteInteraction(); } }, txt);
     const tools = h('div.mp-tools', { role: 'group', 'aria-label': 'Map controls' },
@@ -260,18 +292,32 @@
     const tableHead = h('tr');
     const table = h('details.mp-tbl', {}, h('summary', {}, 'All regions as a table (same numbers as the map)'),
       h('div.mp-tablewrap', { tabindex: '0', role: 'region', 'aria-label': 'Region table' }, h('table.mp-table', {}, h('thead', {}, tableHead), tbody)));
-    const src = h('p.hint.mp-src', {}, 'Boundaries: Alibaba Cloud DataV GeoAtlas (areas_v3), simplified, province level; licence not yet verified, so local demonstration only and not an authoritative map. ',
-      'Numbers: simulated ads' + (status && status.data && status.data.version ? ' (data version ' + status.data.version + ')' : '') + '.');
+    const src = h('p.hint.mp-src');
+    function renderSource() {
+      const meta = S.mx.meta || {};
+      badge.className = 'badge ' + (isReal() ? 'mint' : 'sim');
+      badge.textContent = S.mx.label || (isReal() ? 'Real data' : 'Demo · Synthetic data');
+      if (sourceSeg) sourceSeg.sync(S.source);
+      const n = meta.rows_used != null ? meta.rows_used : (S.mx.total || {}).ads, y = realYears(meta);
+      realCap.hidden = !isReal();
+      realCap.textContent = isReal() ? 'Counts of age wording in ' + fmt(n) + ' real Zhaopin job ads' + (y ? ' posted ' + y : '') + '. They describe this dataset only, not hiring or unemployment rates. Regions with fewer than ' + SMALL + ' ads are striped.' : '';
+      src.textContent = 'Boundaries: Alibaba Cloud DataV GeoAtlas (areas_v3), simplified, province level; licence not yet verified, so local demonstration only and not an authoritative map. ' +
+        (isReal() ? 'Numbers: Zhaopin job ads supplied by the team' +  /* meta.source holds the Chinese platform name; the map UI stays English */ (y ? ', ' + y : '') + (n != null ? ', ' + fmt(n) + ' ads used' : '') + (meta.rule_version ? ', rules ' + meta.rule_version : '') + (meta.generated_at ? ', computed ' + String(meta.generated_at).slice(0, 10) : '') + '. Precomputed aggregates; filters elsewhere in the app do not apply to them.'
+          : 'Numbers: simulated ads' + (status && status.data && status.data.version ? ' (data version ' + status.data.version + ')' : '') + '.');
+      explain.textContent = explainTxt(S.engineName ? S.engineName === '3d' : true);
+    }
+    renderSource();
 
     // one disclosure holds the long reading notes (definitions, states, keys, sources); the short legend stays visible
     const guide = h('details.mp-guide', {}, h('summary', {}, 'How to read this map'),
       h('div.mp-guide-body', {}, explain, metricDesc, legendMore, kbdHint, src));
 
     host.replaceChildren(h('div.mp', { 'data-zoom': '' },
-      h('div.mp-bar', {}, h('div.mp-grp.mp-grp-metric', {}, h('span.mp-lab', {}, 'Metric'), metricSeg), h('div.mp-grp', {}, h('span.mp-lab', {}, 'View'), viewSeg), h('span.badge.sim', {}, 'Demo · Synthetic data')),
+      h('div.mp-bar', {}, h('div.mp-grp.mp-grp-metric', {}, h('span.mp-lab', {}, 'Metric'), metricSeg), h('div.mp-grp', {}, h('span.mp-lab', {}, 'View'), viewSeg),
+        sourceSeg ? h('div.mp-grp.mp-grp-src', {}, h('span.mp-lab', {}, 'Data'), sourceSeg) : null, badge),
       h('div.mp-grp.mp-grp-ind', {}, h('span.mp-lab', {}, 'Industry'), chips),
       note,
-      h('div.mp-main', {}, h('div.mp-left', {}, stage, h('div.mp-under', {}, legend, tools)), detail),
+      h('div.mp-main', {}, h('div.mp-left', {}, stage, h('div.mp-under', {}, legend, tools), realCap), detail),
       h('div.mp-row2', {}, spreadEl, rankEl),
       heatEl, h('div.mp-foot', {}, table, guide), live));
 
@@ -289,6 +335,22 @@
     // ---- state changes
     function setMetric(m) { if (!METRICS[m]) return; S.metric = m; refreshModel(); }
     function setIndustry(v) { S.industry = v; refreshModel(); }
+    /** switch the data source: re-fetch the matrix, rebuild the index and industry chips, re-render every view */
+    async function setSource(v) {
+      if (v === S.source || (v === 'real' && !real)) { if (sourceSeg) sourceSeg.sync(S.source); return; }
+      const tok = ++S.srcTok;
+      mpRoot.setAttribute('aria-busy', 'true');
+      let next;
+      try { next = await AL.api('/api/stats/matrix' + (v === 'real' ? '?source=real' : '')); }
+      catch (e) { if (tok === S.srcTok) { mpRoot.removeAttribute('aria-busy'); note.textContent = 'Could not load the ' + (v === 'real' ? 'real' : 'simulated') + ' data (' + e.message + ').'; if (sourceSeg) sourceSeg.sync(S.source); } return; }
+      if (tok !== S.srcTok || S.destroyed) return;
+      mpRoot.removeAttribute('aria-busy');
+      S.source = v; S.mx = next; S.ix = indexMatrix(next); writeSource(v);
+      if (S.industry != null && !S.ix.occs.some((r) => r.occupation === S.industry)) S.industry = null;
+      if (S.selected && !S.ix.rowTot.has(S.selected)) { S.selected = null; if (S.engine) S.engine.setSelected(null, { fly: false }); }
+      buildChips(); renderSource(); refreshModel();
+      announce('Showing ' + (isReal() ? 'real Zhaopin data' : 'the simulated demo data'));
+    }
     function announce(t) { live.textContent = t; }
     function choose(name, opt) {
       opt = opt || {};
@@ -324,7 +386,7 @@
       metricSeg.sync(S.metric);
       chipBtns.forEach((b) => b.setAttribute('aria-pressed', String(b._v === S.industry)));
       const M = METRICS[S.metric], sc = S.model.scope;
-      metricDesc.replaceChildren(h('strong', {}, M.title + (S.industry ? ' · ' + occName(S.industry) : ' · all industries') + '. '), M.desc,
+      metricDesc.replaceChildren(h('strong', {}, M.title + (S.industry ? ' · ' + occName(S.industry) : ' · all industries') + '. '), isReal() && M.realDesc ? M.realDesc : M.desc,
         ' Overall: ' + fmtVal(S.metric, sc.value, true) + ' (' + denText(S.metric, sc) + ').',
         M.scale !== 'count' ? ' Regions with fewer than ' + SMALL + ' ads behind a value are drawn paler and striped, and marked as unstable.' : '');
     }
@@ -422,7 +484,7 @@
       if (it) {
         kids.push(h('h3', {}, it.en), h('p.mp-dsub', {}, scopeTxt));
         if (it.state === 'unmatched') kids.push(h('p', {}, 'This map region could not be matched to a province name in the data, so no numbers are shown for it.'));
-        else if (it.state === 'nodata') kids.push(h('p', {}, 'No ads in ' + it.en + (S.industry ? ' for ' + scopeTxt : '') + ' in the simulated data (0 ads). That is an absence of records, not evidence about the real world.'));
+        else if (it.state === 'nodata') kids.push(h('p', {}, 'No ads in ' + it.en + (S.industry ? ' for ' + scopeTxt : '') + ' in the ' + dataWord() + ' data (0 ads). That is an absence of records' + (isReal() ? ' in this dataset, not evidence that no such jobs exist.' : ', not evidence about the real world.')));
         else {
           kids.push(it.state === 'nostated' ? h('p.mp-big.mp-big-txt', {}, h('strong', {}, 'No stated maximum')) : h('p.mp-big', {}, h('strong', {}, fmtVal(m, it.value, true)), h('span', {}, ' ' + M.short.toLowerCase())),
             h('p.mp-n', {}, denText(m, it) + (it.rank ? ' · rank ' + it.rank + ' of ' + S.model.ranked.length : '')));
@@ -457,8 +519,9 @@
             h('span.mp-oval', {}, v == null ? '–' : fmtVal(m, v)), h('span.mp-on', {}, 'n=' + fmt(x.s.den))));
         })), h('p.hint.mp-ohint', {}, 'Paler bars: fewer than ' + SMALL + ' ads. Click an industry to show it on the map.'));
       }
-      if (it && it.ads) kids.push(h('a.btn.btn-secondary.mp-go', { href: '#/explore?province=' + encodeURIComponent(it.name) + (S.industry ? '&occupation=' + encodeURIComponent(S.industry) : '') }, 'Show these ads in the explorer'));
-      if (M.scale !== 'count') kids.push(h('p.hint.mp-not', {}, 'A share of simulated ads with this wording. It is not a discrimination rate, a rejection rate or a measure of the job market.'));
+      if (it && it.ads && isReal()) kids.push(h('p.hint.mp-go-note', {}, 'Only these aggregate counts of the real ads are in the app; the explorer lists the simulated sample, not these ads.'));
+      else if (it && it.ads) kids.push(h('a.btn.btn-secondary.mp-go', { href: '#/explore?province=' + encodeURIComponent(it.name) + (S.industry ? '&occupation=' + encodeURIComponent(S.industry) : '') }, 'Show these ads in the explorer'));
+      if (M.scale !== 'count') kids.push(h('p.hint.mp-not', {}, 'A share of ' + dataWord() + ' ads with this wording. It is not a discrimination rate, a rejection rate or a measure of the job market.'));
       const prevOcc = snap(detail, '.mp-ofill');
       detail.replaceChildren(...kids);
       detail.querySelectorAll('.mp-ofill').forEach((el, i) => { const p = prevOcc.get(el.dataset.k); grow(el, p ? p.s : 0, +el.dataset.s, p ? 0 : i * 22); });
@@ -494,7 +557,7 @@
       S.heatCols = nextC;
       heatEl.replaceChildren(h('h3', {}, 'Industry × region'),
         h('p.hint.mp-heat-sub', {}, M.short + ' for every industry in the ' + cols.length + ' regions with the most ads' + (M.scale === 'share' ? ' (values in %)' : M.scale === 'age' ? ' (years)' : ' (ads)') + '. Striped, paler cells rest on fewer than ' + SMALL + ' ads; “·” means no ads. Click a cell to show that industry and region on the map.'),
-        h('div.mp-hm-wrap' + (heatSeen ? '' : '.hm-pre'), { role: 'region', 'aria-label': 'Industry by region table', tabindex: '-1' }, h('table.mp-hm', {}, h('caption.vh', {}, M.title + ' by industry and region, simulated data'), h('thead', {}, thead), h('tbody', {}, body))));
+        h('div.mp-hm-wrap' + (heatSeen ? '' : '.hm-pre'), { role: 'region', 'aria-label': 'Industry by region table', tabindex: '-1' }, h('table.mp-hm', {}, h('caption.vh', {}, M.title + ' by industry and region, ' + dataWord() + ' data'), h('thead', {}, thead), h('tbody', {}, body))));
     }
     function renderTable() {
       const m = S.metric, M = METRICS[m];
@@ -618,7 +681,8 @@
       _debug: () => S.engine && S.engine._debug,
       select: (n) => choose(n, { toggle: false }),
       setMetric, setIndustry,
-      state: () => ({ metric: S.metric, industry: S.industry, selected: S.selected, hover: S.hover, engine: S.engineName, ranked: S.model.ranked.map((i) => i.name), spread: S.model.spread && { hi: S.model.spread.hi.name, lo: S.model.spread.lo.name, range: S.model.spread.range, n: S.model.spread.n } }),
+      setSource,
+      state: () => ({ source: S.source, label: S.mx.label, metric: S.metric, industry: S.industry, selected: S.selected, hover: S.hover, engine: S.engineName, ranked: S.model.ranked.map((i) => i.name), spread: S.model.spread && { hi: S.model.spread.hi.name, lo: S.model.spread.lo.name, range: S.model.spread.range, n: S.model.spread.n } }),
     };
   }
   AL.mapView = mapView;

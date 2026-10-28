@@ -517,3 +517,132 @@ Full run: all passed in about 3 minutes. Bug found by checking afterwards: the r
 - Rewritten as a GitHub landing page: one-line pitch, live demo link, honest status box, why (Feng et al. 2026 figure, verified in `docs/LITERATURE.md`), what it does with fresh screenshots (`docs/screenshots/readme/`, viewed), quick start, deploy, evaluation summary (no results claimed), how it is built, documentation, license (none chosen; vendored MIT/OFL noted).
 - Operational detail moved to `docs/DEVELOPER.md` (test count updated to 259, write-tests-on-copies rule).
 - The quick start was verified in a fresh `git clone`: venv + pinned deps, sim import, `app.py` → health 960, local Pro code accepted; the clone was removed.
+
+## 2026-10-28 · Real recruitment data received (not imported yet)
+- **Received:** the user shared a Google Drive file, `智联招聘数据库2016-2025.7.csv.zip`.
+  - Downloaded to `data/raw/zhaopin_2016-2025.7.csv.zip`: 5,002,743,827 bytes, matching the server's content-length.
+  - Extracted to `data/raw/zhaopin_2016-2025.7.csv`: 14,046,330,485 bytes, matching the zip listing; unzip CRC passed; UTF-8 with BOM. The Mac `__MACOSX` entry was not extracted.
+  - `data/raw/` is git-ignored.
+- **Header:** 21 columns: 企业名称, 招聘岗位, 工作城市, 工作区域, 最低月薪, 最高月薪, 职位描述, 学历要求, 要求经验, 招聘人数, 招聘类别, 初级分类, 来源平台, 公司地点, 工作地点, 招聘发布日期, 招聘结束日期, 招聘发布年份, 招聘结束年份, 来源, and an empty last column.
+- **First 20,000 rows:**
+  - every row has 21 fields;
+  - 24.9% mention 岁/周岁/年龄;
+  - mobile numbers, landlines and emails appear in a few dozen descriptions and addresses.
+- **`import_csv.py --inspect`:** auto-maps company, title, city, description and source. Not mapped: posted_date (招聘发布日期). No province column (derive it from the city). No usable occupation column (招聘类别 is the employment type; 初级分类 is 1% filled).
+- **Permission:** the user stated in the conversation that the recruitment data may be used ("可以用招聘数据 这个不用担心"). Recorded as the user's statement; no approval document is in the repository.
+- **Plan:** mask contact details (phone, email) at import, import into a separate `data/real.db`, keep it local (the free host cannot hold it), and keep the simulated public demo unchanged.
+
+## MAP agent: real-data switch on the home map (2026-10-27)
+- Backend (`backend/api_data.py` only): `GET /api/stats/matrix?source=real` serves the newest `matrix_*.json` in `AGELENS_REAL_DIR`
+  (default `data/real`); files starting with `_` count only when `AGELENS_REAL_FIXTURE=1`. Cached per file, keyed by mtime+size.
+  404 when none exists (or the file is unreadable). No `source` or `source=demo` behaves as before; any other value gets a 400.
+  New `GET /api/real/status` -> {available, label, years, rows_used, generated_at, method, source, total_ads}.
+- Front end (`frontend/js/mapcore.js`, `frontend/css/explore-map.css`, one line in `frontend/js/labels.js`: 其他 -> "Other"):
+  a "Data" pill group (Real (Zhaopin 2021–2024) | Simulated demo), shown only when real data is available, where it is the default. The choice is kept per tab
+  in sessionStorage `al_map_source`. Switching re-fetches the matrix and rebuilds the industry chips, map, legend, ranking, spread, detail, heatmap and table.
+  The badge shows the response label. In real mode a caption under the legend gives rows_used and years from meta. Wording that said "simulated" in
+  the map panels now follows the source. In real mode "Show these ads in the explorer" is replaced by a note, because the explorer holds only the simulated sample.
+  Other pages are not changed. home_data.js was not edited, so its section heading ("The simulated data at a glance") and badge still say simulated.
+- Tests: `tests/test_real_api.py` (6 tests). `tests/browser/map_real.py` (38 checks at 1280 and iPhone 13, plus a no-real-data server).
+  Screenshots are in docs/screenshots/map_real/. Development used the fixture `data/real/_fixture_matrix.json` (a rescaled copy of the simulated data,
+  labelled FIXTURE; ignored unless AGELENS_REAL_FIXTURE=1). The real Zhaopin file had not appeared when this work ended.
+
+## 2026-10-28 · Home section "The motivation" + Lin (2025) verified from the full text (agent MOTIVATION)
+- **Sources read.**
+  - The team's `Design Pitch.pdf` (7 pages).
+  - Feng et al. (2026), NBER WP 35709: page references rechecked; printed page = PDF page − 1.
+  - The full text of Lin (2025), CEQ 25(1): 103–120. Text extracted with pdftotext; pp. 105, 106, 111 and 120 rendered and looked at.
+  - Lin's online appendix was NOT read.
+  - The PDFs stay in `data/raw/` (git-ignored).
+- **Lin verified.**
+  - Data and design: RD at age 35 in the 2015 census, 205,967 people, 45-month bandwidth.
+  - Estimate: 0.3970% → 0.5373% lost a job for an employer reason; jump 0.1403, SE 0.0594 (Tables 1–2, pp. 108–109).
+  - Ads: 18.95% of 59.69M postings state an age limit; 35 is the most common cap on all five sites (pp. 105–106).
+  - The jump is not significant for college graduates; significant in 2005, not in 2010 (Table 6, p. 117).
+  - Details are in `docs/LITERATURE.md` §1.
+- **New:**
+  - `frontend/pages/home_motivation.js`: order 25, right after "how". It has four parts: problem (an ad clipping with the Chinese quote in `lang="zh-CN"`), research with limits, gap, and five design decisions, each with its reason and source. It ends with a status line (rules only, no model, simulated public demo) and a link to `#/about`.
+  - `frontend/css/motivation.css`
+  - `frontend/figures/lin2025_redrawn.svg`: printed values only, no digitising.
+  - `docs/MOTIVATION.md`
+  - `docs/screenshots/motivation/`
+- **Changed.**
+  - `home_literature.js`: the Lin card now has the "Checked against the full text" status, the figure, a table and page-referenced limits. It no longer has the "To be verified" status or the "No figure shown" box. Figure loading moved into a shared helper.
+  - `literature.css`: the cards stack in one column (both have wide figures).
+  - `index.html`: two lines (stylesheet and script).
+  - `docs/LITERATURE.md`: Lin section rewritten.
+- **Verified.**
+  - sweep 120/120 (incl. no CJK outside evidence)
+  - a11y 0 high
+  - lit_check OK
+  - unit tests 265 OK
+  - own server on 8853 with a DB copy, stopped by PID afterwards
+  - Screenshots viewed at 1280 and iPhone 13, with motion full and reduced: no overflow, no console errors, all reveals visible. Found and fixed: a clipped footnote in the Lin SVG.
+- **Not done:** `pages/about.js` still says Lin is "Abstract only, to be verified". This agent does not own that file; it needs a one-line update.
+
+## 2026-10-28 · Real Zhaopin data: aggregate, year profile, accuracy audit (data agent)
+- **Implemented:**
+  - `backend/realdata.py`:
+    - `city_to_province`: own prefecture table plus `scripts/geo_table.py` as fallback; 朝阳 → 辽宁 because the export's city column is prefecture level.
+    - `occupation_of`: ordered keyword rules on the job title, conservative, falls back to 其他.
+    - `mask_contacts`: phone, tel and email.
+    - `measures_from_terms`: per-ad fields with `evidence.matrix()` semantics.
+  - `scripts/real_aggregate.py`: streaming CSV, 16-process pool, (year, province, occupation) cube, matrix JSON + `meta`, including `max_age_counts`, `max_age_counts_by_year` and `ads_with_max_age`.
+  - `scripts/real_profile.py`: per-year profile + seeded audit sample.
+  - `tests/test_realdata.py`: 22 tests, including an equivalence test that imports the fixture through `import_csv` and checks that `evidence.matrix()` gives identical cells, totals and medians.
+  - `docs/REAL_DATA_YEARS.md` and `docs/REAL_DATA_AUDIT.md`.
+- **Verified (real numbers):**
+  - **Full pass:** 13,322,606 rows read in 217–249 s.
+  - **2021–2024:**
+    - 10,058,826 rows; 10,054,663 used; 4,163 without a province (69 distinct unmapped values: foreign countries, 全国, 其他, 国外).
+    - 其他 occupation: 2,805,405 (27.9%).
+    - total: age_wording 2,555,249; explicit 2,296,499; cap 617,437; with_exception 91,820; median max age 40.
+  - **Output:** `data/real/matrix_zhaopin_2021-2024.json`, 113,181 bytes, 566 cells. A streamed run and a cube-built run give identical cells and totals.
+  - **Years:**
+    - 2016–2018 descriptions are cut at 240 characters (36–42% exactly 240).
+    - 2019 has 25 rows and 2020 has 2,123.
+    - 2025 is abridged (99.9% under 240 characters).
+    - → recommended range 2021–2024.
+  - **Audit (single AI reviewer):**
+    - flagged 49/60 right; numeric classes 49/50.
+    - unflagged: 2/60 clear misses.
+    - Found bugs: salary digits read as caps ("最高6000元" → 60); "18岁至32岁" and "20——35岁" missed; team-culture "年轻化/90后" flagged.
+  - **Max age:** stated maximum 35 is the mode in 2021–2023 (26–31%); in 2024 the mode is 45 (22.9% against 20.1% for 35).
+  - **Tests:** `unittest discover`: 287 tests OK.
+- **Not done:**
+  - `ageparse.py` is unchanged; fixes are only proposed, with an impact estimate in the audit.
+  - No DB import of real ads.
+  - Occupation and province mapping were not hand-audited on real titles beyond spot checks.
+  - The audit has one reviewer and no agreement measure.
+  - Audit sample, cube and profile stay in git-ignored `data/raw/`.
+
+## 2026-10-28 · Lead integration: real-data map, motivation figures, fixes
+**Agents.** Three subagents (DATA, MAP, MOTIVATION) ran in parallel with separate file ownership. Each appended its own log section above.
+**Lead work after hand-back.**
+- **Motivation, figures in place of the three evidence cards.** Both are modelled on the team's design pitch slides 1–2, at the user's request, and explained for readers who do not know regression discontinuity.
+  - **Figure 1: "35 is the most common age limit".**
+    - Data: our own count over 2,235,683 real Zhaopin ads (2021–2024) that state a maximum age (`meta.max_age_counts`). 35 = 26.4%, 45 = 19.4%, 40 = 16.2%.
+    - It includes a 3-in-10 pictogram and a year table, where 35 falls from 31.3% to 20.1% and 45 rises from 15.4% to 22.9% (2024: 45 > 35).
+    - The title follows the data: "but 45 is catching up" appears only when a year flips.
+    - Without a real aggregate, it falls back to Lin's printed shares (p. 106).
+  - **Figure 2: "Crossing the line changes what happens".**
+    - It has a plain-language "how to read these" note.
+    - Lin panel: 40 vs 54 per 10,000 dot grids, from printed 0.3970%/0.5373%.
+    - Feng panel: 100 vs about 81 positive replies, from the printed theta and pre-limit mean.
+    - Each panel cites its pages and states its limits.
+  - The pitch's digitised values (not printed in the papers) are not used.
+- **Data heading on home.** It now reads "The data at a glance". Tiles and explorer stay simulated, and a "Map: real data" badge plus a sentence appear when `/api/real/status` reports real data.
+- **Map: industry chips.** "Other" (其他) is sorted last.
+- **About page.** Lin is now "Checked in full text". DELIVERABLES and PENDING_TEACHER #11 are marked resolved.
+- **Fixes found by the suites after integration:**
+  - (a) `map_real` "no real data" run logged a 404 from Figure 1. Fixed: Figure 1 asks `/api/real/status` first.
+  - (b) a11y: 4 high-severity findings, all from my new figure labels (4.40:1 on pink-soft). Fixed with darker text.
+  - (c) `map_v2`: CJK in the map's sources line (meta.source holds 智联招聘). Fixed with English text.
+  - (d) `labels_check` counted the motivation section's quoted ad (marked lang="zh-CN") as a leak. Its evidence list now accepts `[lang^="zh"]`, like sweep.py.
+**Verified.**
+- Unit tests 287 OK. Browser: sweep 120/120, map_real 38/38 (real file and no-data server), a11y 0 high, labels 0, map_v2 no fails, palette 0 low-contrast, theme ok, perf no fails, lit_check OK, public_demo 33/33, pro_flow 27/27, e2e 22/22.
+- Screenshots viewed: Figure 1 real (desktop and phone), Figure 2 (desktop and phone), real map (desktop and phone).
+**Open.**
+- On phones, the 18 industry chips take many rows above the map (a select would be shorter).
+- The ageparse fixes proposed in docs/REAL_DATA_AUDIT.md are not applied: salary digits read as caps, unusual range separators missed, team-culture wording flagged. On the full range they would change explicit by +5.1% and cap by −2.8%.
+- The real aggregate is computed with rules age-rules-2.0.0 as they are.

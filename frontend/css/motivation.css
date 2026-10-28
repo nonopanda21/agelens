@@ -1,0 +1,125 @@
+/* motivation.css: home section "The motivation" (pages/home_motivation.js). Reuses .xs/.xs-head/.xc/.xc-n/.xbtn from
+   home-x.css; only the parts that section needs are here (prefix .mv-). Sketchbook palette from tokens.css:
+   pastels are fills, text stays in brown ink or the *-ink accents. Works at 390 px and under reduced motion. */
+/* plain paper (the next section, marquee, is a pink band); a dashed rule separates it from "how" */
+body[data-route="home"] .home-motivation{border-top:2px dashed rgba(74,55,40,.14)}
+body[data-route="home"] .home-motivation>.xs{padding-block:var(--xpad)}
+
+/* part headings: pixel numeral + hand lettering, left-aligned */
+.mv-h{display:flex;align-items:baseline;gap:12px;font-family:var(--font-sketch);font-weight:400;font-size:clamp(1.5rem,2.6vw,1.8rem);line-height:1.2;color:var(--brown);margin:56px 0 20px}
+.mv-h .xc-n{font-size:.9rem}
+.mv-problem .mv-h{margin-top:0}
+
+/* 01 problem: copy + an "ad clipping" */
+.mv-problem{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,48px);align-items:center}
+.mv-copy p{color:var(--text);font-size:1.02rem;line-height:1.75;margin:0 0 12px;max-width:56ch}
+.mv-ad{margin:0;position:relative;background:#fff;border:var(--border);border-radius:var(--r-sm);box-shadow:var(--shadow);padding:22px 22px 18px;rotate:.6deg}
+.mv-ad::before{content:"";position:absolute;top:-12px;left:50%;width:84px;height:22px;translate:-50% 0;rotate:-3deg;background:rgba(255,245,186,.85);border:1.5px solid rgba(74,55,40,.25)}
+.mv-ad-k{margin:0 0 8px;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-light)}
+.mv-ad-q{margin:0;padding:10px 14px;border-left:4px solid var(--pink);background:var(--pink-soft);border-radius:0 8px 8px 0}
+.mv-ad-q p{margin:0;font-size:clamp(1.2rem,2.4vw,1.45rem);line-height:1.5;color:var(--brown);font-weight:700;overflow-wrap:anywhere}
+.mv-ad-en{margin:10px 0 14px;font-style:italic;color:var(--text);font-size:.95rem}
+.mv-tags{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.mv-tag{font-size:.9rem;line-height:1.45;color:var(--brown);padding:6px 12px;border-radius:8px;border:1.5px solid rgba(74,55,40,.35)}
+.mv-tag.t-exp{background:var(--blue-soft)}.mv-tag.t-exc{background:var(--mint-soft)}.mv-tag.t-unk{background:var(--yellow-soft);border-style:dashed}
+
+/* 02 evidence: three compact cards with citation + limit */
+.mv-ev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.mv-ev-card{display:flex;flex-direction:column;min-width:0;background:#fff;border:2px solid var(--brown);border-radius:var(--r-sm);box-shadow:var(--shadow-sm);padding:20px 20px 16px}
+.mv-ev-card h4{font-family:var(--font-sketch);font-weight:400;font-size:1.25rem;line-height:1.25;color:var(--brown);margin:0 0 10px}
+.mv-num{color:var(--text);font-size:.97rem;line-height:1.65;margin:0 0 10px}
+.mv-cite{font-size:.82rem;color:var(--text-light);margin:0 0 10px;overflow-wrap:anywhere}
+.mv-lim{margin:auto 0 0;font-size:.84rem;line-height:1.5;color:var(--text);background:var(--yellow-soft);border:1.5px dashed rgba(74,55,40,.35);border-radius:8px;padding:8px 10px}
+.mv-note{margin:18px 0 0;color:var(--text-light);font-size:.95rem;max-width:72ch}
+.mv-jump{font:inherit;color:var(--pink-ink);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.mv-jump:hover{text-decoration:underline wavy var(--pink)}
+
+/* 03 gap: two columns with an arrow */
+.mv-gap{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:20px;align-items:stretch}
+.mv-gap-col{background:#fff;border:2px solid var(--brown);border-radius:var(--r-sm);padding:18px 20px;box-shadow:var(--shadow-sm);min-width:0}
+.mv-gap-col.need{background:var(--lav-soft)}
+.mv-gap-col h4{margin:0 0 10px;font-family:var(--font-sketch);font-weight:400;font-size:1.2rem;color:var(--brown)}
+.mv-gap-col ul{margin:0;padding-left:1.1em}.mv-gap-col li{color:var(--text);font-size:.95rem;line-height:1.6;margin-bottom:6px}
+.mv-gap-arrow{align-self:center;font-family:var(--font-sketch);font-size:2rem;color:var(--pink-ink)}
+
+/* 04 decisions: sketch cards (.xc), five in a 3+2 grid */
+.mv-dec{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:22px}
+.mv-dec-card{grid-column:span 2;min-width:0;padding:22px 22px 18px}
+.mv-dec-card:nth-child(4){grid-column:2 / span 2}.mv-dec-card:nth-child(5){grid-column:4 / span 2}
+.mv-dec-card:nth-child(4){rotate:.25deg}.mv-dec-card:nth-child(5){rotate:-.25deg}
+.mv-dec-card .xc-title{font-size:1.25rem;margin-bottom:8px}
+.xc p.mv-src{font-size:.82rem;color:var(--text-light);border-top:1.5px dashed rgba(74,55,40,.22);padding-top:8px;margin:auto 0 0}
+.mv-dec-card{display:flex;flex-direction:column}
+
+/* status + link */
+.mv-foot{margin-top:40px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:space-between;background:#fff;border:2px dashed var(--brown);border-radius:var(--r-sm);padding:16px 20px}
+.mv-foot p{margin:0;flex:1 1 420px;color:var(--text);font-size:.95rem;line-height:1.6;min-width:0}
+
+@media (max-width:900px){
+  .mv-problem{grid-template-columns:minmax(0,1fr)}
+  .mv-ev{grid-template-columns:minmax(0,1fr)}
+  .mv-gap{grid-template-columns:minmax(0,1fr)}
+  .mv-gap-arrow{justify-self:center;rotate:90deg;line-height:1}
+  .mv-dec{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mv-dec-card,.mv-dec-card:nth-child(4),.mv-dec-card:nth-child(5){grid-column:auto}
+}
+@media (max-width:640px){
+  .mv-dec{grid-template-columns:minmax(0,1fr);gap:18px}
+  .mv-h{margin-top:40px}
+  .mv-ad{padding:20px 16px 16px;rotate:0deg}
+  .mv-ev-card,.mv-gap-col{padding:16px}
+  .mv-foot{padding:14px 16px}.mv-foot p{flex-basis:100%}.mv-foot .xbtn{flex:1 1 100%}
+}
+html[data-motion="reduced"] :is(.mv-dec-card,.mv-ad){animation:none!important;transition:none}
+html[data-motion="reduced"] .mv-jump:hover{text-decoration:underline}
+
+/* ---- figures (pitch slides 1–2 redrawn for a general reader) ---- */
+.mv-fig{margin:0 0 28px;background:#fff;border:var(--border);border-radius:var(--r-sm);box-shadow:var(--shadow);padding:clamp(18px,3vw,28px)}
+.mv-fig-t{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font-family:var(--font-sketch);font-size:clamp(1.3rem,2.2vw,1.6rem);color:var(--brown);margin:0 0 16px;line-height:1.25}
+.mv-fig-n{font-family:var(--font-pix);font-size:.7rem;color:var(--pink-ink);background:var(--pink-soft);border:1.5px solid var(--brown);border-radius:6px;padding:5px 7px;letter-spacing:.04em}
+.mv-q{margin:0 0 10px;color:var(--text);font-size:.95rem;line-height:1.5}
+.mv-take{margin:12px 0 0;color:var(--brown);font-size:1.02rem;line-height:1.5}
+.mv-take b{color:var(--pink-ink)}
+.mv-fig .mv-cite{margin:14px 0 0}
+.mv-fig .mv-lim{margin:10px 0 0}
+.mv-src-l{margin:12px 0 0;font-size:.82rem;color:var(--text-light)}
+/* figure 1: bars + "3 in 10" ads */
+.mv-cap-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(18px,4vw,40px);align-items:center}
+.mv-bars{display:grid;gap:7px}
+.mv-bar{display:grid;grid-template-columns:4.2em minmax(0,1fr) 3.6em;gap:10px;align-items:center;font-size:.92rem;color:var(--text)}
+.mv-bar-k{font-weight:700;color:var(--brown);text-align:right;font-variant-numeric:tabular-nums}
+.mv-bar-t{display:block;height:18px;border-radius:9px;background:rgba(74,55,40,.06);overflow:hidden}
+.mv-bar-f{display:block;height:100%;width:var(--w);border-radius:9px;background:var(--lav);border-right:2px solid rgba(74,55,40,.45)}
+.mv-bar.hot .mv-bar-f{background:repeating-linear-gradient(-35deg,rgba(74,55,40,.35) 0 2px,transparent 2px 6px),var(--pink)}
+.mv-bar.hot .mv-bar-k,.mv-bar.hot .mv-bar-v{color:var(--pink-ink)}
+.mv-bar-v{font-variant-numeric:tabular-nums;font-weight:700}
+.mv-ten{background:var(--yellow-soft);border:1.5px dashed rgba(74,55,40,.35);border-radius:12px;padding:16px}
+.mv-ads{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;max-width:280px}
+.mv-adi{display:grid;place-items:center;aspect-ratio:3/4;border:2px solid rgba(74,55,40,.35);border-radius:6px;background:#fff;color:rgba(74,55,40,.35);font-weight:800;font-size:.9rem}
+.mv-adi.on{border-color:var(--brown);background:var(--pink);color:var(--brown);box-shadow:2px 2px 0 var(--brown)}
+/* figure 2: how-to-read note + two "below vs above the line" panels */
+.mv-how{margin:0 0 18px;padding:12px 16px;border-left:4px solid var(--blue);background:var(--blue-soft);border-radius:0 10px 10px 0;color:var(--text);font-size:.95rem;line-height:1.6}
+.mv-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,32px)}
+.mv-panel{min-width:0;display:flex;flex-direction:column}
+.mv-panel h4{margin:0 0 6px;font-family:var(--font-sketch);font-weight:400;font-size:1.3rem;color:var(--brown);line-height:1.25}
+.mv-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:end}
+.mv-col{min-width:0;border:1.5px solid rgba(74,55,40,.2);border-radius:10px;padding:10px;background:var(--paper)}
+.mv-col:last-child{background:var(--pink-soft);border-color:rgba(74,55,40,.35)}
+.mv-col-k{margin:0;font-size:.8rem;color:var(--text);line-height:1.35;min-height:2.7em}
+.mv-big{margin:2px 0 8px;font-family:var(--font-pix);font-size:.95rem;color:var(--brown)}
+.mv-dots{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.mv-dots i{display:block;aspect-ratio:1;border-radius:50%;background:var(--lav-ink);opacity:.75}
+.mv-dots i.x{background:var(--pink-ink);opacity:1;box-shadow:0 0 0 1.5px var(--brown)}
+.mv-dots.sq i{border-radius:2px;background:var(--blue-ink,#2F6E86);opacity:.7}
+.mv-dots.sq i.gone{background:transparent;opacity:1;box-shadow:inset 0 0 0 1.2px rgba(74,55,40,.45)}
+.mv-panel .mv-lim{margin-top:10px}
+@media (max-width:900px){.mv-cap-grid,.mv-panels{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.mv-bar{grid-template-columns:3.6em minmax(0,1fr) 3.4em;gap:8px;font-size:.88rem}.mv-pair{gap:10px}.mv-col{padding:8px}}
+/* figure 1: year-by-year trend of 35 vs 45 */
+.mv-trend-box:empty{display:none}
+.mv-trend-box{margin-top:18px;padding-top:14px;border-top:1.5px dashed rgba(74,55,40,.22)}
+.mv-trend{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem;min-width:min(100%,320px)}
+.mv-trend th,.mv-trend td{padding:6px 14px;text-align:right;border-bottom:1px solid rgba(74,55,40,.12);color:var(--text)}
+.mv-trend thead th{font-weight:700;color:var(--brown)}
+.mv-trend tbody th{text-align:left;font-weight:700;color:var(--brown)}
+.mv-trend tr.flip td:last-child{color:var(--pink-ink);font-weight:800}
