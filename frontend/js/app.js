@@ -77,6 +77,25 @@
       return s;
     },
   };
+  /* Real-data summary (data/real/matrix_*.json via /api/stats/matrix?source=real): the home statistics (hero, data tiles,
+     cards, footer) use it when the server has it, and fall back to the simulated set otherwise. One request per page load.
+     -> null, or {ads, regions, occupations (16 named groups), other, ageWording, explicit, cap, withException, preference,
+        nMax, maxAges [[age, count] sorted by count], provinces [...], occs [...], years "2021–2024", rowsInFile, label}. */
+  let realP = null;
+  AgeLens.realSummary = function () {
+    if (!realP) realP = AgeLens.api('/api/real/status').then((st) => (st && st.available ? AgeLens.api('/api/stats/matrix?source=real') : null)).then((m) => {
+      if (!m || !m.total) return null;
+      const t = m.total, meta = m.meta || {}, ys = Array.isArray(meta.years) ? meta.years : [];
+      const named = (m.occupations || []).filter((o) => o.occupation && o.occupation !== '其他' && o.ads > 0);
+      const other = (m.occupations || []).find((o) => o.occupation === '其他');
+      return { ads: t.ads, regions: (m.provinces || []).filter((p) => p.ads > 0).length, occupations: named.length, other: other ? other.ads : 0,
+        ageWording: t.age_wording, explicit: t.explicit, cap: t.cap, withException: t.with_exception, preference: t.preference,
+        nMax: meta.ads_with_max_age || t.n_max_age, maxAges: Object.entries(meta.max_age_counts || {}).map(([a, c]) => [+a, c]).sort((a, b) => b[1] - a[1]),
+        provinces: (m.provinces || []).filter((p) => p.ads > 0), occs: named, years: ys.length ? ys[0] + '–' + ys[ys.length - 1] : '',
+        rowsInFile: meta.rows_in_file, label: m.label || 'Real data' };
+    }).catch(() => null);
+    return realP;
+  };
   /** True when the public demo needs an invite and this browser has no valid session. */
   AgeLens.needsInvite = () => !!AgeLens.access.invite && !AgeLens.session.token();
 

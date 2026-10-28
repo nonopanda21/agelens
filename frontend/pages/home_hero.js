@@ -5,7 +5,8 @@
 (function () {
   const AL = window.AgeLens, h = AL.h;
   let introPlayed = false;
-  const fmt = (n) => (typeof n === 'number' ? n.toLocaleString('en-US') : '–');
+  // millions are shortened (10.05M) so the pixel-font stat fits on a phone; smaller numbers keep separators
+  const fmt = (n) => (typeof n !== 'number' ? '–' : n >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : n.toLocaleString('en-US'));
   // title letters as hop-in spans (visual only; the h1 carries the full text as its accessible name)
   const letters = (txt, base) => { let i = base; const out = []; txt.split(' ').forEach((w, wi) => { if (wi) { out.push(' '); i++; } out.push(h('span.xw', {}, [...w].map((c) => h('span.xch', { style: '--i:' + i++ }, c)))); }); return out; };
   // count a stat up from zero once the intro reaches it
@@ -43,7 +44,8 @@
     const glow = h('div.xh-glow', { 'aria-hidden': 'true' });
     const toHow = () => { const n = document.getElementById('how'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };
     const stat = (n, label) => h('div.xh-stat', {}, h('p.xh-stat-n', {}, n), h('p.xh-stat-l', {}, label));
-    const stats = h('div.xh-stats', { 'aria-label': 'Simulated dataset size' }, stat('–', 'Simulated ads'), stat('–', 'Regions'), stat('–', 'Occupations'));
+    const stats = h('div.xh-stats', { 'aria-label': 'Dataset size' }, stat('–', 'Job ads'), stat('–', 'Regions'), stat('–', 'Occupations'));
+    const badge = h('p.xh-badge', {}, 'Template demo · simulated data');
     const art = h('div.xh-art'); art.innerHTML = DOODLE;
     // ink every outlined shape stroke by stroke, then colour it in (css/intro.css); the dashed ground line keeps its dashes
     let k = 0;
@@ -57,7 +59,7 @@
       canvas, glow,
       h('div.wrap.xh-grid', {},
         h('div.xh-inner', {},
-          h('p.xh-badge', {}, 'Template demo · simulated data'),
+          badge,
           h('h1.xh-title', { 'aria-label': 'Make sense of the age requirement' }, h('span.xh-l1', { 'aria-hidden': 'true' }, letters('Make sense of', 0)), h('span.xh-l2', { 'aria-hidden': 'true' }, letters('the age requirement', 14))),
           h('p.xh-sub', {}, 'Bring your experience and your question. AgeLens reads the original hiring evidence with you and helps you prepare what to ask a person.'),
           h('div.xh-actions', {}, h('a.xbtn.xbtn-lg', { href: '#/seeker' }, 'Ask about my situation'), h('button.xbtn.xbtn-2.xbtn-lg', { type: 'button', onclick: toHow }, 'See how it works')),
@@ -71,9 +73,17 @@
     syncPaused(); AL.motion.onChange(syncPaused);
     el.append(hero);
 
-    AL.api('/api/overview').then((ov) => {
-      if (!ov) return;
-      const v = [ov.unique_ads, ov.provinces, ov.occupations];
+    // real Zhaopin statistics when the server has them, otherwise the simulated set (labels say which)
+    Promise.all([AL.realSummary(), AL.api('/api/overview').catch(() => null)]).then(([real, ov]) => {
+      let v;
+      if (real) {
+        v = [real.ads, real.regions, real.occupations];
+        ['Real job ads, ' + real.years, 'Regions', 'Occupation groups'].forEach((t, i) => { stats.querySelectorAll('.xh-stat-l')[i].textContent = t; });
+        badge.textContent = 'Rules only, no AI · real Zhaopin ads';
+      } else if (ov) {
+        v = [ov.unique_ads, ov.provinces, ov.occupations];
+        stats.querySelectorAll('.xh-stat-l')[0].textContent = 'Simulated ads';
+      } else throw new Error('no data');
       const play = !hero.classList.contains('no-intro');
       const lead = play ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--intro-delay')) || 0) * 1000 + 850 : 0;
       stats.querySelectorAll('.xh-stat-n').forEach((n, i) => { if (play) countUp(n, v[i], lead + i * 120); else n.textContent = fmt(v[i]); });

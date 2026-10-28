@@ -27,8 +27,17 @@
       const version = (ov && ov.data_version) || (status && status.data && status.data.version) || null;
 
       const tile = (label, value, sub) => h('div.dt-tile', {}, h('p.dt-value', {}, value), h('p.dt-label', {}, label), h('p.hint.dt-sub', {}, sub));
+      const real = await AL.realSummary();
       let tiles;
-      if (!ov || !ov.unique_ads) {
+      if (real) {
+        // real Zhaopin aggregate (counts only); the explorer and Job Seeker keep the simulated set
+        const top = real.maxAges[0];
+        tiles = h('div.dt-tiles', {},
+          tile('Real job ads', fmt(real.ads), 'Zhaopin, posted ' + real.years + (real.rowsInFile ? ' (of ' + fmt(real.rowsInFile) + ' rows in the file)' : '')),
+          tile('Regions and occupations', fmt(real.regions) + ' / ' + fmt(real.occupations), 'regions with ads / occupation groups; ' + pct(real.other, real.ads) + ' of titles fit none ("Other")'),
+          tile('Ads with age wording', pct(real.ageWording, real.ads), fmt(real.ageWording) + ' of ' + fmt(real.ads) + ' ads (explicit or uncertain)'),
+          tile('Most common stated limit', top ? 'under ' + top[0] : 'None', top ? fmt(top[1]) + ' of the ' + fmt(real.nMax) + ' ads that state a maximum age (' + pct(top[1], real.nMax) + ')' : 'no maximum age stated'));
+      } else if (!ov || !ov.unique_ads) {
         tiles = h('div.card.dt-empty', { role: 'status' }, h('p', {}, ov ? 'No ads are loaded yet, so there is nothing to summarise.' : 'The data overview could not be loaded. The rest of the page still works; reload to try again.'));
       } else {
         const den = ov.denominator != null ? ov.denominator : ov.unique_ads;
@@ -84,17 +93,12 @@
       AL.onLeave(() => { gone = true; if (io) io.disconnect(); if (view) { view.dispose(); view = null; AL._mapView = null; } });
 
       // the tiles and the explorer use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
-      const realBadge = h('span.badge.mint', { hidden: true });  // same style as the map's real-data badge
-      const realLine = h('span');
-      AL.api('/api/real/status').then((st) => {
-        if (!st || !st.available) return;
-        const y = Array.isArray(st.years) && st.years.length ? st.years[0] + '–' + st.years[st.years.length - 1] : '';
-        realBadge.textContent = 'Map: real data'; realBadge.hidden = false;
-        realLine.textContent = ' The map defaults to ' + (st.rows_used / 1e6).toFixed(1) + ' million real Zhaopin job ads posted ' + y + '; you can switch it back to the simulated set.';
-      }).catch(() => {});
+      const lead = real
+        ? 'The tiles and the map summarise ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + ' (counts only; no ad text is kept). The evidence explorer, the Job Seeker answers and the demo cases use a fictional, reproducible set of ads' + (version ? ' (' + version + ')' : '') + ', so every example can be opened in full.'
+        : 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.';
       el.append(h('div.wrap.section.dt', {},
-        h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), h('span.badge.sim', {}, 'Demo · Synthetic data'), realBadge),
-        h('p.dt-lead', {}, 'The tiles below and the evidence explorer use a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.', realLine, ' All of these are counts of ad wording, not unemployment, hiring or rejection rates.'),
+        h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), real ? h('span.badge.mint', {}, real.label) : h('span.badge.sim', {}, 'Demo · Synthetic data')),
+        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.'),
         tiles,
         h('div.dt-actions', {}, jump, h('a.btn.btn-secondary', { href: '#/explore' }, 'Open the evidence explorer')),
         h('div.dt-maphead', {}, h('div', {}, h('h3', {}, 'Where and in which jobs age wording appears'),

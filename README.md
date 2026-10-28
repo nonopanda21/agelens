@@ -7,13 +7,14 @@ AgeLens helps mid-career job seekers in China with lines like `35岁以下，条
 A Northwestern University SEPOL 425 course project (Group Delta).
 
 **Live demo:** https://agelens-sepol425.onrender.com
-- Open to everyone. All data is simulated.
+- Open to everyone. Statistics and the map use real Zhaopin job ads (counts only); the ads you can open are simulated.
 - The free host sleeps when unused, so the first visit can take up to a minute.
 
 ![AgeLens overview](docs/screenshots/readme/home.png)
 
 > **Status, stated plainly.**
-> - All 960 job ads are **simulated** and labelled "Demo · Synthetic data".
+> - **Statistics and the map** summarise **10.05 million real Zhaopin job ads** posted 2021–2024. Only counts are published: no ad text, company or contact (`data/real/`, method in [`docs/REAL_DATA_YEARS.md`](docs/REAL_DATA_YEARS.md)).
+> - **The ads you can open**, the Job Seeker answers and the demo cases use a fictional, reproducible set of 960 ads, labelled "Demo · Synthetic data".
 > - **No AI model** is connected. Answers and reports come from fixed, tested rules.
 > - No real recruitment data has been imported, and **no study with participants** has been run yet.
 >
@@ -31,7 +32,7 @@ A Northwestern University SEPOL 425 course project (Group Delta).
 
 | | |
 |---|---|
-| **Read the evidence ad by ad.** Search a reproducible set of simulated ads by region and occupation. Each age line is quoted as written, labelled (hard cap · cap with exception · preference · range · unclear), and linked to the original ad. | ![Regional map](docs/screenshots/readme/map.png) |
+| **Read the evidence ad by ad.** The map compares regions and occupations across 10 million real ads; the explorer lets you open a reproducible set of simulated ads. Each age line is quoted as written, labelled (hard cap · cap with exception · preference · range · unclear), and linked to the original ad. | ![Regional map](docs/screenshots/readme/map.png) |
 | **Get an answer under five headings.** What the ad explicitly says · what exceptions exist · how this relates to your question · what cannot be determined yet · what you could ask next. Every statement is tagged **Ad text**, **You said** or **Rules**. | ![Answer](docs/screenshots/readme/answer.png) |
 | **Quick check.** Paste one line of age wording and see how the rules read it. Nothing is stored. | ![Quick check](docs/screenshots/readme/quick_check.png) |
 | **Full report (Pro).** A Word report of about 4–8 pages: every ad's wording quoted, region and occupation comparisons, the questions to send, and a draft message. The preview is free; the report needs a Pro code. This is stage 1: no payment is taken. | ![Report preview](docs/screenshots/readme/report_preview.png) |

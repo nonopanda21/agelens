@@ -646,3 +646,18 @@ Full run: all passed in about 3 minutes. Bug found by checking afterwards: the r
 - On phones, the 18 industry chips take many rows above the map (a select would be shorter).
 - The ageparse fixes proposed in docs/REAL_DATA_AUDIT.md are not applied: salary digits read as caps, unusual range separators missed, team-culture wording flagged. On the full range they would change explicit by +5.1% and cap by −2.8%.
 - The real aggregate is computed with rules age-rules-2.0.0 as they are.
+
+## 2026-10-28 · Home statistics switched to the real aggregate
+- The user asked that the "960 simulated ads" figures follow the real data.
+- New `AgeLens.realSummary()` (app.js): one cached request to `/api/real/status` → `/api/stats/matrix?source=real`, summarised.
+- Sections switched to it when real data exists; otherwise they fall back to the simulated set with the old labels:
+  - **hero:** 10.05M / 34 / 16; badge "Rules only, no AI · real Zhaopin ads"; millions shortened for the pixel font;
+  - **data tiles:** real ads, regions/occupations with the "Other" share, age-wording share, most common stated maximum with its share among ads stating one;
+  - **"ad by ad" cards:** six cards recomputed from the aggregate. Links point to the map, because the explorer is simulated.
+  - **footer:** stats, note, bar text.
+- **"How age is written" card.** It shows only quantities the aggregate holds exactly: cap, range or minimum (= explicit − cap), mentions an exception, preference. A first idea, splitting hard cap / cap with exception / unclear from totals, was checked against the simulated set's exact class counts. It did NOT match (`with_exception` counts every exception clause, not one class), so it was dropped.
+- **FAQ:** "Honest about what runs" and "Where does the data come from?" now describe both sources. "How will you test…" now describes the crossover plan, not the superseded template-vs-model design.
+- **README:** the status box and feature row are updated.
+- **Verified:**
+  - In the browser at 1280 and iPhone 13: hero, cards, tiles and footer show the real numbers; no "960" or "Simulated ads" text is left on home; no console errors; 0 overflow. Phone screenshots viewed.
+  - Explore, Job Seeker and demo cases stay simulated and labelled.

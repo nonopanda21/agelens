@@ -4,14 +4,14 @@
   const CARDS = [
     ['Not legal advice', 'Highlighted wording is observed text to interpret. It is not a finding about any employer and not a legal conclusion.'],
     ['No hiring decisions', 'AgeLens never says whether you qualify or predicts whether you would be rejected. Your age is used only to explain a stated condition.'],
-    ['Honest about what runs', 'All ads are simulated. Summaries come from fixed rules (“Template demo”); no AI model is connected. The planned evaluation has not been run.'],
+    ['Honest about what runs', 'Home-page statistics come from real Zhaopin ads (counts only); the ads you can open and the demo cases are simulated. Answers come from fixed rules (“Template demo”); no AI model is connected. The planned evaluation has not been run.'],
   ];
   const FAQ = [
-    ['Where does the data come from?', 'For now every ad is fictional and generated reproducibly for this course project. Each screen that shows data is labelled “Demo · Synthetic data”.'],
+    ['Where does the data come from?', 'Two sources, always labelled. The statistics and the map summarise about 10 million real job ads posted on Zhaopin in 2021–2024 (counts only; no ad text, company or contact is published). The ads you can open, the Job Seeker answers and the demo cases use a fictional, reproducible set, marked “Demo · Synthetic data”, so every example can be shown in full.'],
     ['What happens to my CV?', 'It is read in memory to suggest fields you can edit and confirm. The file itself is not stored, and it is never sent to an outside model.'],
     ['Is AI used?', 'Not yet. Briefs are produced by fixed rules and templates. If a model is connected later, its output is checked against the quoted evidence and labelled.'],
     ['Can text in an ad or a CV change how the system behaves?', 'No. Ads and CVs are treated as data to analyse, never as instructions.'],
-    ['How will you test whether this helps?', 'We plan a small classroom study comparing a fixed template with model assistance on the same fictional tasks. It has not been run, and it cannot show effects on unemployment or GDP.'],
+    ['How will you test whether this helps?', 'We plan a small classroom study: each person writes four questions about fictional ads, two with the ad alone and two with AgeLens’s evidence check, and blind raters score them. It has not been run yet, and it cannot show effects on unemployment or hiring.'],
   ];
   AL.home = AL.home || { sections: [] };
   AL.home.sections.push({ id: 'faq', order: 60, render(el) {
