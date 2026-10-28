@@ -300,3 +300,7 @@
 @media (max-width:640px){.ex-dates .ex-pair{grid-template-columns:1fr}}
 /* desktop: the map stays in view while the taller detail list scrolls past */
 @media (min-width:901px){.mp-left{position:sticky;top:88px}}
+
+/* industry: chips on wide screens, a select on phones (same state, mapcore.js) */
+.mp-chip-sel{display:none}
+@media (max-width:640px){.mp-grp-ind .mp-chips{display:none}.mp-chip-sel{display:block;width:100%;max-width:100%}}

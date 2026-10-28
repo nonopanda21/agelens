@@ -664,3 +664,22 @@ Full run: all passed in about 3 minutes. Bug found by checking afterwards: the r
 
 ## 2026-10-28 · Hero badge
 At the user's request the hero badge now reads "A tool for reading age limits in job ads", a one-line description of the project, the same with or without real data. Checked at 1280 and iPhone 13: one line (about 310×43 px), no overflow, no errors.
+
+## 2026-10-28 · Polish pass after the real-data integration
+- **Map, phones:** the 18 industry chips (many rows above the map) are now a `<select>` at ≤ 640 px, with the same state as the chips (`mapcore.js` chipSel). Wide screens keep the chips.
+- **Map, small-sample thresholds now depend on the source.**
+  - Real data uses 500 / 100 ads instead of 10 / 5, which suit the 960 simulated ads.
+  - Before, with Engineering selected, Macao (46 ads) topped the ranking and was the "highest" in the spread.
+  - Now rankings and spreads compare regions with ≥ 500 ads. All industries: highest Chongqing 32.3% of 172,130; lowest Hong Kong 16.7% of 750. Engineering: highest Jilin 16.9% of 19,786.
+  - `AL.mapCore.SMALL/TINY` are getters.
+- **Map caption:** the striping sentence was removed from the real-data caption (the legend already says it). `map_real.py` now checks the legend for "fewer than 500 ads" and uses the select on phones (40/40).
+- **Stale text fixed:**
+  - The motivation "Where it stands today" box said real data was "being prepared". It now describes both sources.
+  - About: "What 'simulated data' means" said every ad was generated and the counts say nothing about real markets. It is now "Two data sources": the real aggregate (years and why, mappings, the "Other" share, rule accuracy from the audit, known rule errors not fixed, counts only), then the simulated set. 智联招聘 is marked `lang="zh-CN"`.
+- **Docs:** README and DEVELOPER test counts (287 unit, 19 browser scripts); DEVELOPER gets map_real and the real-data/motivation docs; DELIVERABLES gets rows 6b (real data) and 6c (motivation).
+- **Code:** 2 dead locals in `scripts/real_profile.py` (from the DATA agent) renamed `_o` / `_m`; the static check is clean.
+- **Verified:**
+  - Unit tests 287 OK.
+  - Browser: sweep 120/120, map_real 40/40, e2e 22/22, review_loop 37/37, public_demo 33/33, pro_flow 27/27, a11y 0 high, palette 0 low-contrast, theme ok, labels 0, map_v2 and map_explore no errors, perf no fails, lit_check OK.
+  - The phone home page was reviewed screen by screen (iPhone 13 emulation).
+- **Not done (needs a decision):** the ageparse fixes from docs/REAL_DATA_AUDIT.md (they would change all real-data numbers).

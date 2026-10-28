@@ -108,7 +108,9 @@ try:
             badge = pg.inner_text(".mp-bar .badge")
             check(f"@{tag}: badge shows the response label", badge.strip() == mx["label"], badge)
             cap = pg.inner_text(".mp-realcap") if pg.is_visible(".mp-realcap") else ""
-            check(f"@{tag}: caption shows rows_used from meta", fmt(n_used) in cap and "not hiring or unemployment rates" in cap and "fewer than 10 ads" in cap, cap)
+            check(f"@{tag}: caption shows rows_used from meta", fmt(n_used) in cap and "not hiring or unemployment rates" in cap, cap)
+            leg = pg.inner_text(".mp-leg-h") if pg.locator(".mp-leg-h").count() else ""
+            check(f"@{tag}: legend uses the real-data small-sample threshold (500 ads)", "fewer than 500 ads" in leg, leg)
             check(f"@{tag}: no 'simulated' wording in the real view's visible panels",
                   "simulated" not in (pg.inner_text(".mp-detail") + pg.inner_text(".mp-heat")).lower())
             check(f"@{tag}: no CJK in map UI text", not pg.evaluate("""() => { const el = document.querySelector('.mp'); const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -117,7 +119,7 @@ try:
             pg.screenshot(path=str(SHOTS / f"real_{tag}.png"))
             pg.locator(".mp-row2").screenshot(path=str(SHOTS / f"real_rank_{tag}.png"))
             r_real = rank_text(pg); heat_real = pg.inner_text(".mp-heat"); tbl_real = pg.evaluate("document.querySelector('.mp-table tbody').textContent")
-            det_real = pg.inner_text(".mp-detail"); chips_real = pg.inner_text(".mp-chips")
+            det_real = pg.inner_text(".mp-detail"); chips_real = pg.evaluate("document.querySelector('.mp-chips').textContent")
             # switch to simulated
             pg.click('.mp-source .mp-segbtn[data-v="demo"]')
             pg.wait_for_function("AgeLens._mapView.state().source === 'demo'", timeout=15000); pg.wait_for_timeout(1500)
@@ -126,7 +128,7 @@ try:
             check(f"@{tag}: simulated: ranking re-rendered", rank_text(pg) != r_real)
             check(f"@{tag}: simulated: heatmap, table, All-regions panel and chips re-rendered",
                   pg.inner_text(".mp-heat") != heat_real and pg.evaluate("document.querySelector('.mp-table tbody').textContent") != tbl_real
-                  and pg.inner_text(".mp-detail") != det_real and pg.inner_text(".mp-chips") != chips_real)
+                  and pg.inner_text(".mp-detail") != det_real and pg.evaluate("document.querySelector('.mp-chips').textContent") != chips_real)
             check(f"@{tag}: simulated: choice stored per tab", pg.evaluate("sessionStorage.getItem('al_map_source')") == "demo")
             pg.screenshot(path=str(SHOTS / f"sim_{tag}.png"))
             # reload keeps the choice
@@ -139,7 +141,11 @@ try:
             check(f"@{tag}: back to real: ranking re-rendered and matches first real view", rank_text(pg) != r_sim and rank_text(pg) == r_real)
             # 2D engine with real data + an industry + selection still works
             pg.click('.mp-segbtn[data-v="2d"]'); pg.wait_for_selector(".mp-stage svg"); pg.wait_for_timeout(800)
-            pg.locator(".mp-chip").nth(1).click(); pg.wait_for_timeout(600)
+            if pg.is_visible(".mp-chip-sel"):  # phones: the industry choice is a select (mapcore.js)
+                pg.select_option(".mp-chip-sel", index=1)
+            else:
+                pg.locator(".mp-chip").nth(1).click()
+            pg.wait_for_timeout(600)
             pg.locator(".mp-rankbtn").first.click(); pg.wait_for_timeout(800)
             check(f"@{tag}: 2D + industry + selection on real data", pg.evaluate("AgeLens._mapView.state().selected") is not None)
             pg.locator(".mp-main").screenshot(path=str(SHOTS / f"real_2d_{tag}.png"))

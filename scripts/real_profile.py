@@ -33,7 +33,7 @@ def profile(cube, min_ads=500):
         b = [0] * 7
         cwe = 0
         ages, prov_ads, no_prov = Counter(), Counter(), 0
-        for (yy, p, o), v in cube.items():
+        for (yy, p, _o), v in cube.items():
             if yy != y:
                 continue
             if p is None:
@@ -80,7 +80,7 @@ class AuditSampler:
         flagged, unflagged = [], []
         for year, city, title, desc in self.cands:
             terms = parse_age(ad_text(title, desc))
-            m, mx, cls = measures_from_terms(terms)
+            _m, mx, cls = measures_from_terms(terms)
             rec = {"year": year, "province": city_to_province(city), "occupation": occupation_of(title),
                    "title": mask_contacts(title), "description": mask_contacts(desc), "ad_class": cls, "max_age": mx,
                    "terms": [{k: t.get(k) for k in ("kind", "min_age", "max_age", "confidence", "exception_text", "flag",

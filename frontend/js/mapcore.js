@@ -59,7 +59,11 @@
   }
 
   /* ---------- metrics ---------- */
-  const SMALL = 10, TINY = 5;   // denominators below SMALL are flagged as unstable; below TINY drawn palest
+  // denominators below SMALL are flagged as unstable; below TINY drawn palest. They depend on the data source: 10/5 suit the
+  // 960 simulated ads, but on 10M real ads a region with 46 ads would top a ranking, so real data uses 500/100
+  // (docs/REAL_DATA_YEARS.md: Hong Kong, Macao and Taiwan are "few ads").
+  let SMALL = 10, TINY = 5;
+  const setThresholds = (src) => { if (src === 'real') { SMALL = 500; TINY = 100; } else { SMALL = 10; TINY = 5; } };
   const AGE_BASE = 18;          // median-age bars are measured from age 18 (the legend says so)
   const METRICS = {
     ads: { short: 'Ad count', title: 'Ad count', scale: 'count', num: (c) => c.ads, den: (c) => c.ads,
@@ -210,6 +214,7 @@
     if (source === 'real') { try { mx = await AL.api('/api/stats/matrix?source=real'); } catch (e) { mx = null; source = 'demo'; } }
     if (!mx) mx = await AL.api('/api/stats/matrix');
     const canon = Array.isArray(canonRaw) ? canonRaw : [];
+    setThresholds(source);
     const S = { regions: buildRegions(geo), ix: indexMatrix(mx), mx, source, real, canon, metric: 'aw', industry: null, selected: null, hover: null,
       engine: null, engineName: null, visible: true, destroyed: false, model: null, token: 0, kbd: -1, srcTok: 0 };
     const isReal = () => S.source === 'real';
@@ -260,11 +265,17 @@
     const metricSeg = seg('Metric', METRIC_KEYS.map((k) => [k, METRICS[k].short, METRICS[k].title]), S.metric, (v) => setMetric(v), 'mp-metrics');
     const viewSeg = seg('Map view', [['3d', '3D'], ['2d', '2D']], '3d', (v) => switchEngine(v, true));
     const chips = h('div.mp-chips', { role: 'group', 'aria-label': 'Industry' });
+    // phones: the same choice as a compact select (18 chips would take many rows above the map); CSS shows one or the other
+    const chipSel = h('select.mp-chip-sel', { 'aria-label': 'Industry' });
+    chipSel.addEventListener('change', () => setIndustry(chipSel.value === '' ? null : chipSel.value));
     let chipBtns = [];
     function buildChips() {
       chipBtns = [[null, 'All industries', S.ix.total.ads]].concat(S.ix.occs.map((r) => [r.occupation, occName(r.occupation), r.ads]))
         .map(([v, t, n]) => { const b = h('button.mp-chip', { type: 'button', 'aria-pressed': 'false', title: fmt(n) + ' ads', onclick: () => setIndustry(v) }, t, h('span.mp-chip-n', { 'aria-hidden': 'true' }, fmt(n))); b._v = v; return b; });
       chips.replaceChildren(...chipBtns);
+      chipSel.replaceChildren(...[[null, 'All industries', S.ix.total.ads]].concat(S.ix.occs.map((r) => [r.occupation, occName(r.occupation), r.ads]))
+        .map(([v, t, n]) => h('option', { value: v == null ? '' : v }, t + ' (' + fmt(n) + ' ads)')));
+      chipSel.value = S.industry == null ? '' : S.industry;
     }
     buildChips();
     const metricDesc = h('p.mp-mdesc');
@@ -300,7 +311,7 @@
       if (sourceSeg) sourceSeg.sync(S.source);
       const n = meta.rows_used != null ? meta.rows_used : (S.mx.total || {}).ads, y = realYears(meta);
       realCap.hidden = !isReal();
-      realCap.textContent = isReal() ? 'Counts of age wording in ' + fmt(n) + ' real Zhaopin job ads' + (y ? ' posted ' + y : '') + '. They describe this dataset only, not hiring or unemployment rates. Regions with fewer than ' + SMALL + ' ads are striped.' : '';
+      realCap.textContent = isReal() ? 'Counts of age wording in ' + fmt(n) + ' real Zhaopin job ads' + (y ? ' posted ' + y : '') + '. They describe this dataset only, not hiring or unemployment rates.' : '';  // striping is explained in the legend
       src.textContent = 'Boundaries: Alibaba Cloud DataV GeoAtlas (areas_v3), simplified, province level; licence not yet verified, so local demonstration only and not an authoritative map. ' +
         (isReal() ? 'Numbers: Zhaopin job ads supplied by the team' +  /* meta.source holds the Chinese platform name; the map UI stays English */ (y ? ', ' + y : '') + (n != null ? ', ' + fmt(n) + ' ads used' : '') + (meta.rule_version ? ', rules ' + meta.rule_version : '') + (meta.generated_at ? ', computed ' + String(meta.generated_at).slice(0, 10) : '') + '. Precomputed aggregates; filters elsewhere in the app do not apply to them.'
           : 'Numbers: simulated ads' + (status && status.data && status.data.version ? ' (data version ' + status.data.version + ')' : '') + '.');
@@ -315,7 +326,7 @@
     host.replaceChildren(h('div.mp', { 'data-zoom': '' },
       h('div.mp-bar', {}, h('div.mp-grp.mp-grp-metric', {}, h('span.mp-lab', {}, 'Metric'), metricSeg), h('div.mp-grp', {}, h('span.mp-lab', {}, 'View'), viewSeg),
         sourceSeg ? h('div.mp-grp.mp-grp-src', {}, h('span.mp-lab', {}, 'Data'), sourceSeg) : null, badge),
-      h('div.mp-grp.mp-grp-ind', {}, h('span.mp-lab', {}, 'Industry'), chips),
+      h('div.mp-grp.mp-grp-ind', {}, h('span.mp-lab', {}, 'Industry'), chips, chipSel),
       note,
       h('div.mp-main', {}, h('div.mp-left', {}, stage, h('div.mp-under', {}, legend, tools), realCap), detail),
       h('div.mp-row2', {}, spreadEl, rankEl),
@@ -345,7 +356,7 @@
       catch (e) { if (tok === S.srcTok) { mpRoot.removeAttribute('aria-busy'); note.textContent = 'Could not load the ' + (v === 'real' ? 'real' : 'simulated') + ' data (' + e.message + ').'; if (sourceSeg) sourceSeg.sync(S.source); } return; }
       if (tok !== S.srcTok || S.destroyed) return;
       mpRoot.removeAttribute('aria-busy');
-      S.source = v; S.mx = next; S.ix = indexMatrix(next); writeSource(v);
+      S.source = v; setThresholds(v); S.mx = next; S.ix = indexMatrix(next); writeSource(v);
       if (S.industry != null && !S.ix.occs.some((r) => r.occupation === S.industry)) S.industry = null;
       if (S.selected && !S.ix.rowTot.has(S.selected)) { S.selected = null; if (S.engine) S.engine.setSelected(null, { fly: false }); }
       buildChips(); renderSource(); refreshModel();
@@ -385,6 +396,7 @@
     function renderControls() {
       metricSeg.sync(S.metric);
       chipBtns.forEach((b) => b.setAttribute('aria-pressed', String(b._v === S.industry)));
+      chipSel.value = S.industry == null ? '' : S.industry;
       const M = METRICS[S.metric], sc = S.model.scope;
       metricDesc.replaceChildren(h('strong', {}, M.title + (S.industry ? ' · ' + occName(S.industry) : ' · all industries') + '. '), isReal() && M.realDesc ? M.realDesc : M.desc,
         ' Overall: ' + fmtVal(S.metric, sc.value, true) + ' (' + denText(S.metric, sc) + ').',
@@ -686,5 +698,5 @@
     };
   }
   AL.mapView = mapView;
-  AL.mapCore = { project, buildRegions, buildModel, indexMatrix, scaleColor, mixWhite, fmtVal, tipLines, fmt, pct, METRICS, SMALL, TINY };
+  AL.mapCore = { project, buildRegions, buildModel, indexMatrix, scaleColor, mixWhite, fmtVal, tipLines, fmt, pct, METRICS, get SMALL() { return SMALL; }, get TINY() { return TINY; } };
 })();

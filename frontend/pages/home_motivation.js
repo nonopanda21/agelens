@@ -168,7 +168,7 @@
         h('h4.xc-title', {}, t), h('p', {}, h('b', {}, 'Because: '), b), h('p.mv-src', {}, s)))),
 
       h('div.mv-foot.reveal', {},
-        h('p', {}, h('b', {}, 'Where it stands today. '), 'AgeLens reads ads with rules; no AI model is connected. The public demo uses simulated ads; real recruitment data is being prepared for local analysis. Whether it improves job outcomes has not been tested.'),
+        h('p', {}, h('b', {}, 'Where it stands today. '), 'AgeLens reads ads with fixed rules; no AI model is connected. The statistics and the map summarise about 10 million real Zhaopin job ads (2021–2024, counts only); the ads you can open are simulated. Whether it improves job outcomes has not been tested.'),
         h('a.xbtn.xbtn-2', { href: '#/about' }, 'Method and sources', h('span.xarrow', { 'aria-hidden': 'true' }, '→')))));
   } });
 })();

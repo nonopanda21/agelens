@@ -44,7 +44,7 @@ It says "DO NOT PUSH" on the first failure.
 
 ## Tests
 ```bash
-.venv/bin/python -m unittest discover -s tests          # 259 tests OK at the last full run (2026-10-27)
+.venv/bin/python -m unittest discover -s tests          # 287 tests OK at the last full run (2026-10-28)
 ```
 - Browser checks are Playwright scripts in `tests/browser/`. Run them with the separate environment `~/agelens-tools/pw/bin/python`, which is not a project dependency.
 - **Scripts marked "own server"** start their own server on a temporary database.
@@ -61,6 +61,7 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 | `pro_flow.py` | Pro: report preview, Pro code, Word download, credits, Pro page | own |
 | `a11y_check.py`, `palette_check.py` | scripted accessibility checks; text contrast in map, heatmap and charts | read-only |
 | `theme_check.py`, `labels_check.py`, `lit_check.py` (port number) | inner-page theme, English labels, literature/About | read-only |
+| `map_real.py` | home map Real/Simulated switch, labels, captions, a server without real data | own |
 | `map_v2.py`, `map_explore.py`, `perf.py` | regional map 3D/2D, Explore, render loops (software WebGL, not a GPU) | read-only |
 | `demo_cases.py`, `seeker_flow.py` | "Try a demo case", "Paste an ad to check", the Job Seeker form, CV drop, errors | **writes: use a copy** |
 | `study_flow.py`, `study_timeout.py` | study tools in simulation mode (`STUDY_TOKEN`, `STUDY_OUT` env) | **simulation copy** |
@@ -106,6 +107,8 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 | File | Content |
 |---|---|
 | `DEVELOPMENT_LOG.md` | what was built, run, verified and not verified (source of truth) |
+| `docs/REAL_DATA_YEARS.md`, `docs/REAL_DATA_AUDIT.md`, `data/real/` | real Zhaopin data: year choice, rule accuracy audit, the published aggregate (counts only) |
+| `docs/MOTIVATION.md` | the motivation section with page-referenced citations |
 | `docs/DEPLOY.md`, `render.yaml` | public deployment on Render: open or invite-only, free-plan limits |
 | `docs/PRO.md` | Pro stage 1: free vs Pro, codes and credits, the Word report |
 | `docs/EVAL_PLAN.md` | **current evaluation plan**: crossover, threshold, power, dry run |
