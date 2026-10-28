@@ -661,3 +661,6 @@ Full run: all passed in about 3 minutes. Bug found by checking afterwards: the r
 - **Verified:**
   - In the browser at 1280 and iPhone 13: hero, cards, tiles and footer show the real numbers; no "960" or "Simulated ads" text is left on home; no console errors; 0 overflow. Phone screenshots viewed.
   - Explore, Job Seeker and demo cases stay simulated and labelled.
+
+## 2026-10-28 · Hero badge
+At the user's request the hero badge now reads "A tool for reading age limits in job ads", a one-line description of the project, the same with or without real data. Checked at 1280 and iPhone 13: one line (about 310×43 px), no overflow, no errors.
