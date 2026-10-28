@@ -486,3 +486,7 @@ https://agelens-sepol425.onrender.com served the new code about 1 minute after t
 - Desktop 1280: edge Quick check tab and report preview work.
 - Both: no console errors, no 4xx/5xx, no horizontal overflow; phone screenshots viewed.
 - `AGELENS_PRO_CODES` is not set on Render yet, so no code unlocks the report there (expected until the team adds it).
+
+## 2026-10-27 · Pre-push check script
+`scripts/check_before_push.sh` (`--quick` for steps 1-3): (1) no databases, tokens, local code lists, logs or local tooling tracked by git; (2) all unit tests; (3) Render rehearsal: only committed files, a fresh venv with `requirements.txt`, and `app.py --public --host 127.0.0.1`; checks that the server rebuilds 960 ads, that the open demo is open, Pro is locked (402), the reviewer API is closed and the public headers are present; (4) sweep, public_demo, pro_flow and a11y_check. Stops with "DO NOT PUSH" on the first failure.
+Full run: all passed in about 3 minutes. Bug found by checking afterwards: the rehearsal server on port 8890 kept running because `kill` hit the wrapping subshell, not Python. Fixed with `exec env …` (verified: the port is free after `--quick`). The leftover process was stopped by its PID.

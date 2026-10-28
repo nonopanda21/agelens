@@ -27,7 +27,8 @@ git ls-files -z | rsync -a --from0 --files-from=- ./ "$TMP/app/" || fail "could 
 if ! git diff --quiet || ! git diff --cached --quiet; then echo "note: uncommitted changes are NOT in this rehearsal (commit first to include them)"; fi
 python3 -m venv "$TMP/app/.venv" >/dev/null && "$TMP/app/.venv/bin/pip" install -q -r "$TMP/app/requirements.txt" >/dev/null 2>&1 || fail "pip install -r requirements.txt failed in a fresh venv"
 PORT=8890
-(cd "$TMP/app" && env -u AGELENS_INVITES -u AGELENS_REVIEWER_TOKEN -u AGELENS_STUDY_TOKEN -u AGELENS_PRO_CODES AGELENS_DB="$TMP/r.db" PORT=$PORT \
+# exec: the subshell becomes env, env becomes python, so $! is the server itself and `kill $SRV` really stops it
+(cd "$TMP/app" && exec env -u AGELENS_INVITES -u AGELENS_REVIEWER_TOKEN -u AGELENS_STUDY_TOKEN -u AGELENS_PRO_CODES AGELENS_DB="$TMP/r.db" PORT=$PORT \
   .venv/bin/python app.py --public --host 127.0.0.1 > "$TMP/server.log" 2>&1) &
 SRV=$!
 for _ in $(seq 1 60); do curl -s -o /dev/null "http://127.0.0.1:$PORT/api/health" && break; sleep 0.5; done
