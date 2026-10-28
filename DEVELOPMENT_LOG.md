@@ -490,3 +490,30 @@ https://agelens-sepol425.onrender.com served the new code about 1 minute after t
 ## 2026-10-27 · Pre-push check script
 `scripts/check_before_push.sh` (`--quick` for steps 1-3): (1) no databases, tokens, local code lists, logs or local tooling tracked by git; (2) all unit tests; (3) Render rehearsal: only committed files, a fresh venv with `requirements.txt`, and `app.py --public --host 127.0.0.1`; checks that the server rebuilds 960 ads, that the open demo is open, Pro is locked (402), the reviewer API is closed and the public headers are present; (4) sweep, public_demo, pro_flow and a11y_check. Stops with "DO NOT PUSH" on the first failure.
 Full run: all passed in about 3 minutes. Bug found by checking afterwards: the rehearsal server on port 8890 kept running because `kill` hit the wrapping subshell, not Python. Fixed with `exec env …` (verified: the port is free after `--quick`). The leftover process was stopped by its PID.
+
+## 2026-10-28 · Comprehensive check + README rewrite
+**Checks (all run, all passed unless noted).**
+- Code:
+  - stdlib AST check: 1 dead local in `report.py` removed, then clean;
+  - `py_compile` of all Python files.
+  - Unit tests: 259 OK.
+- Git:
+  - no databases, tokens, local code lists, logs, uploads, `.venv` or `.claude` tracked;
+  - no secret-like strings in tracked files;
+  - no real invite/Pro code lists generated yet.
+- Browser, all 18 scripts:
+  - **own servers:** sweep 120/120, e2e 22/22, review_loop 37/37, public_demo 33/33, pro_flow 27/27;
+  - **read-only, main server:** a11y 0 high, palette 0 low-contrast, theme ok, labels 0, lit_check OK, map_v2 and map_explore no errors, perf no fails;
+  - **writing scripts on an isolated DB copy (8807):** demo_cases and seeker_flow no failures;
+  - **study scripts on an isolated simulation copy (8806):** study_flow 8 participants PROBLEMS none, study_timeout auto-submits at 0;
+  - isolated servers stopped by PID afterwards.
+- Live site (https://agelens-sepol425.onrender.com):
+  - The home page took 21 s while the free instance woke up.
+  - Health 960; overview/stats/provinces 200; report without Pro 402; reviewer and study desks without token 401; diag 404; all 4 security headers; unknown asset 404; `..` path 400; `/data/agelens.db` 404.
+- Found:
+  - The main DB holds 15 demo requests (`is_demo=1`). AL-2026-0012…0015 (22:43–00:05 UTC) came from my earlier `seeker_flow` runs against the main server in previous rounds; this round used copies. Not deleted (team decision).
+  - From now on, write tests run on copies (documented in `docs/DEVELOPER.md`).
+**README.**
+- Rewritten as a GitHub landing page: one-line pitch, live demo link, honest status box, why (Feng et al. 2026 figure, verified in `docs/LITERATURE.md`), what it does with fresh screenshots (`docs/screenshots/readme/`, viewed), quick start, deploy, evaluation summary (no results claimed), how it is built, documentation, license (none chosen; vendored MIT/OFL noted).
+- Operational detail moved to `docs/DEVELOPER.md` (test count updated to 259, write-tests-on-copies rule).
+- The quick start was verified in a fresh `git clone`: venv + pinned deps, sim import, `app.py` → health 960, local Pro code accepted; the clone was removed.
