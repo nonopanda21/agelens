@@ -1,92 +1,115 @@
 # AgeLens
 
-AgeLens is a local English web app (Northwestern SEPOL425, Group Delta course project) that helps a mid-career job seeker read the age wording in a job ad against their own background and question, see the original-text evidence, exceptions and gaps, and prepare questions for a human to answer. Current state, stated plainly: **all ad data is simulated** (labelled "Demo · Synthetic data"), **no AI model is connected** (briefs come from fixed rules and templates and are labelled "Template demo"), no real recruitment data has been imported, and no formal trial with participants has been run. AgeLens gives no legal advice and makes no hiring or eligibility decisions. What was actually run and verified is recorded in `DEVELOPMENT_LOG.md`; this README claims nothing beyond it.
+**Read the age requirement in a job ad as evidence, and ask a clear question about it.**
 
-## Run
-```bash
-cd ~/agelens
-.venv/bin/python app.py --port 8765    # serves http://127.0.0.1:8765 (127.0.0.1 only; picks the next free port if busy)
-```
-If `.venv` is missing: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`.
-To work on a copy of the database: `AGELENS_DB=/path/copy.db .venv/bin/python app.py --port 8815`.
+AgeLens helps mid-career job seekers in China with lines like `35岁以下，条件优秀者可放宽` ("under 35; strong candidates may be considered"). It shows exactly what an ad says about age: what is explicit, what is an exception, what is only a preference, and what is still unclear. Then it helps you write a neutral question the employer can answer. It never decides whether you qualify.
 
-Access:
-- Seekers need nothing: each request gets a private key kept in the submitting browser.
-- Reviewer token (demo-grade shared secret): `data/reviewer_token` (created at server start; the start message says which source is in use), or env `AGELENS_REVIEWER_TOKEN`.
-- **Public demo** (`python app.py --public`, `docs/DEPLOY.md`): no sign-up; the whole site needs an **invite code** (personal or shared, viewer or reviewer) made with `scripts/invite.py`; secrets only from the environment; the database is rebuilt from the simulated dataset. Render blueprint: `render.yaml`.
-- Study / rater token: `data/study/study_token`, or env `AGELENS_STUDY_TOKEN`.
+A Northwestern University SEPOL 425 course project (Group Delta).
 
-## Simulated data
-Generator `scripts/make_sim_data.py` (`sim-1.0.0`, default seed 20261023): 960 unique fictional ads + 58 duplicate rows, written to `data/sim/` and stored with `is_demo=1`. Details: `docs/SIMULATION.md`.
-```bash
-.venv/bin/python scripts/reset_sim.py --db data/agelens.db          # dry run: what would be deleted
-.venv/bin/python scripts/reset_sim.py --db data/agelens.db --yes    # deletes only is_demo=1 rows
-.venv/bin/python scripts/import_csv.py --source sim [--seed N]
-```
-`reset_sim.py` requires `--db` and refuses non-AgeLens databases. Rehearse on a copy first (`AGELENS_DB=/tmp/x.db` for the importer). Own CSV: `scripts/import_csv.py FILE.csv --inspect`, then `scripts/import_csv.py FILE.csv [--mapping map.json]`; see `docs/REAL_DATA.md`. Real and simulated rows are never mixed in stats or search.
+**Live demo:** https://agelens-sepol425.onrender.com
+- Open to everyone. All data is simulated.
+- The free host sleeps when unused, so the first visit can take up to a minute.
 
-## Tests
-```bash
-.venv/bin/python -m unittest discover -s tests          # last recorded run: 232 tests OK (2026-10-27)
-```
-Browser checks are Playwright scripts in `tests/browser/`, run with the separate environment `~/agelens-tools/pw/bin/python` (not a project dependency). `sweep.py`, `review_loop.py`, `e2e_loop.py` and `public_demo.py` start their own server on a temp copy of the database. The others take a base URL as the first argument and expect a running server; start that server on a database copy, because several scripts create requests or simulated study participants (the study scripts need a simulation-mode server on its own copy, never the main one). Example:
-```bash
-AGELENS_DB=/tmp/agelens-copy.db .venv/bin/python app.py --port 8815 &
-~/agelens-tools/pw/bin/python tests/browser/demo_cases.py http://127.0.0.1:8815
-```
-| Script | Checks |
+![AgeLens overview](docs/screenshots/readme/home.png)
+
+> **Status, stated plainly.**
+> - All 960 job ads are **simulated** and labelled "Demo · Synthetic data".
+> - **No AI model** is connected. Answers and reports come from fixed, tested rules.
+> - No real recruitment data has been imported, and **no study with participants** has been run yet.
+>
+> AgeLens is not legal advice and makes no hiring or eligibility decisions. Everything claimed here is backed by [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md).
+
+---
+
+## Why
+
+- **Age limits in ads change who applies.** A posted age limit is not a formality. In Chinese recruitment data, applicants just above a posted maximum age get about 14–20% fewer applications and callbacks than those just below it (Feng, Lefgren, Liu, Platt & Xia 2026, NBER Working Paper 35709, not peer-reviewed).
+- **The wording is often ambiguous.** It can be a hard cap, a cap with a vague exception, or only a soft preference. A 38-year-old reading "35岁以下优先" cannot tell whether it is worth applying, or what to ask.
+- **Existing tools serve the other side.** They are written for employers, such as job-ad scoring tools that flag age-biased wording, or they simply list jobs. AgeLens is for the reader of the ad. It keeps the original words next to every statement, so nothing is paraphrased away. See [`docs/COMPETITORS.md`](docs/COMPETITORS.md).
+
+## What it does
+
+| | |
 |---|---|
-| `sweep.py` | every route at 1280/360: console errors, 4xx/5xx, overflow, CJK outside evidence (own server) |
-| `a11y_check.py`, `palette_check.py` | scripted accessibility checks; text contrast in map/heatmap/charts |
-| `e2e_loop.py` | seeker → reviewer → seeker loop through the UI |
-| `pro_flow.py` | Pro: report preview, Pro code, Word download, credits, Pro page (own server) |
-| `public_demo.py` | public demo with invite codes: gate, roles, personal vs shared codes, reviewer code, sign out (own server on 127.0.0.1) |
-| `demo_cases.py` | "Try a demo case" and "Paste an ad to check" at 1280/360 |
-| `seeker_flow.py` | Job Seeker form, CV drop, answer, errors, download |
-| `review_loop.py` | seeker + reviewer loop (starts its own server on 8805 with a temp DB) |
-| `study_flow.py`, `study_timeout.py` | study tools in simulation mode |
-| `map_v2.py`, `map_explore.py` | regional map 3D/2D and Explore |
-| `perf.py` | render loops and WebGL contexts (software WebGL, not a GPU) |
-| `theme_check.py`, `labels_check.py`, `lit_check.py` | inner-page theme, English labels, literature/About |
-| `final_shots.py` | delivery screenshots into `docs/screenshots/final/` |
-| `legacy/` | `hero_check.py`, `map_shots.py`: stale since the redesigns, kept for the record, do not rely on them |
+| **Read the evidence ad by ad.** Search a reproducible set of simulated ads by region and occupation. Each age line is quoted as written, labelled (hard cap · cap with exception · preference · range · unclear), and linked to the original ad. | ![Regional map](docs/screenshots/readme/map.png) |
+| **Get an answer under five headings.** What the ad explicitly says · what exceptions exist · how this relates to your question · what cannot be determined yet · what you could ask next. Every statement is tagged **Ad text**, **You said** or **Rules**. | ![Answer](docs/screenshots/readme/answer.png) |
+| **Quick check.** Paste one line of age wording and see how the rules read it. Nothing is stored. | ![Quick check](docs/screenshots/readme/quick_check.png) |
+| **Full report (Pro).** A Word report of about 4–8 pages: every ad's wording quoted, region and occupation comparisons, the questions to send, and a draft message. The preview is free; the report needs a Pro code. This is stage 1: no payment is taken. | ![Report preview](docs/screenshots/readme/report_preview.png) |
 
-## Page map
-- **Overview `#/`** (sections in order): hero with the nebula particle field ("Pause animation" in the footer); "how it works" cards with the one-line statement of what AgeLens does; data **carousel** (live counts from the simulated-data API); simulated-data overview with the **regional map** (3D province prisms from real boundaries, 2D fallback, ranking table); occupation fields; "Why it matters" literature; boundaries + FAQ; steps; footer. A section rail in the left margin (wide screens) marks where you are and jumps between sections.
-- **Quick check** (yellow tab on the right edge of every page except the study pages): paste one line of age wording and see how the rules classify it, with the verbatim quote. Rules only, nothing stored, never says whether someone qualifies.
-- **Explore data `#/explore`**: filters, charts, ad list; each ad links to `#/evidence/<id>` (original text with highlighted wording).
-- **Job Seeker `#/seeker`**: question first, background (optional CV drop: PDF/DOCX/TXT, fields editable and confirmed, never stored), answer under five headings with tags Ad text / You said / Rules, Markdown download, "Submit for human review". **Try a demo case**: six one-click fictional cases for presenters (procurement, hidden instruction, contradictory wording, cut-off text, no match, no model). **Paste an ad to check (optional)**: one pasted ad (≤ 4000 characters) checked in memory by the same rules, not stored, not sendable for review.
-- **My requests `#/requests`**: replies and reviewer questions; owner keys live in this browser; on the public demo, requests sent with a personal invite code open in any browser with that code.
-- **Pro `#/pro`** (stage 1, no payment): free vs Pro; a Pro code (`scripts/pro_code.py`) unlocks the full Word report made from a Job Seeker answer ("Full report" button; free preview). `docs/PRO.md`.
-- **Invite code `#/access`** (public demo only): the invite page shown before anything else, and afterwards the current code's label, role and expiry with sign out.
-- **Reviewer `#/reviewer`**: sign in with the reviewer token; queue, ask for info, draft, publish, close.
-- **Study tools `#/study`** (participants) and **Scoring `#/study/score`** (raters, operator): crossover study (2 tasks ad only, 2 with the AgeLens evidence check; `docs/EVAL_PLAN.md`); simulation mode only; formal mode is refused without `data/study/APPROVAL.json`, which does not exist.
-- **Method and sources `#/about`**.
+Also included:
+- **Ask a human reviewer.** Send the selected evidence and only the background you choose to share; a person replies.
+- **Phone-friendly layout.** One-row navigation with a menu.
+- **Hostile input is treated as data.** Text in an ad or CV that looks like an instruction is quoted, never followed (tested in [`docs/ADVERSARIAL_CASES.md`](docs/ADVERSARIAL_CASES.md)).
 
-## Automation
-`automation/agelens_auto.py` is a quota-aware batch runner for small queued tasks. It starts **paused** and runs nothing until a person marks gate `T00` done and runs `start`. Commands, quota sources and safety rules: `automation/README.md`. Do not hand-edit `automation/*.json`; use the CLI.
+<p>
+<img src="docs/screenshots/readme/phone_home.png" width="240" alt="AgeLens on a phone">
+<img src="docs/screenshots/readme/phone_menu.png" width="240" alt="Phone menu">
+</p>
 
-## Docs index
-| File | Content |
+## Run it locally
+
+You need Python 3.12. There is no build step and no database server.
+
+```bash
+git clone https://github.com/nonopanda21/agelens.git && cd agelens
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/import_csv.py --source sim      # builds the simulated dataset (seeded, reproducible)
+.venv/bin/python app.py                                  # open http://127.0.0.1:8765
+```
+
+Optional: make a local Pro code to try the Word report.
+```bash
+python3 scripts/pro_code.py new --label "Local test" --credits 3 --expires 2026-12-31
+```
+
+## Deploy your own copy
+
+`render.yaml` deploys the open demo on Render's free plan, with nothing to configure:
+
+- **Invite-only access:** set `AGELENS_INVITES`.
+- **Pro codes:** set `AGELENS_PRO_CODES`.
+- **Reviewer and study desks:** set `AGELENS_REVIEWER_TOKEN` / `AGELENS_STUDY_TOKEN`.
+
+Steps and free-plan limits are in [`docs/DEPLOY.md`](docs/DEPLOY.md). Before pushing, run `bash scripts/check_before_push.sh`. It rehearses the Render build locally and runs the key tests.
+
+## How we will evaluate it
+
+The claim is that **seeing AgeLens's evidence check makes the clarification request a person writes more often usable** than reading the ad alone.
+
+- **Design:** a pre-registered within-participant crossover.
+  - Each participant writes 4 requests for fictional ads: 2 with the ad only, 2 with AgeLens.
+  - Two blind raters score them against a 4-criterion rubric.
+  - Success threshold: a mean difference of at least +0.20, with the 95% CI above 0.
+  - Target: 24 participants.
+- **Status:** the study tools are built, and a simulated dry run worked end to end. The plan awaits teacher approval, and **no results exist yet.**
+
+Full plan, power analysis and dry run: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
+
+## How it is built
+
+- **Backend:** Python standard-library HTTP server and SQLite. The only dependencies are `pypdf` and `python-docx`, for CV reading and the Word report.
+- **Frontend:** plain JavaScript with no framework and no build. Three.js (vendored) draws the 3D map.
+- **Age-wording rules:** fixed, versioned rules (`age-rules-2.0.0`) in `backend/ageparse.py`.
+- **AI model:** an adapter for one is prepared, but none is connected, so answers are labelled "Template demo".
+- **Privacy:**
+  - no accounts and no tracking;
+  - CVs are read in memory, and the fields are shown to you to confirm;
+  - your age is used only to explain conditions, never to hide or rank ads;
+  - every key and code is stored only as a hash.
+- **Tests:** 259 unit tests and 18 browser test scripts (desktop and phone widths). See [`docs/DEVELOPER.md`](docs/DEVELOPER.md).
+
+Development was assisted by an AI coding assistant. [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md) records what was built, what was run and verified, and what was not.
+
+## Documentation
+
+| | |
 |---|---|
-| `DEVELOPMENT_LOG.md` | what was built, run, verified, and not verified (source of truth) |
-| `docs/CHANGELOG.md` | dated changes 2026-10-22 to 2026-10-24 with evidence |
-| `docs/DELIVERABLES.md` | course deliverables mapped to files and status |
-| `docs/COURSE_CHECKLIST.md` | course requirement cross-reference |
-| `docs/PENDING_TEACHER.md` | items awaiting teacher decisions |
-| `docs/DEMO_SCRIPT.md` | midterm/final live-demo outline, adversarial handling |
-| `docs/SPEC.md`, `docs/SPEC2.md`, `docs/CONTRACT.md` | round-1 and round-2 briefs, API contract (+ round-3 addendum) |
-| `docs/PRO.md` | Pro stage 1: free vs Pro, Pro codes and credits, the Word report, what was verified |
-| `docs/DEPLOY.md` | public demo: invite codes, Render deployment steps, free-plan limits, what was verified |
-| `docs/SIMULATION.md`, `docs/REAL_DATA.md` | simulated data; onboarding real data |
-| `docs/MODEL_CONFIG.md`, `backend/prompts/` | model adapter config, prompt versions |
-| `docs/ADVERSARIAL_CASES.md` | adversarial and demo cases |
-| `docs/EVAL_PLAN.md` | **current evaluation plan**: crossover, ad only vs AgeLens evidence check, threshold, power, dry run |
-| `docs/EVAL_PROTOCOL.md`, `docs/PREREGISTRATION_DRAFT.md`, `data/study/` | legacy parallel protocol (superseded), scoring template, power analyses, dry-run exports |
-| `docs/BUDGET.md` | budget plan, prices checked, spend log template |
-| `docs/LITERATURE.md`, `docs/COMPETITORS.md`, `docs/GEO_SOURCES.md` | sources verified, competitor notes, map data source |
-| `docs/PERFORMANCE.md` | render-loop measurements (software WebGL) |
-| `docs/screenshots/` | desktop (1280) and mobile (360) screenshots from browser runs |
+| [`docs/DEVELOPER.md`](docs/DEVELOPER.md) | running, data, tests, page map, project layout |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) · [`docs/PRO.md`](docs/PRO.md) | public deployment · free vs Pro |
+| [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md) | evaluation plan, power, dry run |
+| [`docs/LITERATURE.md`](docs/LITERATURE.md) · [`docs/COMPETITORS.md`](docs/COMPETITORS.md) | verified sources · existing products |
+| [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md) | the full, dated record of the build |
 
-## Layout
-`app.py` · `backend/` (server, schema, evidence, age parser, data sources, CV, brief, LLM adapter, requests, invite access, study) · `frontend/` (pages, css, js, vendored libraries, geo) · `scripts/` · `data/` (local DB, demo, sim, study) · `tests/` (+ `tests/browser/`) · `docs/` · `automation/`.
+## License
+
+No license has been chosen yet, so all rights are reserved by the project team. The vendored fonts (OFL) and Three.js (MIT) keep their own licenses in `frontend/vendor/`.

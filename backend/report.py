@@ -114,7 +114,7 @@ def to_docx(b, ctx):
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     # cover
-    h = doc.add_heading("AgeLens report: age wording in job ads", 0)
+    doc.add_heading("AgeLens report: age wording in job ads", 0)
     p = doc.add_paragraph(); r = p.add_run("%s · rules only, no AI model · %s · %s" % (b["data_label"], REPORT_VERSION, now)); r.bold = True
     doc.add_paragraph(b["disclaimer"])
     if b.get("using_demo"):
