@@ -184,7 +184,7 @@ class Round2(unittest.TestCase):
         for d in parse_age("年龄35岁以下，条件优秀者可放宽"):
             self.assertIn(d["age_class"], ("cap_with_exception",))
             self.assertIn("flag", d)
-        self.assertEqual(RULE_VERSION, "age-rules-2.0.0")
+        self.assertEqual(RULE_VERSION, "age-rules-2.1.0")
 
     def test_list_marker_not_in_snippet(self):
         d = one("任职要求：\n3、35岁以下优先；")

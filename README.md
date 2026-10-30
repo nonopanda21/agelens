@@ -90,7 +90,7 @@ Full plan, power analysis and dry run: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
 
 - **Backend:** Python standard-library HTTP server and SQLite. The only dependencies are `pypdf` and `python-docx`, for CV reading and the Word report.
 - **Frontend:** plain JavaScript with no framework and no build. Three.js (vendored) draws the 3D map.
-- **Age-wording rules:** fixed, versioned rules (`age-rules-2.0.0`) in `backend/ageparse.py`.
+- **Age-wording rules:** fixed, versioned rules (`age-rules-2.1.0`) in `backend/ageparse.py`.
 - **AI model:** an adapter for one is prepared, but none is connected, so answers are labelled "Template demo".
 - **Privacy:**
   - no accounts and no tracking;

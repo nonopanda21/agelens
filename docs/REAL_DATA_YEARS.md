@@ -5,7 +5,7 @@
 
 The source is the Zhaopin (智联招聘) export the user supplied, `data/raw/zhaopin_2016-2025.7.csv`. It is not in git.
 All numbers below come from one streaming pass over the full file (13,322,606 rows) with `scripts/real_profile.py`.
-They use the fixed rules in `backend/ageparse.py` (`age-rules-2.0.0`) on the job title plus the description.
+They use the fixed rules in `backend/ageparse.py` (`age-rules-2.0.0`; the published aggregate was later re-run with 2.1.0, see `docs/RULES_2_1_0.md`) on the job title plus the description.
 
 ## How each measure is defined
 

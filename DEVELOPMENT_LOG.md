@@ -748,3 +748,16 @@ Requirement: the website shows no Chinese. The rules keep reading the Chinese te
 - Pages: evidence, explore, seeker, requests/reviewer, study/score, sidekit (English chips, Chinese example sent to checker without showing it), home_motivation, about, home_how, pro copy.
 - Details and remaining Chinese lookup keys in source: docs/ENGLISH_UI.md.
 - Results against a DB re-imported with English sim data: crawler 0 CJK on all routes at 1280/390; sweep 121/121; labels_check, a11y_check, demo_cases, seeker_flow, e2e_loop 22/22, review_loop 37/37; unit tests 308 OK.
+
+## Rules candidate B (recall-first) -- age-rules-2.1.0-b
+- New files only: `backend/ageparse_cand_b.py`, `docs/RULES_CAND_B.md`. No existing file changed (this log aside).
+- Fixes audit failures 1-3 in the rules, handles failure 4 (graduate cohort) by a separate `parse_cohort()`; adds recall patterns (Chinese numerals, 岁内, refusals, line breaks, birth year, ...). Method, results and risks: `docs/RULES_CAND_B.md`.
+- Checks: existing unit tests 24/25 (only the RULE_VERSION assertion differs); 50,435 seeded 2021-2024 ads: range_or_min +938, ambiguous -469, hard_cap -62; 30 sampled disagreements B right 29, current 1; 120 audit ads: flagged right 49 -> 59, clear misses 2 -> 0; speed 5,065 -> 9,158 ads/s per core.
+- A nested-quantifier regex bug in the separator caused a hang on dash rulers; fixed with a bounded repeat before the final run.
+- Single-reviewer judgement; scratch files in the session scratchpad `cand_b/`.
+
+## 2026-10-29 · Rules 2.1.0 adopted
+- Chosen on a 415-ad hand-labelled set from three versions (accuracy 75.7% -> 94.9%, recall 78.4% -> 97.8%); details in docs/RULES_2_1_0.md. Old file kept as backend/ageparse_v2_0_0.py.
+- Added a long-run guard after a timing test (4,000 repeated characters: seconds -> 0.3 s). tests/test_ageparse_gold.py added; 313 unit tests OK.
+- Real aggregate re-run: same 10,054,663 ads; explicit +7.6%, cap -2.1%; 45 still overtakes 35 in 2024 (23.4% vs 19.8%). Sim DB re-imported (697 terms, unchanged).
+- A data/backups/ copy of the main DB (before the English re-import) is local only and now git-ignored; it had been staged by mistake and was removed from the commit before any push.
