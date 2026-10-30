@@ -7,6 +7,7 @@ colour is compared with the nearest opaque background colour behind it (alpha-co
 FAILS (exit 1) if any text is below 4.5:1, or any filled heatmap cell is below 4.5:1."""
 import json, re, sys
 from playwright.sync_api import sync_playwright
+OPEN_MORE = "new MutationObserver(() => document.querySelectorAll('details.mp-more:not([data-t])').forEach((d) => { d.open = true; d.dataset.t = '1'; })).observe(document, {childList: true, subtree: true})"  # the map's extra views sit under "More views" (closed by default); these checks need them open
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8765"
 ARGS = ["--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"]
@@ -54,7 +55,7 @@ def scan(rows, where):
 
 with sync_playwright() as p:
     b = p.chromium.launch(args=ARGS)
-    pg = b.new_page(viewport={"width": 1440, "height": 900})
+    pg = b.new_page(viewport={"width": 1440, "height": 900}); pg.add_init_script(OPEN_MORE)
     pg.goto(BASE + "/#/"); pg.wait_for_timeout(1200)
     pg.evaluate("document.getElementById('data-map-panel').scrollIntoView({block:'start'})")
     pg.wait_for_function("window.AgeLens._mapView && AgeLens._mapView.state()", timeout=20000); pg.wait_for_timeout(3500)

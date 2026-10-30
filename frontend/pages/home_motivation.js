@@ -158,7 +158,7 @@
   };
 
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'motivation', order: 25, render(el) {
+  AL.home.sections.push({ id: 'motivation', order: 25, page: 'why', rail: 'The motivation', render(el) {
     const ad = h('figure.mv-ad.reveal', {},
       h('p.mv-ad-k', {}, 'A line from a job ad'),
       h('blockquote.mv-ad-q', {}, h('p', {}, '“Under 35; may be relaxed for outstanding candidates.”')),

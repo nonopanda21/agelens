@@ -6,6 +6,7 @@ keyboard, reset, dot-strip hover sync, 2D fallback with WebGL disabled, 360 px m
 reduced motion, console errors, CJK text in the map UI. Screenshots -> docs/screenshots/map_v2/. Exit 1 on a failed check."""
 import json, os, re, sys
 from playwright.sync_api import sync_playwright
+OPEN_MORE = "new MutationObserver(() => document.querySelectorAll('details.mp-more:not([data-t])').forEach((d) => { d.open = true; d.dataset.t = '1'; })).observe(document, {childList: true, subtree: true})"  # the map's extra views sit under "More views" (closed by default); these checks need them open
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8841"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "docs", "screenshots", "map_v2")
@@ -61,7 +62,7 @@ with sync_playwright() as p:
 
     # ---------------- desktop 3D @2x ----------------
     ctx = b.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=2)
-    pg = ctx.new_page(); allerr += watch(pg, "desktop")
+    ctx.add_init_script(OPEN_MORE); pg = ctx.new_page(); allerr += watch(pg, "desktop")
     pg.goto(BASE + "/#/"); pg.wait_for_timeout(1500)
     check(not pg.evaluate("!!window.AgeLens._mapView"), "map initialised before it was scrolled into view")
     check(pg.get_attribute(".dt-collapse", "aria-expanded") == "true", "map panel is not open by default")
@@ -197,7 +198,7 @@ with sync_playwright() as p:
     # ---------------- 2D fallback (WebGL disabled) ----------------
     ctx = b.new_context(viewport={"width": 1280, "height": 900})
     ctx.add_init_script(NO_WEBGL)
-    pg = ctx.new_page(); allerr += watch(pg, "2d")
+    ctx.add_init_script(OPEN_MORE); pg = ctx.new_page(); allerr += watch(pg, "2d")
     open_map(pg, 1500)
     s = st(pg); res["fallback_engine"] = s["engine"]
     check(s["engine"] == "2d", "2D fallback not used without WebGL")
@@ -220,7 +221,7 @@ with sync_playwright() as p:
 
     # ---------------- mobile 360 ----------------
     ctx = b.new_context(viewport={"width": 360, "height": 780}, device_scale_factor=2, is_mobile=True, has_touch=True)
-    pg = ctx.new_page(); allerr += watch(pg, "mobile")
+    ctx.add_init_script(OPEN_MORE); pg = ctx.new_page(); allerr += watch(pg, "mobile")
     open_map(pg, 4000)
     res["mobile_engine"] = st(pg)["engine"]
     res["mobile_overflow_px"] = pg.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
@@ -237,7 +238,7 @@ with sync_playwright() as p:
 
     # ---------------- reduced motion ----------------
     ctx = b.new_context(viewport={"width": 1280, "height": 900}, reduced_motion="reduce")
-    pg = ctx.new_page(); allerr += watch(pg, "reduced")
+    ctx.add_init_script(OPEN_MORE); pg = ctx.new_page(); allerr += watch(pg, "reduced")
     open_map(pg, 1200)
     stt = pg.evaluate("AgeLens._mapView.stats()")
     res["reduced"] = {"intro": stt["intro"], "tweens": stt["tweensRun"], "frames": stt["frames"]}

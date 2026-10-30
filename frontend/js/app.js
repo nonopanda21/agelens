@@ -166,7 +166,7 @@
   };
 
   const routes = [
-    [/^\/?$/, 'home'], [/^\/explore$/, 'explore'], [/^\/seeker$/, 'seeker'],
+    [/^\/?$/, 'home'], [/^\/why$/, 'why'], [/^\/findings$/, 'findings'], [/^\/explore$/, 'explore'], [/^\/seeker$/, 'seeker'],
     [/^\/evidence\/([\w-]+)$/, 'evidence'], [/^\/requests(?:\/([\w-]+))?$/, 'requests'], [/^\/reviewer(?:\/([\w-]+))?$/, 'reviewer'],
     [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
   ];
@@ -183,7 +183,8 @@
     return d;
   };
 
-  function setRoute(name, navKey, title) {
+  function setRoute(name, navKey, title, layout) {
+    document.body.dataset.layout = layout || name;  // Overview, Why it matters and Findings share the home layout (css: data-layout="home")
     document.querySelectorAll('[data-nav]').forEach((a) => { if (a.dataset.nav === navKey) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     document.title = (title ? title + ' · ' : '') + 'AgeLens';
     document.body.dataset.route = name;
@@ -200,7 +201,7 @@
       const m = path.split('?')[0].match(rx);
       if (!m) continue;
       const page = AgeLens.pages[name];
-      setRoute(name, name === 'evidence' ? 'seeker' : name === 'score' ? 'study' : name, page && page.title);
+      setRoute(name, name === 'evidence' ? 'seeker' : name === 'score' ? 'study' : name, page && page.title, page && page.layout);
       main.replaceChildren(); window.scrollTo(0, 0);
       try { await page.render(main, { id: m[1], query: new URLSearchParams(path.split('?')[1] || '') }); }
       catch (e) { main.replaceChildren(AgeLens.h('div.wrap.section', {}, AgeLens.h('div.notice.error', { role: 'alert' }, 'This page could not load: ' + e.message + ' Reload the page to try again.'))); }

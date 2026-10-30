@@ -39,7 +39,7 @@
   const check = () => {
     praf = 0;
     const show = scrollY > innerHeight * 0.8; top.classList.toggle('show', show); top.tabIndex = show ? 0 : -1;
-    if (document.body.dataset.route !== 'home') return;
+    if (document.body.dataset.layout !== 'home') return;
     const max = document.documentElement.scrollHeight - innerHeight;
     bar.style.setProperty('--p', max > 0 ? (scrollY / max).toFixed(4) : '0');
     document.querySelectorAll('.xst:not(.drawn)').forEach((el) => { const r = el.getBoundingClientRect(); if (r.top < innerHeight * 0.8 && r.bottom > 0) el.classList.add('drawn'); });

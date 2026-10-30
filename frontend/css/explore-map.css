@@ -202,6 +202,13 @@
 .mp-hm-cell.is-hover{border-color:var(--brown);border-width:2px}
 .mp-hm tr.on .mp-hm-cell.is-sel{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--pink-ink)}
 
+/* "More views": spread, ranking and heatmap behind one disclosure, open on demand */
+.mp-more{margin-top:var(--s5);border:2px dashed rgba(74,55,40,.35);border-radius:var(--r);background:rgba(255,255,255,.55)}
+.mp-more>summary{font-family:var(--font-sketch);font-size:1.2rem;padding:12px var(--s4);justify-content:center}
+.mp-more>summary:hover{background:var(--yellow-soft)}
+.mp-more[open]{border-style:solid;border-color:transparent;background:none}
+.mp-more[open]>summary{border:2px dashed rgba(74,55,40,.35);border-radius:var(--r)}
+.mp-more>.mp-row2{margin-top:var(--s5)}
 /* foot: table + reading notes, two quiet disclosures */
 .mp-foot{display:grid;gap:var(--s3);margin-top:var(--s5)}
 .mp-tbl,.mp-guide{border:2px solid var(--brown);border-radius:var(--r-sm);background:var(--surface);box-shadow:var(--shadow-sm)}

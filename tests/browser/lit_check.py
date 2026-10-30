@@ -12,7 +12,7 @@ with sync_playwright() as p:
         errs = []
         pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' else None)
         pg.on('pageerror', lambda e: errs.append(str(e)))
-        for route, sel, tag in [('#/', '#literature', 'literature'), ('#/about', '.ab', 'about')]:
+        for route, sel, tag in [('#/why', '#literature', 'literature'), ('#/about', '.ab', 'about')]:
             pg.goto(f'http://127.0.0.1:{port}/{route}'); pg.wait_for_selector(sel + ' h2, ' + sel + ' h1', timeout=8000)
             pg.wait_for_timeout(800)
             pg.locator(sel).scroll_into_view_if_needed()

@@ -39,7 +39,7 @@
 </svg>`;
 
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'hero', order: 10, async render(el) {
+  AL.home.sections.push({ id: 'hero', order: 10, rail: 'Top', async render(el) {
     const canvas = h('canvas.xh-canvas', { 'aria-hidden': 'true' });
     const glow = h('div.xh-glow', { 'aria-hidden': 'true' });
     const toHow = () => { const n = document.getElementById('how'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };

@@ -123,7 +123,7 @@ try:
     ads = api("/api/ads?page_size=2")["items"]
     made = api("/api/requests", {"question": "Under 35 with exceptions; I am 38. What should I clarify?", "profile": {"age": 38}, "consent": {"fields": ["age"]},
                                  "evidence": [api("/api/ads/" + a["id"]) for a in ads]}, {"X-Idempotency-Key": "a11y-" + str(os.getpid())})
-    routes = [("home", "#/"), ("explore", "#/explore"), ("seeker", "#/seeker"), ("seeker_result", "#/seeker"), ("evidence", "#/evidence/" + ads[0]["id"]),
+    routes = [("home", "#/"), ("why", "#/why"), ("findings", "#/findings"), ("explore", "#/explore"), ("seeker", "#/seeker"), ("seeker_result", "#/seeker"), ("evidence", "#/evidence/" + ads[0]["id"]),
               ("requests", "#/requests"), ("request_detail", "#/requests/" + made["code"]), ("reviewer_signin", "#/reviewer"), ("reviewer", "#/reviewer"),
               ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access"), ("pro", "#/pro")]
     with sync_playwright() as pw:

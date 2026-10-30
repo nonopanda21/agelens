@@ -2,8 +2,8 @@
    home-x.css; only the parts that section needs are here (prefix .mv-). Sketchbook palette from tokens.css:
    pastels are fills, text stays in brown ink or the *-ink accents. Works at 390 px and under reduced motion. */
 /* plain paper (the next section, marquee, is a pink band); a dashed rule separates it from "how" */
-body[data-route="home"] .home-motivation{border-top:2px dashed rgba(74,55,40,.14)}
-body[data-route="home"] .home-motivation>.xs{padding-block:var(--xpad)}
+body[data-layout="home"] .home-motivation{border-top:2px dashed rgba(74,55,40,.14)}
+body[data-layout="home"] .home-motivation>.xs{padding-block:var(--xpad)}
 
 /* part headings: pixel numeral + hand lettering, left-aligned */
 .mv-h{display:flex;align-items:baseline;gap:12px;font-family:var(--font-sketch);font-weight:400;font-size:clamp(1.5rem,2.6vw,1.8rem);line-height:1.2;color:var(--brown);margin:56px 0 20px}
@@ -159,7 +159,8 @@ html[data-motion="reduced"] .mv-jump:hover{text-decoration:underline}
 .pt-fill.a,.pt-sw.a{background:var(--lav-ink)}
 .pt-fill.c,.pt-sw.c{background:repeating-linear-gradient(-45deg,rgba(255,255,255,.55) 0 2px,transparent 2px 6px),var(--pink-ink)}
 .pt-fill.g,.pt-sw.g{background:var(--blue-ink)}
-.pt-v{font-variant-numeric:tabular-nums;font-weight:700;font-size:.88rem;color:var(--brown);text-align:right}
+.pt-wide .pt-line{grid-template-columns:minmax(0,1fr) 5.4em}
+.pt-v{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700;font-size:.88rem;color:var(--brown);text-align:right}
 .pt-pick{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 14px}
 .pt-pick label{font-weight:700;color:var(--brown)}
 .pt-pick select{font:inherit;color:var(--brown);background:#fff;border:2px solid var(--brown);border-radius:8px;padding:6px 10px;max-width:100%}

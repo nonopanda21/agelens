@@ -8,6 +8,7 @@ Usage: ~/agelens-tools/pw/bin/python tests/browser/map_real.py      Screenshots:
 import json, os, shutil, socket, subprocess, sys, tempfile, time, urllib.request
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+OPEN_MORE = "new MutationObserver(() => document.querySelectorAll('details.mp-more:not([data-t])').forEach((d) => { d.open = true; d.dataset.t = '1'; })).observe(document, {childList: true, subtree: true})"  # the map's extra views sit under "More views" (closed by default); these checks need them open
 
 ROOT = Path(__file__).resolve().parents[2]
 PY = str(ROOT / ".venv/bin/python")
@@ -97,7 +98,7 @@ try:
         for tag, kw in (("1280", {"viewport": {"width": 1280, "height": 900}}), ("390", dict(p.devices["iPhone 13"]))):
             ctx = b.new_context(**kw)
             ctx.add_init_script("sessionStorage.setItem('al_splash_seen','1')")
-            pg = ctx.new_page(); errs = []
+            ctx.add_init_script(OPEN_MORE); pg = ctx.new_page(); errs = []
             pg.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
             pg.on("pageerror", lambda e: errs.append(str(e)))
             open_map(pg, B1)
@@ -157,7 +158,7 @@ try:
             ctx.close()
         # no real data -> no switch, simulated
         ctx = b.new_context(viewport={"width": 1280, "height": 900}); ctx.add_init_script("sessionStorage.setItem('al_splash_seen','1')")
-        pg = ctx.new_page(); errs = []
+        ctx.add_init_script(OPEN_MORE); pg = ctx.new_page(); errs = []
         pg.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
         pg.on("pageerror", lambda e: errs.append(str(e)))
         open_map(pg, B2)

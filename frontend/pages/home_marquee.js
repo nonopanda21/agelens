@@ -11,7 +11,7 @@
   const occName = (o) => OCC[o] || 'Other occupation';
 
   // toMap: real-data cards point to the map (the explorer holds only the simulated ads)
-  const toMapLink = (title) => h('a.xm-link', { href: '#/', 'aria-label': 'See the map: ' + title, onclick: (e) => { e.preventDefault(); const d = document.getElementById('data'); if (d) d.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); } }, 'See the map', h('span.xarrow', { 'aria-hidden': 'true' }, '›'));
+  const toMapLink = (title) => h('a.xm-link', { href: '#/', 'aria-label': 'See the map: ' + title, onclick: (e) => { e.preventDefault(); AL.home.goto('data', '#/'); } }, 'See the map', h('span.xarrow', { 'aria-hidden': 'true' }, '›'));
   function card(kicker, title, desc, rows, foot, toMap) {
     const max = Math.max(...rows.map((r) => r.v), 1e-9);
     return h('article.xm-card', {},
@@ -22,8 +22,8 @@
   }
 
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'marquee', order: 35, async render(el) {
-    const head = h('div.wrap.xs-head.reveal', {}, h('h2', {}, 'The evidence, ', h('span.xgrad', {}, 'ad by ad')),
+  AL.home.sections.push({ id: 'marquee', order: 10, page: 'findings', rail: 'Headline numbers', async render(el) {
+    const head = h('div.wrap.xs-head.reveal', {}, h('h2', {}, 'The ', h('span.xgrad', {}, 'headline numbers')),
       h('p', {}, 'Counts of age wording in a reproducible set of simulated job ads. They describe this dataset only, not hiring or unemployment rates.'),
       h('p.xm-head', {}, h('span.badge.sim', {}, 'Demo · Synthetic data')));
     const band = h('div.xm-band.reveal', { 'data-zoom': '', role: 'region', 'aria-label': 'Simulated data cards' }, h('p.hint', {}, 'Loading simulated data…'));

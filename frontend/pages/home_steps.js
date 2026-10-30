@@ -7,7 +7,7 @@
     ['Get a clearer next step', 'Download a short brief with neutral questions, or send it to a human reviewer.'],
   ];
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'steps', order: 70, render(el) {
+  AL.home.sections.push({ id: 'steps', order: 70, rail: 'How to use', render(el) {
     el.append(h('div.wrap.xs', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'How to use AgeLens'), h('p', {}, 'Three steps, a few minutes, and nothing is decided for you.')),
       h('ol.xst', {}, STEPS.map(([t, p], i) => h('li.xst-i.reveal', { style: `--d:${i * 80}ms` }, h('span.xst-n', {}, String(i + 1).padStart(2, '0')), h('h3', {}, t), h('p', {}, p)))),

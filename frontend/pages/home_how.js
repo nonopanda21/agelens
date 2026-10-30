@@ -7,7 +7,7 @@
     ['Turn it into a clear question', 'You get a neutral question you can send to the employer, built from a template. For example, a 38-year-old can ask whether their experience counts for the exception. A human reviewer can check the same evidence.', 'AgeLens never decides whether you qualify. People answer; the tool prepares.'],
   ];
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'how', order: 20, render(el) {
+  AL.home.sections.push({ id: 'how', order: 20, rail: 'What it does', render(el) {
     el.append(h('div.wrap.xs', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'From an age requirement, to a question you can ask'),
         // key phrases get a marker sweep once the heading is revealed (css/intro.css)

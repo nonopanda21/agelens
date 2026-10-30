@@ -1,14 +1,14 @@
 /* Home section "footer" (order 90): sketchbook footer (dashed rule, pixel stats, link columns) over a brown-ink / pastel particle wave. The global
-   footer is hidden on the home route (body[data-route="home"]) so the page ends here. */
+   footer is hidden on home-layout pages (body[data-layout="home"]) so the page ends here. */
 (function () {
   const AL = window.AgeLens, h = AL.h;
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'footer', order: 90, async render(el) {
+  AL.home.sections.push({ id: 'footer', order: 90, page: '*', async render(el) {
     const canvas = h('canvas.xf-canvas', { 'aria-hidden': 'true' });
     const col = (title, links) => h('div.xf-col', {}, h('p.xf-h', {}, title), h('ul', {}, links.map(([t, href]) => h('li', {}, h('a', { href }, t)))));
     const fstat = (label) => h('div.xf-stat', {}, h('p.xf-stat-n', {}, '–'), h('p.xf-stat-l', {}, label));
     const stats = h('div.wrap.xf-stats', { 'aria-label': 'Dataset size' }, fstat('Job ads'), fstat('Regions with ads'), fstat('Occupation groups'));
-    const note = h('p.xf-note', {}, 'Northwestern SEPOL 425 course project. All ads and cases are simulated. Not legal advice; no hiring decisions.');
+    const note = h('p.xf-note', {}, 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads; the examples and cases are simulated. Not legal advice; no hiring decisions.');
     const barData = h('span', {}, 'Demo · Synthetic data');
     // real Zhaopin statistics when the server has them (the examples and cases stay simulated), otherwise the simulated set
     Promise.all([AL.realSummary(), AL.api('/api/overview').catch(() => null)]).then(([real, ov]) => {
@@ -26,9 +26,9 @@
       h('div.wrap.xf-inner', {},
         h('div.xf-brand', {}, h('p.xf-logo', {}, 'AgeLens'), h('p.xf-tag', {}, 'Age requirements in job ads, read as evidence.')),
         col('Product', [['Job Seeker', '#/seeker'], ['Explore data', '#/explore'], ['My requests', '#/requests'], ['Reviewer', '#/reviewer']]),
-        col('Project', [['Method and sources', '#/about'], ['Study tools', '#/study'], ['Scoring', '#/study/score']]),
+        col('Project', [['Why it matters', '#/why'], ['Findings', '#/findings'], ['Method and sources', '#/about'], ['Study tools', '#/study'], ['Scoring', '#/study/score']]),
         h('div.xf-col', {}, h('p.xf-h', {}, 'About'), note)),
-      h('div.xf-bar', {}, h('div.wrap', {}, h('span', {}, 'AgeLens · local prototype'), AL.motionToggle(), barData)));
+      h('div.xf-bar', {}, h('div.wrap', {}, h('span', {}, 'AgeLens · course prototype'), AL.motionToggle(), barData)));
     el.append(foot);
     let neb = null, reg = null, disposed = false;
     AL.onLeave(() => { disposed = true; if (reg) reg.dispose(); if (neb) neb.dispose(); neb = null; });

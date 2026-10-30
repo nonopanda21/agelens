@@ -786,3 +786,17 @@ Requirement: the website shows no Chinese. The rules keep reading the Chinese te
 - **Tests:** new `tests/test_study_ai.py` (31 tests); full suite 364 OK. Browser: study_flow (6 x 4, no problems), study_timeout, sweep 121/121, a11y 0 high, no_cjk 0 CJK.
 - **Dry run (SIMULATED, no AI):** `data/study/dryrun_2026-10-29/`. Machinery only; numbers are from scripted assumptions and mean nothing.
 - Not done: model, participants, approval, preregistration, results.
+
+## 2026-10-30 · Overview made short; detail moved to two pages in the top nav
+- Overview `#/` now holds hero, how, data map, a new "Read more" strip (link cards) and steps. Page length at 1440 px: 20,811 -> 5,172 px; at 390 px: 29,331 -> 7,933 px.
+- New routes `#/why` (motivation, literature, fields, FAQ) and `#/findings` (patterns, carousel), each with a page head (h1); nav links "Why it matters" and "Findings" after Overview; footer columns updated. Section text unchanged, except: FAQ evaluation answer now describes the decided design (fixed template vs contextual AI, same evidence, no model connected); FAQ and global footer no longer say all data is simulated.
+- Mechanics: `pages/home.js` composes any page from sections tagged `page`/`rail`; CSS selectors `data-route="home"` -> `data-layout="home"` (router sets it from `page.layout`); fx.js and the section rail follow the layout; rail labels come from the page shown; the carousel's "See the map" opens the Overview map via `AL.home.goto`.
+- Tests: routes added to sweep, no_cjk_crawl, a11y_check; lit_check and patterns_check point to the new pages. Unit 364 OK; sweep 141/141; map_real 40/40; public_demo 33/33; pro_flow 27/27; patterns_check, lit_check, labels_check, theme_check, map_v2 pass; no_cjk 0 CJK; a11y 0 high.
+- Seen, not changed: at 1024 px the page is 9 px wider than the window (also in the committed version; the carousel cards).
+
+## 2026-10-30 · Review and polish of the three pages
+- Overview map: spread, top 10 regions and industry × region heatmap moved under one "More views" disclosure (closed by default); the map, legend and selected-region panel stay open. Data intro shortened (no internal data-version label; links to Findings); ad-count tile shows 10.05M (the full number overflowed the tile) with the exact count below.
+- Findings: headline cards first, renamed "The headline numbers" (they are aggregates, not single ads); gender charts show "per 10,000 ads" (percentages rounded to 0.0%) and say the bars are scaled to the chart's largest value.
+- Why it matters: literature heading "The studies in detail" (it repeated the page title); FAQ card no longer says "home-page statistics". About: references to "the home page" now name Overview / Findings / Why it matters. Footer: "course prototype"; first-paint note no longer says all ads are simulated.
+- Fixed the 9 px sideways overflow at ~1024 px: unrevealed cards are tilted in 3D and their projection passed the window edge; home-layout sections now clip x-overflow. Checked 0 px at 1440/1024/768/390 on all three pages.
+- Tests: map_real, map_v2, labels_check, palette_check open "More views" through an init script.

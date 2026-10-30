@@ -4,7 +4,7 @@
    Literature motivates age thresholds; it is NOT an evaluation of AgeLens. */
 AgeLens.home = AgeLens.home || { sections: [] };
 AgeLens.home.sections.push({
-  id: 'literature', order: 50,
+  id: 'literature', order: 50, page: 'why', rail: 'The research',
   async render(el) {
     const h = AgeLens.h;
     const loadFig = async (src) => {
@@ -79,7 +79,7 @@ AgeLens.home.sections.push({
       h('p.mv-lim', {}, h('b', {}, 'Limit: '), lim));
 
     el.append(h('div.wrap.section.lit-sec', {},
-      h('h2', {}, 'Why it matters'),
+      h('h2', {}, 'The studies in detail'),
       h('p.lit-lead', {}, 'In Chinese recruitment, a number such as 35 in an ad can decide who applies and who gets a reply. Five studies point to the same problem and to one possible help. They motivate our approach but do not establish its effectiveness.'),
       h('p.hint', {}, 'This is background reading, not an evaluation of AgeLens.'),
       h('div.lit-grid', {}, feng, lin),

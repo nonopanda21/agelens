@@ -1,5 +1,5 @@
 /* Margin widgets (css/sidekit.css).
-   1. Section rail (home only, wide screens): a thin list of the home sections in the left margin; the current one is
+   1. Section rail (home-layout pages, wide screens): a thin list of the page's sections in the left margin; the current one is
       marked as you scroll and a click jumps to it.
    2. Quick check (right edge, every route except the study and scoring pages): paste one line of age wording from an ad and see how the
       AgeLens rules read it (/api/age/check: rules only, no model, nothing stored). It never says whether someone qualifies.
@@ -8,10 +8,14 @@
   const AL = window.AgeLens, h = AL.h;
 
   /* ---- 1. section rail ---- */
-  const SECTIONS = [['hero', 'Top'], ['how', 'What it does'], ['marquee', 'The evidence'], ['data', 'Data map'], ['fields', 'Every field'],
-    ['literature', 'Why it matters'], ['faq', 'What it is not'], ['steps', 'How to use']];
-  const rail = h('nav.sk-rail', { 'aria-label': 'Sections on this page' },
-    h('ol', {}, SECTIONS.map(([id, label]) => h('li', {}, h('a', { href: '#' + id, 'data-sec': id }, h('span.sk-dot', { 'aria-hidden': 'true' }), h('span.sk-lab', {}, label))))));
+  // built from the sections of the composed page now showing (AL.home.current, set by pages/home.js)
+  let SECTIONS = [];
+  const rail = h('nav.sk-rail', { 'aria-label': 'Sections on this page' }, h('ol', {}));
+  const buildRail = () => {
+    SECTIONS = (AL.home && AL.home.current) || [];
+    rail.firstChild.replaceChildren(...SECTIONS.map(([id, label]) => h('li', {}, h('a', { href: '#' + id, 'data-sec': id }, h('span.sk-dot', { 'aria-hidden': 'true' }), h('span.sk-lab', {}, label)))));
+    route(); spy();
+  };
   // the router owns the hash, so jump by scrolling instead of navigating
   rail.addEventListener('click', (e) => {
     const a = e.target.closest('a[data-sec]'); if (!a) return; e.preventDefault();
@@ -32,7 +36,7 @@
   let sraf = 0;
   const spy = () => {
     sraf = 0;
-    if (document.body.dataset.route !== 'home') return;
+    if (document.body.dataset.layout !== 'home' || !SECTIONS.length) return;
     let cur = SECTIONS[0][0];
     for (const [id] of SECTIONS) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < innerHeight * 0.4) cur = id; }
     rail.querySelectorAll('a').forEach((a) => { if (a.dataset.sec === cur) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
@@ -40,6 +44,7 @@
   addEventListener('scroll', () => { if (!sraf) sraf = requestAnimationFrame(spy); }, { passive: true });
   addEventListener('hashchange', () => setTimeout(spy, 300));
   setTimeout(spy, 800);
+  document.addEventListener('agelens:composed', buildRail);
 
   /* ---- 2. quick check ---- */
   const LABEL = {
@@ -117,9 +122,9 @@
     const study = ['study', 'score'].includes(document.body.dataset.route);
     tab.hidden = study; if (study && !panel.hidden) setOpen(false);
     const item = document.querySelector('.nav-qc'); if (item) item.hidden = study;  // the phone menu's entry follows the same rule
-    rail.hidden = document.body.dataset.route !== 'home';
+    rail.hidden = document.body.dataset.layout !== 'home' || SECTIONS.length < 3;
   };
   addEventListener('hashchange', () => setTimeout(route, 0));
-  new MutationObserver(route).observe(document.body, { attributes: true, attributeFilter: ['data-route'] });
+  new MutationObserver(route).observe(document.body, { attributes: true, attributeFilter: ['data-route', 'data-layout'] });
   route();
 })();

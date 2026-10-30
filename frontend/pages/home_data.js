@@ -1,4 +1,4 @@
-/* Home section "data" (order 40): simulated-data overview + featured regional/industry map (open by default, created lazily when it
+/* Home section "data" (order 40): data overview (real aggregate or simulated set) + featured regional/industry map (open by default; extra views under "More views", created lazily when it
    first scrolls into view, collapsible, stops when collapsed, disposed on leave). */
 (function () {
   const AL = window.AgeLens;
@@ -18,7 +18,7 @@
   };
   AL.home = AL.home || { sections: [] };
   AL.home.sections.push({
-    id: 'data', order: 40,
+    id: 'data', order: 40, rail: 'Data map',
     async render(el) {
       const h = AL.h;
       let ov, status = null;
@@ -34,7 +34,7 @@
         // real Zhaopin aggregate (counts only); the explorer and Job Seeker keep the simulated set
         const top = real.maxAges[0];
         tiles = h('div.dt-tiles', {},
-          tile('Real job ads', fmt(real.ads), 'Zhaopin, posted ' + real.years + (real.rowsInFile ? ' (of ' + fmt(real.rowsInFile) + ' rows in the file)' : '')),
+          tile('Real job ads', (real.ads / 1e6).toFixed(2) + 'M', fmt(real.ads) + ' Zhaopin ads posted ' + real.years + (real.rowsInFile ? ' (of ' + fmt(real.rowsInFile) + ' rows in the file)' : '')),
           tile('Regions and occupations', fmt(real.regions) + ' / ' + fmt(real.occupations), 'regions with ads / occupation groups; ' + pct(real.other, real.ads) + ' of titles fit none ("Other")'),
           tile('Ads with age wording', pct(real.ageWording, real.ads), fmt(real.ageWording) + ' of ' + fmt(real.ads) + ' ads (explicit or uncertain)'),
           tile('Most common stated limit', top ? 'under ' + top[0] : 'None', top ? fmt(top[1]) + ' of the ' + fmt(real.nMax) + ' ads that state a maximum age (' + pct(top[1], real.nMax) + ')' : 'no maximum age stated'));
@@ -95,11 +95,11 @@
 
       // the tiles and the explorer use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
       const lead = real
-        ? 'The tiles and the map summarise ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + ' (counts only; no ad text is kept). The evidence explorer, the Job Seeker answers and the demo cases use a fictional, reproducible set of ads' + (version ? ' (' + version + ')' : '') + ', so every example can be opened in full.'
+        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '; no ad text is kept. The ads you can open (Explore, Job Seeker, the demo cases) are fictional, so each one can be shown in full.'
         : 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.';
       el.append(h('div.wrap.section.dt', {},
         h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), real ? h('span.badge.mint', {}, real.label) : h('span.badge.sim', {}, 'Demo · Synthetic data')),
-        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.', hetero ? ' Further down, the same ads are split by required experience, occupation and explicit gender requirements.' : null),
+        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.', hetero ? h('span', {}, ' The same ads by experience, occupation and gender wording: ', h('a', { href: '#/findings' }, 'Findings'), '.') : null),
         tiles,
         h('div.dt-actions', {}, jump, h('a.btn.btn-secondary', { href: '#/explore' }, 'Open the evidence explorer')),
         h('div.dt-maphead', {}, h('div', {}, h('h3', {}, 'Where and in which jobs age wording appears'),

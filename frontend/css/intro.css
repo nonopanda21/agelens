@@ -63,22 +63,22 @@
 .xh .xh-stat-n{font-variant-numeric:tabular-nums}
 
 /* ---- 3. sections ---- */
-body[data-route="home"] .xs-head.reveal h2::after{transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease-out) .3s}
-body[data-route="home"] .xs-head.reveal.in h2::after{transform:none}
-body[data-route="home"] :is(.xc,.xm-card,.xst-i).reveal:not(.in){translate:0 -18px;rotate:-2.5deg}
-body[data-route="home"] :is(.xc,.xm-card,.xst-i).reveal{transition-property:opacity,scale,translate,rotate,box-shadow;transition-duration:.5s,.55s,.6s,.7s,.3s;transition-timing-function:var(--ease-out),var(--ease-pop),var(--ease-pop),var(--ease-pop),var(--ease)}
+body[data-layout="home"] .xs-head.reveal h2::after{transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease-out) .3s}
+body[data-layout="home"] .xs-head.reveal.in h2::after{transform:none}
+body[data-layout="home"] :is(.xc,.xm-card,.xst-i).reveal:not(.in){translate:0 -18px;rotate:-2.5deg}
+body[data-layout="home"] :is(.xc,.xm-card,.xst-i).reveal{transition-property:opacity,scale,translate,rotate,box-shadow;transition-duration:.5s,.55s,.6s,.7s,.3s;transition-timing-function:var(--ease-out),var(--ease-pop),var(--ease-pop),var(--ease-pop),var(--ease)}
 
 /* ---- 4. inner pages: the sheet lands ---- */
-body:not([data-route="home"]) main>.wrap{animation:pgLand .55s var(--ease-pop) backwards}
+body:not([data-layout="home"]) main>.wrap{animation:pgLand .55s var(--ease-pop) backwards}
 @keyframes pgLand{0%{opacity:0;transform:translateY(22px) scale(.985)}70%{opacity:1;transform:translateY(-2px)}100%{transform:none}}
-body:not([data-route="home"]) main>.wrap h1::after{transform-origin:left;animation:lineDraw .6s var(--ease-out) .25s backwards}
+body:not([data-layout="home"]) main>.wrap h1::after{transform-origin:left;animation:lineDraw .6s var(--ease-out) .25s backwards}
 
 /* ---- reduced motion: no splash, no choreography ---- */
 html[data-motion="reduced"] .al-splash{display:none}
 html[data-motion="reduced"] :is(.xch,.xh-l2::after,.xh-art .ink,.xh-art .fil,.xh-art text,.xh-art .dd>*,main>.wrap,main>.wrap h1::after){animation:none!important}
 html[data-motion="reduced"] .xh-art .ink{stroke-dasharray:none;stroke-dashoffset:0}
-html[data-motion="reduced"] body[data-route="home"] .xs-head.reveal h2::after{transform:none;transition:none}
-html[data-motion="reduced"] body[data-route="home"] :is(.xc,.xm-card,.xst-i).reveal{translate:none;rotate:none;transition:none}
+html[data-motion="reduced"] body[data-layout="home"] .xs-head.reveal h2::after{transform:none;transition:none}
+html[data-motion="reduced"] body[data-layout="home"] :is(.xc,.xm-card,.xst-i).reveal{translate:none;rotate:none;transition:none}
 @media (prefers-reduced-motion:reduce){html:not([data-motion="on"]) .al-splash{display:none}}
 
 /* ---- 5. Apple-style scroll effects (driven by js/fx.js) ---- */
@@ -94,16 +94,18 @@ html[data-motion="reduced"] body[data-route="home"] :is(.xc,.xm-card,.xst-i).rev
 /* a tilted panel is wider than the page while it stands up: clip it to its section so the page never scrolls sideways
    (clip, not hidden, so the sticky map column keeps working) */
 .home-sec:has([data-zoom]){overflow-x:clip}
+/* cards waiting to be revealed are tilted in 3D (perspective below) and their projection reached past the window at ~1024px */
+body[data-layout="home"] .home-sec{overflow-x:clip}
 .xh-inner,.xh-art,.xh-canvas{will-change:transform}
 /* section headings wipe up out of a slot as they are revealed */
-body[data-route="home"] .xs-head.reveal h2{clip-path:inset(-30% -6% -40% -6%);transition:clip-path .9s var(--ease-out),translate .9s var(--ease-out)}
-body[data-route="home"] .xs-head.reveal:not(.in) h2{clip-path:inset(-30% -6% 100% -6%);translate:0 .7em}
+body[data-layout="home"] .xs-head.reveal h2{clip-path:inset(-30% -6% -40% -6%);transition:clip-path .9s var(--ease-out),translate .9s var(--ease-out)}
+body[data-layout="home"] .xs-head.reveal:not(.in) h2{clip-path:inset(-30% -6% 100% -6%);translate:0 .7em}
 /* the "how" cards and steps flip up in 3D instead of dropping */
-body[data-route="home"] :is(.xc-grid,.xst){perspective:1200px}
-body[data-route="home"] :is(.xc,.xst-i).reveal{transform-origin:50% 100%}
-body[data-route="home"] :is(.xc,.xst-i).reveal:not(.in){rotate:x 55deg;translate:0 30px}
+body[data-layout="home"] :is(.xc-grid,.xst){perspective:1200px}
+body[data-layout="home"] :is(.xc,.xst-i).reveal{transform-origin:50% 100%}
+body[data-layout="home"] :is(.xc,.xst-i).reveal:not(.in){rotate:x 55deg;translate:0 30px}
 
 html[data-motion="reduced"] .xw-mark{background-size:100% 100%;transition:none}
 html[data-motion="reduced"] [data-zoom]{transform:none!important;will-change:auto}
-html[data-motion="reduced"] body[data-route="home"] .xs-head.reveal h2{clip-path:none;translate:none;transition:none}
-html[data-motion="reduced"] body[data-route="home"] :is(.xc,.xst-i).reveal:not(.in){rotate:none;translate:none}
+html[data-motion="reduced"] body[data-layout="home"] .xs-head.reveal h2{clip-path:none;translate:none;transition:none}
+html[data-motion="reduced"] body[data-layout="home"] :is(.xc,.xst-i).reveal:not(.in){rotate:none;translate:none}

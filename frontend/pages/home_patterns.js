@@ -1,4 +1,4 @@
-/* Home section "patterns" (order 27, right after "motivation"): how STATED age requirements vary across real Zhaopin ads, by required experience,
+/* Findings section "patterns" (order 20, after the headline cards): how STATED age requirements vary across real Zhaopin ads, by required experience,
    occupation group and explicit gender requirements. Data: GET /api/stats/hetero?source=real (contract: docs/HETERO_CONTRACT.md).
    Renders nothing until that endpoint answers (the 404 is caught quietly). Counts of how ads are worded, not hiring, rejection or pay.
    Every bar has at least MIN ads behind it; smaller groups are listed in a note, not drawn. */
@@ -7,23 +7,26 @@
   const MIN = 5000;
   const fmt = (n) => n.toLocaleString('en-US');
   const pct = (x) => (100 * x).toFixed(1) + '%';
+  // single-sex requirements are rare (a few per 10,000 ads), so a percentage would round to 0.0%
+  const p10k = (x) => (10000 * x).toFixed(1) + ' per 10,000 ads';
+  const p10kShort = (x) => (10000 * x).toFixed(1) + ' / 10k';  // bar labels: the column is narrow
   const sh = (a, n) => (n ? a / n : 0);
   const EXPLICIT_G = ['male_only', 'female_only', 'male_preferred', 'female_preferred'];
   const DATA_NOTE = 'Zhaopin job ads, 2021–2024. These are counts of how ads are worded. They are not hiring, rejection or pay.';
 
   // one chart: headline, "how to read", rows of bars, a legend, a count table, the dataset note
-  function chart({ id, title, headline, how, series, rows, note, legend }) {
+  function chart({ id, title, headline, how, series, rows, note, legend, val = pct, short = val }) {
     const max = Math.max(0.0001, ...rows.flatMap((r) => series.map((s) => r[s.key])));
     const bars = h('div.pt-rows', { role: 'list' }, rows.map((r) => h('div.pt-row', { role: 'listitem', title: r.label + ': ' + fmt(r.ads) + ' ads' },
       h('span.pt-k', {}, r.label, h('small', {}, fmt(r.ads) + ' ads')),
       h('span.pt-bars', {}, series.map((s) => h('span.pt-line', {},
         h('span.pt-track', { 'aria-hidden': 'true' }, h('span.pt-fill.' + s.cls, { style: `--w:${(100 * r[s.key] / max).toFixed(1)}%` })),
-        h('span.pt-v', {}, pct(r[s.key]), h('span.vh', {}, ' ' + s.name))))))));
+        h('span.pt-v', {}, short(r[s.key]), h('span.vh', {}, ' ' + s.name))))))));
     const table = h('details.pt-tab', {}, h('summary', {}, 'Show the counts as a table'),
       h('div.pt-scroll', {}, h('table', {}, h('caption.vh', {}, title),
         h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Group'), h('th', { scope: 'col' }, 'Ads'), series.map((s) => h('th', { scope: 'col' }, s.name + ' (share)')))),
-        h('tbody', {}, rows.map((r) => h('tr', {}, h('th', { scope: 'row' }, r.label), h('td', {}, fmt(r.ads)), series.map((s) => h('td', {}, pct(r[s.key])))))))));
-    return h('figure.mv-fig.pt-fig', { id },
+        h('tbody', {}, rows.map((r) => h('tr', {}, h('th', { scope: 'row' }, r.label), h('td', {}, fmt(r.ads)), series.map((s) => h('td', {}, val(r[s.key])))))))));
+    return h('figure.mv-fig.pt-fig' + (short !== pct ? '.pt-wide' : ''), { id },
       h('figcaption.mv-fig-t', {}, title),
       h('p.pt-head', {}, headline),
       h('p.mv-how.pt-how', {}, h('b', {}, 'How to read this. '), how),
@@ -34,10 +37,10 @@
   const rowOf = (label, o) => ({ label, ads: o.ads, any: sh(o.age_wording, o.ads), cap: sh(o.cap, o.ads) });
   const SER2 = [{ key: 'any', name: 'Any age wording', cls: 'a' }, { key: 'cap', name: 'States a maximum age', cls: 'c' }];
 
-  function extremes(rows, key, what) {
+  function extremes(rows, key, what, val = pct) {
     if (rows.length < 2) return '';
     const s = rows.slice().sort((x, y) => y[key] - x[key]), hi = s[0], lo = s[s.length - 1];
-    return `${what} is highest for ${hi.label} (${pct(hi[key])}) and lowest for ${lo.label} (${pct(lo[key])}).`;
+    return `${what} is highest for ${hi.label} (${val(hi[key])}) and lowest for ${lo.label} (${val(lo[key])}).`;
   }
 
   function build(d) {
@@ -82,12 +85,12 @@
     const expG = (g.by_experience || []).filter((r) => r.ads >= MIN).map((r) => gRow(r.band, r));
     const S1 = [{ key: 'st', name: 'States a gender requirement', cls: 'g' }];
     const figC1 = occG.length ? chart({ id: 'pt-gocc', title: 'Gender requirements by occupation group',
-      headline: extremes(occG, 'st', 'The share of ads that state a gender requirement (the 8 largest occupation groups)'),
-      how: 'Each bar is the share of ads in that group that name a gender they want, either “only” or “preferred”. Ads that say “men and women welcome” do not count.',
-      series: S1, rows: occG }) : null;
+      headline: extremes(occG, 'st', 'Among the 8 largest occupation groups, stating a gender requirement', p10k),
+      how: 'Each bar is how many ads in that group name a gender they want, either “only” or “preferred”. Ads that say “men and women welcome” do not count. Such requirements are rare, so the bars are scaled to the largest value in this chart.',
+      series: S1, rows: occG, val: p10k, short: p10kShort }) : null;
     const figC2 = expG.length ? chart({ id: 'pt-gexp', title: 'Gender requirements by required experience',
-      headline: extremes(expG.filter((r) => r.label !== 'Not stated'), 'st', 'The share of ads that state a gender requirement'),
-      how: 'Same measure as above, grouped by how much experience the ad asks for.', series: S1, rows: expG }) : null;
+      headline: extremes(expG.filter((r) => r.label !== 'Not stated'), 'st', 'Stating a gender requirement', p10k),
+      how: 'Same measure as above, grouped by how much experience the ad asks for. Bars are scaled to the largest value in this chart.', series: S1, rows: expG, val: p10k, short: p10kShort }) : null;
 
     const ag = g.age_by_gender || [];
     const one = (c) => ag.find((r) => r.gender_class === c);
@@ -118,7 +121,7 @@
     return AL._heteroP;
   };
   AL.home = AL.home || { sections: [] };
-  AL.home.sections.push({ id: 'patterns', order: 27, async render(el) {
+  AL.home.sections.push({ id: 'patterns', order: 20, page: 'findings', rail: 'By experience and gender', async render(el) {
     try {
       const d = await AL.heteroData();
       if (d) el.append(build(d));

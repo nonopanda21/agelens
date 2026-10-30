@@ -329,8 +329,10 @@
       h('div.mp-grp.mp-grp-ind', {}, h('span.mp-lab', {}, 'Industry'), chips, chipSel),
       note,
       h('div.mp-main', {}, h('div.mp-left', {}, stage, h('div.mp-under', {}, legend, tools), realCap), detail),
-      h('div.mp-row2', {}, spreadEl, rankEl),
-      heatEl, h('div.mp-foot', {}, table, guide), live));
+      // the extra views stay one click away so the overview is the map, its legend and the selected region
+      h('details.mp-more', {}, h('summary', {}, 'More views: spread, top 10 regions, industry × region'),
+        h('div.mp-row2', {}, spreadEl, rankEl), heatEl),
+      h('div.mp-foot', {}, table, guide), live));
 
     // heatmap: cells fade-scale in by diagonal stagger the first time it scrolls into view
     let heatSeen = reduced() || !('IntersectionObserver' in window);

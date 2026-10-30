@@ -9,6 +9,7 @@ Input and textarea values (what a user types or pastes) are not page text and ar
 Exit code 1 if any route has any CJK."""
 import json, os, sys, urllib.request
 from playwright.sync_api import sync_playwright
+OPEN_MORE = "new MutationObserver(() => document.querySelectorAll('details.mp-more:not([data-t])').forEach((d) => { d.open = true; d.dataset.t = '1'; })).observe(document, {childList: true, subtree: true})"  # the map's extra views sit under "More views" (closed by default); these checks need them open
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8812'
@@ -66,7 +67,7 @@ with sync_playwright() as pw:
     if tok:
         ctx.add_init_script("try{ localStorage.setItem('al_owner_tokens', %s) }catch(e){}" % json.dumps(json.dumps({code: tok})))
     ctx.add_init_script("try{ sessionStorage.setItem('al_reviewer_token', %s) }catch(e){}" % json.dumps(RVTOK))
-    page = ctx.new_page()
+    ctx.add_init_script(OPEN_MORE); page = ctx.new_page()
     page.on('console', lambda m: errors.append(m.text) if m.type == 'error' else None)
     page.on('pageerror', lambda e: errors.append(str(e)))
 

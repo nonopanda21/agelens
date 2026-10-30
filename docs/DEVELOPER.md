@@ -55,7 +55,7 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 ```
 | Script | Checks | Server |
 |---|---|---|
-| `sweep.py` | every route at 1280/360: console errors, 4xx/5xx, overflow, CJK outside evidence, `[object …]` text | own |
+| `sweep.py` | every route at 1280/360 (141 checks since the Why/Findings pages): console errors, 4xx/5xx, overflow, CJK outside evidence, `[object …]` text | own |
 | `e2e_loop.py`, `review_loop.py` | seeker → reviewer → seeker through the UI | own |
 | `public_demo.py` | public mode with invite codes: gate, roles, personal vs shared codes, reviewer code, sign out | own (127.0.0.1) |
 | `pro_flow.py` | Pro: report preview, Pro code, Word download, credits, Pro page | own |
@@ -69,18 +69,17 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 | `legacy/` | `hero_check.py`, `map_shots.py`: stale since the redesigns, kept for the record | — |
 
 ## Page map
-- **Overview `#/`**, sections in order:
+- **Overview `#/`** (kept short since 2026-10-30), sections in order:
   - hero with the particle field ("Pause animation" is in the footer);
   - "how it works" cards;
-  - the data carousel;
-  - the simulated-data overview with the regional map (3D province prisms, a 2D fallback and a ranking table);
-  - occupation fields;
-  - "Why it matters" (literature);
-  - boundaries and FAQ;
+  - the data overview with the regional map (3D province prisms, a 2D fallback, Real/Simulated switch); the spread, top-10 ranking and industry × region heatmap sit under "More views" (closed by default; map tests open it with an init script);
+  - "Read more": link cards to the two detail pages and Method and sources;
   - steps;
   - footer.
+- **Why it matters `#/why`:** page head, the motivation (figures and theory of change), the literature, occupation fields, boundaries and FAQ.
+- **Findings `#/findings`:** page head, the headline-number cards (carousel), then patterns by experience, occupation and gender wording (single-sex requirements shown per 10,000 ads).
 
-  On wide screens, a section rail in the left margin marks where you are.
+  The three pages share one composer (`pages/home.js`): each section registers with `page` (`home` by default, `why`, `findings`, or `*` for the footer) and a `rail` label. They share the home look through `body[data-layout="home"]`, which the router sets from `page.layout`. On wide screens, a section rail in the left margin lists the current page's sections (shown when there are at least three).
 - **Quick check:** a tab on the right edge on desktop, or an item in the Menu on phones. Paste one line of age wording and see how the rules read it. It is rules only, nothing is stored, and it is hidden on the study pages.
 - **Explore data `#/explore`:** filters, charts and the ad list. Each ad links to `#/evidence/<id>`, the original text with the age wording highlighted.
 - **Job Seeker `#/seeker`:**
