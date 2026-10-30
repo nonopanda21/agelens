@@ -9,7 +9,7 @@
   AL.home.sections.push(head('why', 'Why it matters',
     'Why an age line in a job ad deserves a careful reading: what research shows, how we expect AgeLens to help, who it is for, and what it does not do.'));
   AL.home.sections.push(head('findings', 'Findings',
-    'What job ads posted on Zhaopin in 2021–2024 say about age: the headline numbers first, then the same ads by required experience, occupation and stated gender requirements. These are counts of ad wording, not hiring or rejection rates.'));
+    'What job ads posted on Zhaopin in 2021–2024 say about age: the headline numbers first, then the same ads by required experience, occupation and stated gender requirements. Differences by location are on the Overview map. These are counts of ad wording, not differences in who is hired.'));
 
   const MORE = [
     ['#/why', 'Why it matters', 'The research on age limits in job ads, how AgeLens is meant to help, and what it is not.'],

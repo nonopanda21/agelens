@@ -800,3 +800,9 @@ Requirement: the website shows no Chinese. The rules keep reading the Chinese te
 - Why it matters: literature heading "The studies in detail" (it repeated the page title); FAQ card no longer says "home-page statistics". About: references to "the home page" now name Overview / Findings / Why it matters. Footer: "course prototype"; first-paint note no longer says all ads are simulated.
 - Fixed the 9 px sideways overflow at ~1024 px: unrevealed cards are tilted in 3D and their projection passed the window edge; home-layout sections now clip x-overflow. Checked 0 px at 1440/1024/768/390 on all three pages.
 - Tests: map_real, map_v2, labels_check, palette_check open "More views" through an init script.
+
+## 2026-10-30 · Site aligned with the team's reply to teacher feedback
+- Hero badge and About lead: "evidence-grounded clarification assistant".
+- Why it matters: new bridge note after the research figures (occupation, experience and gender matter; our data compares stated age requirements across occupations, required experience and locations with explicit gender requirements; describes ads, not hiring; link to Findings). Theory-of-change figure: "How we will test it" (contextual AI vs fixed templates on identical evidence; four outcomes; no model connected, not run); "not shown" now says any employment benefit depends on employers responding. Neumark/Burn/Belot lines reworded to match the reply (also in docs/THEORY_OF_CHANGE.md).
+- Findings head: location differences are on the Overview map.
+- Checks: unit 364 OK; sweep 141/141; no_cjk 0; a11y 0 high; patterns_check, lit_check pass.

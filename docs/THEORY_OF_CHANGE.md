@@ -18,8 +18,8 @@ An evidence-grounded clarification assistant for mid-career jobseekers. Given a 
 These findings motivate the approach but do not establish its effectiveness (details and limits: `docs/LITERATURE.md`).
 - Feng et al. (2026), NBER WP 35709: older applicants can face a disadvantage in entry-level hiring on one Chinese platform, while experience helps in higher-level positions.
 - Lin (2025): in China, job loss for an employer reason jumps at age 35 in the 2015 census.
-- Neumark, Burn, Button (2019), NBER WP 21669: in a US resume experiment, callbacks fall with age, more clearly for women.
-- Burn, Firoozi, Ladd, Neumark (2022), NBER WP 30287: ageist wording in ads lowers the share of applicants over 40.
+- Neumark, Burn, Button (2019), NBER WP 21669: in a US resume experiment, callbacks fall with age; the evidence of age discrimination is stronger and more robust for women than for men.
+- Burn, Firoozi, Ladd, Neumark (2022), NBER WP 30287: age-stereotyped wording in ads changes who applies (lower share of applicants over 40).
 - Belot, Kircher, Muller (2019), IZA DP 10068: in a UK lab study, tailored search information raised interviews for some jobseekers.
 
 ## What we have NOT shown

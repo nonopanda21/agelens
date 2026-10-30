@@ -126,13 +126,13 @@
     const SUGGESTS = [
       ['Feng et al. (2026): ', 'older applicants can face a disadvantage in entry-level hiring on one Chinese platform, while experience helps in higher-level positions.'],
       ['Lin (2025): ', 'in China, job loss for an employer reason jumps at age 35.'],
-      ['Neumark et al. (2019): ', 'in a US experiment, callbacks fall with age, more clearly for women.'],
-      ['Burn et al. (2022): ', 'ageist wording in ads lowers the share of applicants over 40.'],
-      ['Belot et al. (2019): ', 'in a UK lab study, tailored search information raised interviews for some jobseekers.'],
+      ['Neumark et al. (2019): ', 'in a US experiment, callbacks fall with age, and the evidence of age discrimination is stronger for women than for men.'],
+      ['Burn et al. (2022): ', 'age-stereotyped wording in ads changes who applies: fewer applicants are over 40.'],
+      ['Belot et al. (2019): ', 'in a UK lab study, tailored job-search information increased interviews for some jobseekers.'],
     ];
     const NOT_SHOWN = [
       'That AgeLens changes interviews, hiring or employment.',
-      'That employers answer clarification requests.',
+      'That employers answer clarification requests or consider the applicant. Any employment benefit depends on that.',
       'That the tool removes a binding age limit. It cannot.',
     ];
     return h('figure.mv-fig.mv-toc.reveal', {},
@@ -140,6 +140,7 @@
       h('ol.mv-chain', {}, STEPS.map(([t, d], i) => h('li.mv-step', {},
         h('span.mv-step-n', { 'aria-hidden': 'true' }, String(i + 1)), h('b.mv-step-t', {}, t), h('span.mv-step-d', {}, d)))),
       h('p.mv-take', {}, 'Our first claim is limited to ', h('b', {}, 'better decision support'), '. Hiring effects and wider economic effects are left for future evaluation.'),
+      h('p.mv-take.mv-eval', {}, h('b', {}, 'How we will test it. '), 'We will compare contextual AI assistance with fixed templates on identical evidence, measuring interpretation accuracy, actionable questions, unsupported claims and completion time. No AI model is connected yet, and the study has not been run.'),
       h('div.mv-cols', {},
         h('section.mv-colbox.sug', { 'aria-labelledby': 'toc-sug' }, h('h4#toc-sug', {}, 'What the evidence suggests'),
           h('ul', {}, SUGGESTS.map(([a, b]) => h('li', {}, h('b', {}, a), b))),
@@ -186,6 +187,8 @@
       capFigure(), lineFigure(),
       h('p.mv-note.reveal', {}, 'Neither study tells us whether a given ad’s exception will be applied to a given person, and neither evaluates a tool like AgeLens. ',
         h('button.mv-jump', { type: 'button', onclick: toLit }, 'See the redrawn figures below'), '.'),
+      h('p.mv-note.mv-hetero.reveal', {}, 'Together with Neumark et al. (2019), these studies suggest that occupation, experience and gender matter. Our Zhaopin data can describe that variation: it compares stated age requirements across occupations, required experience and locations, alongside explicitly stated gender requirements. This describes how ads are worded, not differences in who is hired. ',
+        h('a', { href: '#/findings' }, 'See the findings'), '.'),
 
       // 3 · the gap
       h('h3.mv-h.reveal', {}, h('span.xc-n', {}, '03'), 'The gap'),

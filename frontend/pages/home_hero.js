@@ -45,7 +45,7 @@
     const toHow = () => { const n = document.getElementById('how'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };
     const stat = (n, label) => h('div.xh-stat', {}, h('p.xh-stat-n', {}, n), h('p.xh-stat-l', {}, label));
     const stats = h('div.xh-stats', { 'aria-label': 'Dataset size' }, stat('–', 'Job ads'), stat('–', 'Regions'), stat('–', 'Occupations'));
-    const badge = h('p.xh-badge', {}, 'A clarification assistant for mid-career jobseekers');
+    const badge = h('p.xh-badge', {}, 'An evidence-grounded clarification assistant for mid-career jobseekers');
     const art = h('div.xh-art'); art.innerHTML = DOODLE;
     // ink every outlined shape stroke by stroke, then colour it in (css/intro.css); the dashed ground line keeps its dashes
     let k = 0;

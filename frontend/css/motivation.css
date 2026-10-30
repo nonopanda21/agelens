@@ -172,3 +172,5 @@ html[data-motion="reduced"] .mv-jump:hover{text-decoration:underline}
 .pt-tab th:first-child,.pt-tab tbody th{text-align:left;color:var(--brown)}
 .pt-note{margin:12px 0 0;font-size:.85rem;color:var(--text);background:var(--yellow-soft);border:1.5px dashed rgba(74,55,40,.35);border-radius:8px;padding:8px 10px}
 @media (max-width:640px){.pt-row{grid-template-columns:minmax(0,1fr)}.pt-k small{display:inline;margin-left:8px}}
+.mv-take.mv-eval{font-size:.95rem;color:var(--text)}.mv-take.mv-eval b{color:var(--brown)}
+.mv-note.mv-hetero a{color:var(--pink-ink);font-weight:700}
