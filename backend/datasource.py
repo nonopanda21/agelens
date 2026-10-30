@@ -4,7 +4,8 @@
     DataSource.fingerprint() -> stable hash of the content (idempotent re-import)
     DataSource.describe()  -> {encoding, delimiter, header, suggested_mapping, mapping}
     DataSource.iter_ads()  -> yields (source_row, raw_dict, fields) where `fields` holds the CANONICAL keys
-                              (title, company, city, province, date, description, category, url, source, salary), stripped strings.
+                              (title, company, city, province, date, description, category, url, source, salary,
+                              plus the English display fields EN_FIELDS, '' when absent), stripped strings.
     DataSource.stats       -> counters filled while iterating (source_rows_read, blank_rows_skipped)
     DataSource.warnings    -> list of strings (e.g. required field not mapped)
 
@@ -29,7 +30,11 @@ ALIASES = {
     "url": "url link job_url href 链接 职位链接 网址 详情链接",
     "source": "source site platform 来源 数据来源 平台 来源网站 招聘网站",
     "salary": "salary pay wage compensation 薪资 薪酬 工资 月薪 薪水 薪资范围",
+    # English display versions (the simulated ads carry them; a real CSV may too). Never parsed by the age rules.
+    "title_en": "title_en", "company_en": "company_en", "city_en": "city_en", "description_en": "description_en",
+    "age_sentence_en": "age_sentence_en",
 }
+EN_FIELDS = ("title_en", "company_en", "city_en", "description_en", "age_sentence_en")
 ALIAS_MAP = {a.lower(): k for k, v in ALIASES.items() for a in v.split()}
 FIELDS = list(ALIASES)
 

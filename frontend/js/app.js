@@ -2,6 +2,28 @@
 (function () {
   const AgeLens = (window.AgeLens = { pages: {} });
 
+  /* English-only UI (docs/ENGLISH_UI.md): no Chinese characters are rendered anywhere, not even as quoted evidence.
+     Pages render the English display fields (gloss_en, quote_en, title_en, description_en ...). As a last line of
+     defence, h() scrubs any CJK that still reaches a text node or a title / aria-label / placeholder / alt attribute,
+     and records it in AgeLens.scrubLog so tests can see which page relied on the safety net. Input values are not touched. */
+  const CJK_RE = /[⺀-⿟　-〿぀-ヿ㄀-ㄯ㆐-ㇿ㐀-䶿一-鿿豈-﫿︰-﹏＀-￯]/;
+  AgeLens.CJK = CJK_RE;
+  AgeLens.hasCJK = (s) => typeof s === 'string' && CJK_RE.test(s);
+  AgeLens.scrubLog = [];
+  /** s if it holds no CJK; otherwise CJK quotes and runs replaced by a short English placeholder. */
+  AgeLens.noCJK = function (s, where) {
+    if (typeof s !== 'string' || !CJK_RE.test(s)) return s;
+    AgeLens.scrubLog.push({ where: where || 'text', route: location.hash, sample: s.length > 40 ? s.slice(0, 40) + '…' : s });
+    if (AgeLens.scrubLog.length > 200) AgeLens.scrubLog.shift();
+    const PH = '[original wording not shown]';
+    const C = CJK_RE.source.slice(1, -1);   // the character class body
+    return s.replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"]*"/g, (m) => (CJK_RE.test(m) ? PH : m))
+      .replace(new RegExp('[' + C + '](?:[' + C + '0-9\\-~ ]*[' + C + '])?', 'g'), PH)
+      .replace(/\[original wording not shown\](?:[\s,;·/|]*(?:and\s+)?\[original wording not shown\])+/g, PH)
+      .replace(/\s{2,}/g, ' ').trim() || 'Original wording not shown';
+  };
+  const SCRUB_ATTR = { title: 1, 'aria-label': 1, placeholder: 1, alt: 1, 'aria-description': 1, 'aria-roledescription': 1 };
+
   /** h('div.card', {onclick}, 'text', child...) — safe DOM builder (text is never parsed as HTML; null/false kids skipped; arrays flattened). */
   AgeLens.h = function (sel, attrs, ...kids) {
     const idm = sel.match(/#([\w-]+)/);                 // 'p.hint#rvhelp' -> id="rvhelp"
@@ -12,11 +34,11 @@
     for (const [k, v] of Object.entries(attrs || {})) {
       if (v == null || v === false) continue;
       if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
-      else if (k === 'text') el.textContent = v;
-      else el.setAttribute(k, v === true ? '' : v);
+      else if (k === 'text') el.textContent = AgeLens.noCJK(String(v), sel);
+      else el.setAttribute(k, v === true ? '' : SCRUB_ATTR[k] ? AgeLens.noCJK(String(v), sel + '[' + k + ']') : v);
     }
     // nested arrays of children are flattened at any depth (a stray array would otherwise render as "[object HTMLElement]")
-    for (const kid of kids.flat(Infinity)) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+    for (const kid of kids.flat(Infinity)) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(AgeLens.noCJK(String(kid), sel)));
     return el;
   };
 

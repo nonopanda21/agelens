@@ -51,7 +51,7 @@ def cjk_in_map(pg):
     """CJK characters in visible map UI text (quoted evidence is not part of the map, so the allowance is zero)."""
     return pg.evaluate("""() => { const el = document.querySelector('.dt'); if (!el) return -1;
         const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n = 0, s = '';
-        while (w.nextNode()) { const t = w.currentNode; if (t.parentElement.closest('[lang^="zh"],.zh-orig')) continue; const m = t.textContent.match(/[\\u3400-\\u9fff]/g); if (m) { n += m.length; s += t.textContent.slice(0, 20) + '|'; } }
+        while (w.nextNode()) { const t = w.currentNode; const m = t.textContent.match(/[\\u3400-\\u9fff]/g); if (m) { n += m.length; s += t.textContent.slice(0, 20) + '|'; } }
         return n ? n + ' ' + s : 0; }""")
 
 

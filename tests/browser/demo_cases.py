@@ -2,7 +2,7 @@
 usage: ~/agelens-tools/pw/bin/python tests/browser/demo_cases.py http://127.0.0.1:8815
 Every case is opened and run with the KEYBOARD only (Tab/Enter on the summary and the case button).
 Prints observations as JSON (human-observation aid, separate from the unit tests); exits 1 on a failed check."""
-import json, sys
+import json, re, sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -55,6 +55,10 @@ def run_case(page, w, cid):
     # screenshot only: let the sticky nav scroll away so it does not cover the answer badges
     page.evaluate("()=>{const n=document.getElementById('nav'); if(n) n.style.position='static'}")
     page.locator("#answer").screenshot(path=str(OUT / f"{cid}_{w}.png"))
+    # English-only UI (docs/ENGLISH_UI.md): the answer and the pasted-ad card must not echo any Chinese, even for pasted Chinese ads
+    full = page.evaluate("document.body.innerText")
+    hits = re.findall(r".{0,20}[\u3000-\u303f\u3400-\u9fff\uff00-\uffef].{0,20}", full)
+    check(not hits, f"{w} {cid}: CJK on the page: {hits[:4]}")
     return {"answer_head": ans[:900], "ads_head": ads[:300], "overflow_px": ov,
             "focus": page.evaluate("document.activeElement && (document.activeElement.id || document.activeElement.tagName)")}
 

@@ -274,7 +274,9 @@ def time_limit_s(c, doc):
 
 
 def task_payload(task):
-    return {k: task[k] for k in ("id", "kind", "title", "ad_id", "job_title", "ad_text", "gloss", "profile", "question")}
+    out = {k: task[k] for k in ("id", "kind", "title", "ad_id", "job_title", "ad_text", "gloss", "profile", "question")}
+    out.update({k: task[k] for k in ("ad_text_en", "job_title_en") if k in task})   # English display fields (docs/ENGLISH.md)
+    return out
 
 
 def session_view(c, p):

@@ -1,11 +1,12 @@
 """Route sweep (automation task T03): every main route at 1280 and 360 px in real Chromium.
 usage: ~/agelens-tools/pw/bin/python tests/browser/sweep.py
 Starts its OWN server (temp copy of data/agelens.db, free port in 8822-8829, AGELENS_REVIEWER_TOKEN) and stops only that server.
-Fails (exit 1) on: console errors / page errors, unexpected 4xx/5xx responses, horizontal overflow, or CJK text outside
-elements that hold quoted ad text / original values. Screenshots: docs/screenshots/sweep/<route>_<width>.png.
-Evidence holders (CJK allowed): .orig .ex-snip .ex-ad-t .ev-title .rq-ev-title .st-adtext mark.age .zh-orig .quote and any
-element marked lang="zh*" (verbatim Chinese ad wording quoted inside English prose; the UI marks it so screen readers switch voice).
-The literal brand/legal footnotes have no CJK, so any other CJK is a UI-label leak."""
+Fails (exit 1) on: console errors / page errors, unexpected 4xx/5xx responses, horizontal overflow, or ANY CJK character in
+any text node in <body> (visible or hidden, including <option> and SVG <title>) or in a title / aria-label / placeholder / alt attribute. There is no evidence
+exception any more: the UI is English-only (docs/ENGLISH_UI.md). Text a user types into an input or textarea is its value, not
+page text, so it is not counted. Also checks that the Job Seeker "Download brief (Markdown)" file has no CJK.
+Prints (does not fail on) AgeLens.scrubLog: CJK that reached the DOM builder and was replaced by its safety net.
+Screenshots: docs/screenshots/sweep/<route>_<width>.png."""
 import json, os, shutil, socket, subprocess, sys, tempfile, time, urllib.request
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -14,16 +15,13 @@ ROOT = Path(__file__).resolve().parents[2]
 SHOTS = ROOT / "docs" / "screenshots" / "sweep"
 SHOTS.mkdir(parents=True, exist_ok=True)
 RVTOK = "sweep-reviewer-token-" + str(os.getpid())
-EVIDENCE = '.orig, .ex-snip, .ex-ad-t, .ev-title, .rq-ev-title, .st-adtext, mark.age, .zh-orig, .quote, [lang^="zh"]'
-CJK_JS = r"""(ev) => {
-  const R = /[㐀-鿿豈-﫿　-〿＀-￯]/;
+CJK_JS = r"""() => {
+  const R = /[\u2e80-\u2fdf\u3000-\u303f\u3040-\u30ff\u3100-\u312f\u3190-\u31ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\ufe30-\ufe4f\uff00-\uffef]/;
   const out = [];
-  const inEv = (el) => !!(el && el.closest && el.closest(ev));
-  const vis = (el) => el.closest('option') ? true : (el.checkVisibility ? el.checkVisibility({ checkVisibilityCSS: true }) : !!el.getClientRects().length);
   const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n;
-  while ((n = w.nextNode())) { const el = n.parentElement; if (!el || el.closest('script,style') || inEv(el) || !vis(el)) continue;
+  while ((n = w.nextNode())) { const el = n.parentElement; if (!el || el.closest('script,style')) continue;   // hidden text counts too: it can be revealed
     if (R.test(n.nodeValue)) out.push('<' + el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : '') + '> ' + n.nodeValue.trim().slice(0, 60)); }
-  document.querySelectorAll('[title],[aria-label],[placeholder],[alt]').forEach((el) => { if (inEv(el) || !vis(el)) return;
+  document.querySelectorAll('[title],[aria-label],[placeholder],[alt]').forEach((el) => {
     for (const a of ['title', 'aria-label', 'placeholder', 'alt']) { const v = el.getAttribute(a); if (v && R.test(v)) out.push('@' + a + ' ' + v.slice(0, 60)); } });
   return out;
 }"""
@@ -102,13 +100,21 @@ try:
                     page.click("button:has-text('Use an example')"); page.click("#go-btn")
                     page.wait_for_selector("#ads .card", timeout=45000)
                     page.check("#ads .card input[type=checkbox]"); page.wait_for_timeout(400)
+                    if w == 1280:  # the downloaded Markdown brief must be English too
+                        with page.expect_download(timeout=15000) as dl:
+                            page.click("button:has-text('Download brief (Markdown)')")
+                        md = Path(dl.value.path()).read_text(encoding="utf-8")
+                        import re as _re
+                        hits = _re.findall(r"[^\n]{0,30}[\u3000-\u303f\u3400-\u9fff\uff00-\uffef][^\n]{0,30}", md)
+                        check("seeker: downloaded Markdown brief has no CJK", not hits, hits[:5])
                 if name == "home":   # scroll through so lazy sections (marquee, data overview, footer) render
                     for y in range(0, 12000, 700):
                         page.evaluate(f"window.scrollTo(0,{y})"); page.wait_for_timeout(60)
                     # back to the top before the full-page shot, so the hero is not caught mid scroll-exit (faded)
                     page.evaluate("window.scrollTo({top:0,behavior:'instant'})"); page.wait_for_timeout(500)
                 ov = page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
-                cjk = page.evaluate(CJK_JS, EVIDENCE)
+                cjk = page.evaluate(CJK_JS)
+                scrub = page.evaluate("(window.AgeLens && AgeLens.scrubLog || []).splice(0)")
                 page.evaluate("()=>{const n=document.getElementById('nav'); if(n) n.style.position='static'}")
                 page.screenshot(path=str(SHOTS / f"{name}_{w}.png"), full_page=True)
                 tag = f"{name} @{w}"
@@ -117,7 +123,9 @@ try:
                 check(f"{tag}: no horizontal overflow", ov <= 0, f"{ov}px")
                 leak = page.evaluate("document.body.innerText.match(/\\[object [A-Za-z]+\\]|undefined|NaN%/g)")
                 check(f"{tag}: no [object ...] / undefined / NaN% in page text", not leak, leak)
-                check(f"{tag}: no CJK outside evidence", not cjk, cjk[:10])
+                check(f"{tag}: no CJK anywhere (text + title/aria-label/placeholder/alt)", not cjk, cjk[:10])
+                if scrub:
+                    print(f"INFO {tag}: {len(scrub)} string(s) relied on the CJK safety net, e.g. {[x['where'] for x in scrub[:4]]}", flush=True)
             ctx.close()
         br.close()
 except Exception as e:

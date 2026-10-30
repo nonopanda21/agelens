@@ -62,6 +62,19 @@ def load_real():
         _REAL_CACHE[str(f)] = (key, data)
     return data
 
+REAL_SOURCE_EN = "Zhaopin recruitment export 2016–2025.7, supplied by the team"
+
+
+def real_source_en(v):
+    """English-only display of the real matrix's meta.source (the file itself is not edited)."""
+    if not v:
+        return v
+    from . import gloss
+    if "智联" in v or "zhaopin" in str(v).lower():
+        return REAL_SOURCE_EN
+    return gloss.strip_cjk(v) if gloss.has_cjk(v) else v
+
+
 FILTER_KEYS = ("province", "city", "occupation", "age_status", "max_age_lte", "max_age_gte", "has_exception",
                "date_from", "date_to", "q", "include_demo", "age_class", "conflict")
 
@@ -126,7 +139,7 @@ def register(router):
             return {"available": False, "label": None, "years": None, "rows_used": None, "generated_at": None, "method": None}
         meta = data.get("meta") or {}
         return {"available": True, "label": data.get("label"), "years": meta.get("years"), "rows_used": meta.get("rows_used"),
-                "generated_at": meta.get("generated_at"), "method": meta.get("method"), "source": meta.get("source"),
+                "generated_at": meta.get("generated_at"), "method": meta.get("method"), "source": real_source_en(meta.get("source")),
                 "total_ads": (data.get("total") or {}).get("ads")}
 
     @router.get("/api/status")

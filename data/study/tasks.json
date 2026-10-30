@@ -56,7 +56,9 @@
       "title": "Hard age cap",
       "ad_id": "SIM-S01",
       "job_title": "Procurement Specialist (fictional)",
+      "job_title_en": "Procurement Specialist (fictional)",
       "ad_text": "【虚构示例岗位】采购专员｜示例贸易有限公司（虚构）\n岗位职责：负责供应商询价、比价与合同跟进，维护采购台账。\n任职要求：\n1. 本科及以上学历；\n2. 3年以上采购相关工作经验；\n3. 年龄35周岁以下；\n4. 熟练使用办公软件。\n工作地点：上海（虚构）",
+      "ad_text_en": "[FICTIONAL EXAMPLE POSTING] Procurement Specialist | Example Trading Co. (fictional)\nDuties: request and compare supplier quotes, follow up on contracts, keep the purchasing ledger.\nRequirements:\n1. Bachelor's degree or above;\n2. 3+ years of procurement-related work experience;\n3. Age 35 or under;\n4. Proficient with office software.\nLocation: Shanghai (fictional)",
       "gloss": "Study-team English gloss: Procurement Specialist at an invented trading company. Duties: supplier quotes, price comparison, contract follow-up, purchasing ledger. Requirements: (1) bachelor's degree or above; (2) 3+ years of procurement experience; (3) age 35 or under; (4) proficient with office software. Location: Shanghai (fictional).",
       "profile": {
         "age": 38,
@@ -69,6 +71,7 @@
         "cap": 35,
         "exception": null,
         "quote": "年龄35周岁以下",
+        "quote_en": "Age 35 or under",
         "unknowns": [
           "whether the cap is applied strictly to this vacancy",
           "whether any exception exists (the ad states none)"
@@ -81,7 +84,9 @@
       "title": "Cap with a qualification exception",
       "ad_id": "SIM-S02",
       "job_title": "Operations Manager (fictional)",
+      "job_title_en": "Operations Manager (fictional)",
       "ad_text": "【虚构示例岗位】运营经理｜示例网络科技有限公司（虚构）\n岗位职责：统筹线上店铺日常运营，制定活动计划并跟进数据。\n任职要求：\n1. 本科及以上学历；\n2. 5年以上运营管理经验；\n3. 年龄一般不超过35周岁；具备中级及以上职称或8年以上相关行业经验者，年龄可放宽至40周岁；\n4. 良好的沟通与协调能力。\n工作地点：杭州（虚构）",
+      "ad_text_en": "[FICTIONAL EXAMPLE POSTING] Operations Manager | Example Web Technology Co. (fictional)\nDuties: run the day-to-day operations of the online store, plan campaigns and follow the data.\nRequirements:\n1. Bachelor's degree or above;\n2. 5+ years of operations-management experience;\n3. Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40;\n4. Good communication and coordination skills.\nLocation: Hangzhou (fictional)",
       "gloss": "Study-team English gloss: Operations Manager at an invented web company. Duties: run online-store operations, plan campaigns, track data. Requirements: (1) bachelor's degree or above; (2) 5+ years of operations-management experience; (3) age generally not above 35; people with an intermediate professional title or 8+ years of relevant industry experience may be relaxed up to age 40; (4) good communication. Location: Hangzhou (fictional).",
       "profile": {
         "age": 38,
@@ -96,6 +101,7 @@
         "exception": "relaxed to 40 with intermediate title or 8+ years relevant industry experience",
         "relaxed_cap": 40,
         "quote": "年龄一般不超过35周岁；具备中级及以上职称或8年以上相关行业经验者，年龄可放宽至40周岁",
+        "quote_en": "Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40",
         "unknowns": [
           "whether e-commerce operations counts as 'relevant industry experience'",
           "how experience is verified",
@@ -109,7 +115,9 @@
       "title": "Age preference (not a hard limit)",
       "ad_id": "SIM-S03",
       "job_title": "Administrative Assistant (fictional)",
+      "job_title_en": "Administrative Assistant (fictional)",
       "ad_text": "【虚构示例岗位】行政助理｜示例咨询有限公司（虚构）\n岗位职责：负责会议安排、文件归档、来访接待及日常行政支持。\n任职要求：\n1. 大专及以上学历；\n2. 有行政或文秘工作经验者优先；\n3. 30岁以下优先；\n4. 工作细致，责任心强。\n工作地点：成都（虚构）",
+      "ad_text_en": "[FICTIONAL EXAMPLE POSTING] Administrative Assistant | Example Consulting Co. (fictional)\nDuties: schedule meetings, file documents, receive visitors and give day-to-day administrative support.\nRequirements:\n1. Associate degree or above;\n2. Administrative or secretarial experience preferred;\n3. Under 30 preferred;\n4. Careful and responsible.\nLocation: Chengdu (fictional)",
       "gloss": "Study-team English gloss: Administrative Assistant at an invented consultancy. Duties: meeting scheduling, filing, reception, daily admin support. Requirements: (1) associate degree or above; (2) administrative or secretarial experience preferred; (3) under 30 preferred; (4) careful and responsible. Location: Chengdu (fictional).",
       "profile": {
         "age": 41,
@@ -123,6 +131,7 @@
         "preference": 30,
         "exception": null,
         "quote": "30岁以下优先",
+        "quote_en": "Under 30 preferred",
         "unknowns": [
           "how much weight the preference carries",
           "whether applicants over 30 are considered in the same round"
@@ -135,7 +144,9 @@
       "title": "Incomplete ad text",
       "ad_id": "SIM-S04",
       "job_title": "Customer Service Supervisor (fictional)",
+      "job_title_en": "Customer Service Supervisor (fictional)",
       "ad_text": "【虚构示例岗位】客服主管｜示例零售有限公司（虚构）\n岗位职责：带领客服团队，处理升级投诉，优化服务流程。\n任职要求：\n1. 大专及以上学历；\n2. 年龄要求：28-3",
+      "ad_text_en": "[FICTIONAL EXAMPLE POSTING] Customer Service Supervisor | Example Retail Co. (fictional)\nDuties: lead the customer-service team, handle escalated complaints, improve service processes.\nRequirements:\n1. Associate degree or above;\n2. Age requirement: 28-3",
       "gloss": "Study-team English gloss: Customer Service Supervisor at an invented retail company. Duties: lead the service team, handle escalated complaints, improve service processes. Requirements: (1) associate degree or above; (2) age requirement: 28-3 ... The stored ad text is CUT OFF at this point; the rest of the ad is not available.",
       "profile": {
         "age": 36,
@@ -149,6 +160,7 @@
         "truncated": true,
         "exception": null,
         "quote": "年龄要求：28-3",
+        "quote_en": "Age requirement: 28-3",
         "unknowns": [
           "the upper age limit (the text is cut off at '28-3')",
           "whether it is a requirement or a preference",
@@ -173,7 +185,7 @@
         "id": "c2",
         "name": "Citation faithful",
         "definition": "The request refers to the ad's actual wording (quote or close paraphrase) and gets it right: the number, the condition and any exception match the ad text. It does not cite wording that is not in the ad. A request with no reference to the ad's wording does not meet this criterion.",
-        "met_example": "T1: \"The ad lists 'age 35 or under' (年龄35周岁以下).\"",
+        "met_example": "T1: \"The ad lists 'age 35 or under'.\"",
         "not_met_example": "T1: \"The ad says applicants must be under 30.\" (wrong number) or any request that never mentions what the ad says."
       },
       {
@@ -228,7 +240,7 @@
     {
       "id": "K1",
       "task_id": "T1",
-      "answer": "Hello, I am writing about the Procurement Specialist post (ad SIM-S01). I am 38 and have eight years of procurement experience. The ad lists \"年龄35周岁以下\" (age 35 or under). I cannot tell from the ad whether this limit is strict for this vacancy or whether any exceptions exist. Could you tell me whether applicants who are 38 are considered, and if so what you would look at?",
+      "answer": "Hello, I am writing about the Procurement Specialist post (ad SIM-S01). I am 38 and have eight years of procurement experience. The ad lists \"age 35 or under\". I cannot tell from the ad whether this limit is strict for this vacancy or whether any exceptions exist. Could you tell me whether applicants who are 38 are considered, and if so what you would look at?",
       "reference": {
         "c1": true,
         "c2": true,
@@ -280,7 +292,7 @@
     {
       "id": "K5",
       "task_id": "T3",
-      "answer": "Hello, I saw the Administrative Assistant ad (SIM-S03). I am 41 with twelve years in administration. The ad says \"30岁以下优先\" (under 30 preferred). Is that a preference only? I am unsure how it is weighed against experience. Are applicants over 30 reviewed in the same round?",
+      "answer": "Hello, I saw the Administrative Assistant ad (SIM-S03). I am 41 with twelve years in administration. The ad says \"under 30 preferred\". Is that a preference only? I am unsure how it is weighed against experience. Are applicants over 30 reviewed in the same round?",
       "reference": {
         "c1": true,
         "c2": true,
@@ -303,5 +315,6 @@
       },
       "rationale": "Invents a cap of 35 and an exception that are not in the cut-off text (S1); asserts eligibility; no real question."
     }
-  ]
+  ],
+  "_english": "English display fields: tasks[*].ad_text_en, job_title_en, facts.quote_en (the age rules read the Chinese ad_text; participants see ad_text_en). Added 2026-10-28; the sha256 of this file changed with it (study not approved)."
 }

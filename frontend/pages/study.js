@@ -17,12 +17,24 @@
     return h('div.st-banner.formal', { role: 'status' }, h('strong', {}, 'Formal study session'), h('span', {}, ' Approved protocol in force.'));
   }
 
+  /* English only (docs/ENGLISH_UI.md): the ad is shown as ad_text_en; until a task has it, the study team's English
+     gloss stands in. The Chinese ad_text is never rendered. */
+  const en = (v) => (AgeLens.labels ? AgeLens.labels.en(v) : (typeof v === 'string' && !AgeLens.hasCJK(v) ? v : null));
+  const jobTitle = (task) => en(task.job_title_en) || en(task.job_title) || 'Fictional job';
+  function adText(task) {
+    const t = en(task.ad_text_en);
+    if (t) return h('pre.st-adtext', {}, t);
+    const g = en(task.gloss);
+    return g ? h('div', {}, h('p.hint', {}, 'English version of the fictional ad:'), h('p.st-gloss.st-adtext', {}, g.replace(/^Study-team English gloss:\s*/, '')))
+      : h('p.hint', {}, 'The English text of this ad is not available.');
+  }
+
   function taskFacts(task) {
     const p = task.profile;
     return h('div.st-facts', {},
       h('section.card.st-ad', { 'aria-labelledby': 'ad-h' },
-        h('h2', { id: 'ad-h' }, 'The ad'), h('p.hint', {}, task.ad_id + ' · ' + task.job_title + ' · fictional, written for this study'),
-        h('pre.st-adtext', { lang: 'zh-CN' }, task.ad_text), h('p.st-gloss', {}, task.gloss)),
+        h('h2', { id: 'ad-h' }, 'The ad'), h('p.hint', {}, task.ad_id + ' · ' + jobTitle(task) + ' · fictional, written for this study'),
+        adText(task)),
       h('section.card', { 'aria-labelledby': 'bg-h' },
         h('h2', { id: 'bg-h' }, 'The job seeker'),
         h('dl.st-dl', {}, h('dt', {}, 'Age'), h('dd', {}, String(p.age)), h('dt', {}, 'Experience'), h('dd', {}, p.years_experience + ' years'),

@@ -25,29 +25,18 @@
   }
   function simBadge() { return h('span.badge.sim', { title: 'This case was built from simulated, synthetic ad data' }, SIM); }
 
-  /** Original text with the age sentences highlighted (<mark class="age">). Text only, never HTML. */
-  function highlighted(text, terms) {
-    text = text || '';
-    const spans = [];
-    for (const t of terms || []) {
-      let s = t.start_offset, e = t.end_offset;
-      if (!(Number.isInteger(s) && Number.isInteger(e) && e > s && text.slice(s, e) === t.snippet)) {
-        const i = t.snippet ? text.indexOf(t.snippet) : -1;
-        if (i < 0) continue;
-        s = i; e = i + t.snippet.length;
-      }
-      spans.push([s, e]);
+  /** English ad text (description_en) with the English age sentence highlighted (<mark class="age">). Text only, never HTML.
+      Snapshots stored before the English fields existed have no English text: they show the age-term gloss instead. */
+  function highlighted(ev) {
+    const L = AgeLens.labels;
+    const text = L.en(ev.description_en), sents = L.sentences(ev);
+    if (!text) {
+      const line = L.ageLine(ev);
+      return h('div.rq-ad-missing', {}, h('p.hint', {}, L.NOT_SHOWN + ': this ad was saved without an English version, so its full text is not shown.'),
+        line ? h('p.orig', {}, h('mark.age', {}, line)) : null);
     }
-    spans.sort((a, b) => a[0] - b[0]);
-    const out = []; let pos = 0;
-    for (const [s, e] of spans) {
-      if (s < pos) continue;
-      if (s > pos) out.push(text.slice(pos, s));
-      out.push(h('mark.age', {}, text.slice(s, e)));
-      pos = e;
-    }
-    if (pos < text.length) out.push(text.slice(pos));
-    return h('p.orig', { lang: 'zh-CN' }, out);
+    const hl = L.highlight(text, sents);
+    return h('p.orig', {}, hl.nodes, !hl.found && sents.length ? sents.map((x) => [' ', h('mark.age', {}, x)]) : null);
   }
 
   function ageTermLine(t) {
@@ -56,26 +45,27 @@
     if (t.min_age != null && t.max_age != null) range = t.min_age + '-' + t.max_age;
     else if (t.max_age != null) range = 'up to ' + t.max_age;
     else if (t.min_age != null) range = 'from ' + t.min_age;
-    return h('li', {}, (kinds[t.kind] || t.kind || 'Age wording') + (range ? ' (' + range + ')' : '') + (t.exception_text ? ' · exception wording: ' : ''),
-      t.exception_text ? h('span.zh-orig', { lang: 'zh-CN' }, t.exception_text) : null);
+    const L = AgeLens.labels, g = L.en(t.gloss_en), ex = L.exception(t);
+    return h('li', {}, (kinds[t.kind] || t.kind || 'Age wording') + (range ? ' (' + range + ')' : ''), g ? ': ' + g : '', ex && !g ? ' · ' + ex : '');
   }
 
   function evidenceCard(ev, withLink, open) {
-    // English province / source; company and original location stay as muted original text (evidence matching).
+    // English only: company and city appear when they have English names; province / occupation / source are translated labels.
     const L = AgeLens.labels, metaKids = [];
     const addM = (...n) => { if (metaKids.length) metaKids.push(' · '); metaKids.push(...n.filter((x) => x != null)); };
-    if (ev.company) addM(h('span.zh-orig', { lang: 'zh-CN' }, ev.company));
-    if (ev.province || ev.city) addM(ev.province ? L.prov(ev.province) : 'Region not stated', ' ', L.orig([ev.province, ev.city].filter(Boolean).join(' ')));
+    const co = L.company(ev);
+    if (co) addM(co);
+    if (ev.province || ev.city) addM(L.place(ev));
     if (ev.occupation) addM(L.occ(ev.occupation));
     if (ev.posted_date) addM(ev.posted_date);
     if (ev.source) addM(L.source(ev.source));
     const meta = metaKids.length ? metaKids : null;
     const terms = ev.age_terms || [];
-    return h('details.card.rq-ev', { open: open !== false }, 
-      h('summary', {}, h('span.rq-ev-title', { lang: 'zh-CN' }, ev.title || ev.id), ev.is_demo ? simBadge() : null),
+    return h('details.card.rq-ev', { open: open !== false },
+      h('summary', {}, h('span.rq-ev-title', {}, L.adTitle(ev)), ev.is_demo ? simBadge() : null),
       meta ? h('p.hint', {}, meta) : null,
-      h('p.hint', {}, 'Original ad text (Chinese, unaltered). Age wording is highlighted.'),
-      highlighted(ev.description || (terms[0] && terms[0].snippet) || '', terms),
+      L.en(ev.description_en) ? h('p.hint', {}, 'The ad in English. The age wording is highlighted.') : null,
+      highlighted(ev),
       terms.length ? h('ul.rq-terms', {}, terms.map(ageTermLine)) : h('p.hint', {}, 'No explicit age wording detected in this ad (this is not a statement that none exists).'),
       withLink ? h('a', { href: '#/evidence/' + encodeURIComponent(ev.id) }, 'Open full evidence page') : null);
   }

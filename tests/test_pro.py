@@ -189,9 +189,11 @@ class TestReportContent(Base):
         self.assertIn("Demo · Synthetic data", txt)
         self.assertIn("simulated demonstration data", txt)
         self.assertIn("No AI model was used", txt)
-        for a in ctx["ads"]:  # every ad's age wording is quoted verbatim
+        from backend import gloss
+        for a in ctx["ads"]:  # every ad's age wording is shown, as its English gloss (the report has no Chinese: docs/ENGLISH.md)
             for t in a.get("age_terms") or []:
-                self.assertIn("“%s”" % t["snippet"], txt)
+                self.assertIn(gloss.term_en(t), txt)
+        self.assertFalse(gloss.has_cjk(txt))
 
     def test_no_outcome_or_legal_claims(self):
         txt, _, _ = self.text()

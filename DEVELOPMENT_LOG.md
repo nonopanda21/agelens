@@ -683,3 +683,68 @@ At the user's request the hero badge now reads "A tool for reading age limits in
   - Browser: sweep 120/120, map_real 40/40, e2e 22/22, review_loop 37/37, public_demo 33/33, pro_flow 27/27, a11y 0 high, palette 0 low-contrast, theme ok, labels 0, map_v2 and map_explore no errors, perf no fails, lit_check OK.
   - The phone home page was reviewed screen by screen (iPhone 13 emulation).
 - **Not done (needs a decision):** the ageparse fixes from docs/REAL_DATA_AUDIT.md (they would change all real-data numbers).
+
+## 2026-10-28 · English-only display, backend (ENGLISH-BACKEND agent)
+Requirement: the website shows no Chinese. The rules keep reading the Chinese text; the API adds English display fields (`*_en`) and keeps every original field. Contract: docs/ENGLISH.md.
+- **New `backend/gloss.py`** (rules only, no model):
+  - `term_en`, `exception_en`, `class_en`, `quote_en` and `en_text`;
+  - `province_en`, `occupation_en`, `city_en` and `source_en`;
+  - `enrich_ad` / `enrich_term`.
+- **API.**
+  - `/api/ads` and `/api/ads/<id>`: title/company/city/province/occupation/source/class English fields, `description_en`, `age_sentence(s)_en`, per-term `gloss_en`, `class_en`, `exception_en`.
+  - Brief and paste check: `text_en` on every statement, `quote_en`, `questions[*].text_en`, `findings[*].statement_en`, `unclear_en`, English evidence index; `pasted.truncated_en`, `conflict_en`, `instruction_like_en`.
+  - `/api/age/check` terms: `gloss_en`, `class_en`, `exception_en`.
+  - Request evidence snapshots: glossed at read time; the snapshot is not changed.
+  - Stats by province/occupation: `*_en`.
+  - `/api/real/status` `source`: English only, mapped in `api_data.real_source_en`. `data/real` is untouched.
+- **Exports.** The Markdown export, the Word report and the study aid are English only. The report appendix shows English titles and term glosses instead of verbatim snippets.
+- **Simulated ads.**
+  - `make_sim_data.py` adds `title_en`, `company_en`, `city_en`, `description_en` and `age_sentence_en`. English columns version `sim-en-1.0.0`; GENERATOR_VERSION stays sim-1.0.0.
+  - They come from lookup tables keyed by the Chinese template already chosen, with no extra random draws. The Chinese columns of all 1,018 rows are identical to before (sha256 pinned in tests/test_english.py).
+  - Ids are unchanged: verified on a DB copy, where all 960 ids and classes are identical after reset_sim + import.
+  - `datasource` maps the new columns, `evidence.ensure_columns` adds them, and `import_csv` stores them.
+  - `data/sim/*` was regenerated. The CSV sha256 is now 9fbd546005c1c131…; it was b5a229ea… The `cases.json` English fields were added.
+- **Study.**
+  - `data/study/tasks.json` gets `ad_text_en`, `job_title_en` and `facts.quote_en` per task.
+  - Calibration answers K1/K5 and one rubric example no longer contain the Chinese quote.
+  - The sha256 changed from 4543eded… to 328992c7… (the study is not approved). The old value is still recorded in `data/study/dryrun_2026-10-27/` (historical, left as is).
+  - `api_study.task_payload` now also returns `ad_text_en` / `job_title_en`. This is a two-line additive edit, needed so the page can show the English ad.
+- **Tests.**
+  - New `tests/test_english.py` (21 tests): no CJK in any `_en` field of all 960 ads and the details, the Markdown, the Word report, the study aid, `/api/age/check`, `/api/real/status`, `cases.json`; plus gloss unit tests.
+  - `tests/test_pro.py`: the report test asserted verbatim Chinese snippets, which contradicts the requirement. It now asserts each term's English gloss and no CJK.
+  - Full suite: 308 OK.
+- **Main DB not modified.** The lead re-imports it after a backup (docs/ENGLISH.md, "Re-importing a database").
+
+## 2026-10-28 · Rules candidate A (precision first), `age-rules-2.1.0-a`
+- **New files:** `backend/ageparse_cand_a.py` (drop-in copy of `ageparse.py`, same API; adds `cohort_terms`) and `docs/RULES_CAND_A.md`. `backend/ageparse.py` and all existing files are unchanged.
+- **Changes:**
+  - F1, numbers read as ages: an age may not be followed by a digit; a 最高/不超过/低于 cap needs 岁 or a 年龄 prefix; 不低于 is never a cap; 未满 = 不满; caps ≤ 18 are dropped; "30岁以上勿扰" is a cap.
+  - F2: ranges with 岁 on both ends, and the ——, --, 〜 separators.
+  - F3: team or company 90后 / 年轻化 / 年轻人 wording is dropped.
+  - F4: graduate cohort is not an age condition. It is reported separately by `cohort_terms()`.
+  - F5: an age that describes customers, pupils or children is dropped.
+  - F6: "男女不限年龄要求：…" is no longer read as 不限年龄.
+- **Development sample:** 201,230 ads. **Evaluation sample:** a disjoint 50,435 ads (2021–2024, seed 20261028).
+- **Evaluation results:**
+  - explicit 11,533 → 12,088 (+4.8%); cap 3,082 → 2,958 (−4.0%); ambiguous 1,162 → 625.
+  - 30 random differing ads were all judged in the candidate's favour.
+- **Audit (120 items):** 107 → 119 right (strict). No regressions. This set is not held out.
+- **Tests:** the existing unit tests ran against the candidate by monkeypatching the import: 286/287 pass. The only failure is the intentional `RULE_VERSION` assertion.
+- **Speed:** ≈ 5,860 ads/s per core against ≈ 5,290 today. A two-digit pre-check skips the numeric patterns on sentences without one.
+- **Not adopted:** the lead will choose after scoring on the blind gold set. Scratch scripts are in the session scratchpad (`cand_a/`).
+
+## 2026-10-29 · GOLD-SET agent: blind reference set and evaluation harness
+- **Gold set:** `data/raw/gold_age_2021-2024.jsonl` (git-ignored), 415 real 2021-2024 ads: 150 uniform random plus 265 targeted over 10 strata. One AI annotator, labelled by reading, before any rule was run. 227 gold positive, 21 low-confidence labels.
+- **Guideline, sampling, test-retest, baseline:** all in `docs/RULES_GOLD.md`. Test-retest on a seeded 10% (40 items): has_age_condition 40/40, class 39/40 (kappa 0.96). Agreement between annotators was not measured.
+- **Harness:** `scripts/eval_rules.py` (gold scoring with Wilson intervals, `--diff`, `--json`, `--population` over a seeded 50,000-ad sample with at most 6 workers, plus the draw modes). Population sample cached in git-ignored `data/raw/`.
+- **Fixtures:** `tests/fixtures/age_gold_snippets.jsonl`, 89 short cases covering all strata. No test asserts on them.
+- **Baseline `age-rules-2.0.0`, random stratum:** detection P 97.5% / R 97.5%, class accuracy 98.0% (147/150). On the hard-case-heavy full set: recall 78.4%, class accuracy 75.7%. Population flagged share 25.58%.
+- **Main failures:** Chinese numerals unread, ranges with 岁 on both ends or repeated dashes, salary/height/eyesight digits after bound words, team wording flagged, relaxations missed.
+- No changes to `backend/`; no `ageparse_cand_*` file was read.
+
+## English-only frontend (ENGLISH-FRONTEND agent)
+- No CJK anywhere in the UI (text, title, aria-label, placeholder, alt). Evidence exception removed from sweep.py and labels_check.py; new tests/browser/no_cjk_crawl.py; demo_cases/seeker_flow/map_v2/study_flow adjusted.
+- labels.js rewritten around *_en fields with English fallbacks (never Chinese); app.js h() has a CJK safety net (AgeLens.noCJK, scrubLog).
+- Pages: evidence, explore, seeker, requests/reviewer, study/score, sidekit (English chips, Chinese example sent to checker without showing it), home_motivation, about, home_how, pro copy.
+- Details and remaining Chinese lookup keys in source: docs/ENGLISH_UI.md.
+- Results against a DB re-imported with English sim data: crawler 0 CJK on all routes at 1280/390; sweep 121/121; labels_check, a11y_check, demo_cases, seeker_flow, e2e_loop 22/22, review_loop 37/37; unit tests 308 OK.

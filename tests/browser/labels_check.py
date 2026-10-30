@@ -1,13 +1,12 @@
-"""English-label check: counts CJK characters that are visible OUTSIDE original-evidence elements on the main routes.
+"""English-label check: counts CJK characters anywhere on the main routes. The UI is English-only (docs/ENGLISH_UI.md), so
+there is NO evidence exception any more: quoted ad text, titles, highlights and original values must all be English.
 Usage: <pw python> tests/browser/labels_check.py [BASE] [TAG]
   BASE defaults to http://127.0.0.1:8812 (a server started with AGELENS_REVIEWER_TOKEN set, see below).
   TAG  names the screenshot set (docs/screenshots/labels/<TAG>_*.png), default 'after'.
 Reviewer token: env AGELENS_REVIEWER_TOKEN (must match the server's).
-Evidence = elements that hold verbatim ad text or other original-source strings, marked by these classes:
-  .orig (full ad text) .ex-snip (explore snippet) .ex-ad-t (ad title link) .ev-title (evidence h1) .rq-ev-title (request evidence title)
-  .st-adtext (study ad) mark.age (highlight) .zh-orig (original value shown next to its English label: company, original location, raw row).
-Counted outside evidence: visible text nodes, <option> text, SVG <title> tooltips, and title/aria-label/placeholder attributes.
-Exit code 1 if any route has CJK outside evidence."""
+Counted: visible text nodes, <option> text, SVG <title> tooltips, and title/aria-label/placeholder/alt attributes.
+Input and textarea values (what a user types or pastes) are not page text and are not counted.
+Exit code 1 if any route has any CJK."""
 import json, os, sys, urllib.request
 from playwright.sync_api import sync_playwright
 
@@ -16,17 +15,17 @@ BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8812'
 TAG = sys.argv[2] if len(sys.argv) > 2 else 'after'
 OUT = os.path.join(ROOT, 'docs', 'screenshots', 'labels'); os.makedirs(OUT, exist_ok=True)
 RVTOK = os.environ.get('AGELENS_REVIEWER_TOKEN', '')
-EVIDENCE = '.orig, .ex-snip, .ex-ad-t, .ev-title, .rq-ev-title, .st-adtext, mark.age, .zh-orig, [lang^="zh"]'  # quoted ad wording marked lang=zh (as in sweep.py)
+EVIDENCE = ''  # no exception: was '.orig, .ex-snip, .ex-ad-t, .ev-title, .rq-ev-title, .st-adtext, mark.age, .zh-orig, [lang^="zh"]'
 
 COUNT_JS = r"""(ev) => {
-  const CJK = /[㐀-鿿豈-﫿　-〿＀-￯]/g;
+  const CJK = /[\u2e80-\u2fdf\u3000-\u303f\u3040-\u30ff\u3100-\u312f\u3190-\u31ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\ufe30-\ufe4f\uff00-\uffef]/g;
   const out = { text: 0, attr: 0, samples: [] };
-  const inEv = (el) => !!(el && el.closest && el.closest(ev));
+  const inEv = (el) => !!(ev && el && el.closest && el.closest(ev));
   const visible = (el) => { if (!el) return false; if (el.closest('option, title')) return true; return el.checkVisibility ? el.checkVisibility({ checkVisibilityCSS: true }) : !!el.getClientRects().length; };
   const add = (kind, el, s) => { const n = (s.match(CJK) || []).length; if (!n) return; out[kind] += n; if (out.samples.length < 12) out.samples.push(kind + ' <' + el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ').join('.') : '') + '> ' + s.trim().slice(0, 60)); };
   const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   let n; while ((n = w.nextNode())) { const el = n.parentElement; if (!el || el.closest('script, style') || inEv(el) || !visible(el)) continue; add('text', el, n.nodeValue); }
-  document.querySelectorAll('[title], [aria-label], [placeholder]').forEach((el) => { if (inEv(el) || !visible(el)) return; ['title', 'aria-label', 'placeholder'].forEach((a) => { const v = el.getAttribute(a); if (v) add('attr', el, v); }); });
+  document.querySelectorAll('[title], [aria-label], [placeholder], [alt]').forEach((el) => { if (inEv(el)) return; ['title', 'aria-label', 'placeholder', 'alt'].forEach((a) => { const v = el.getAttribute(a); if (v) add('attr', el, v); }); });
   return out;
 }"""
 
@@ -109,7 +108,7 @@ with sync_playwright() as pw:
     shot(page, 'explore_bar')
 
     # ---- evidence page
-    page.goto(BASE + '/#/evidence/' + ads[0]['id'], wait_until='networkidle'); page.wait_for_selector('.orig'); page.wait_for_timeout(400)
+    page.goto(BASE + '/#/evidence/' + ads[0]['id'], wait_until='networkidle'); page.wait_for_selector('.ev-sec'); page.wait_for_timeout(400)
     measure(page, '#/evidence/<id>'); shot(page, 'evidence')
 
     # ---- requests (seeker) list + detail

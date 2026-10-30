@@ -7,7 +7,7 @@ import datetime
 import time
 from collections import Counter
 
-from . import llm
+from . import gloss, llm
 
 LABEL = "Evidence summary — rules-based"
 DEMO_LABEL = "Demo · Synthetic data"
@@ -71,9 +71,19 @@ def _ids(ads):
     return list(dict.fromkeys(a["id"] for a in ads))[:MAX_IDS]
 
 
-def _finding(fid, statement, ads, kind, num=None, den=None):
+def _all_terms(ads):
+    return [t for a in ads for t in _terms(a)]
+
+
+def _title_en(a):
+    t = a.get("title_en") or (a.get("title") if a.get("title") and not gloss.has_cjk(a.get("title")) else None)
+    return t or a.get("id") or "untitled ad"
+
+
+def _finding(fid, statement, ads, kind, num=None, den=None, statement_en=None):
     f = {"id": fid, "statement": statement, "evidence_ids": _ids(ads), "kind": kind,
          "evidence_total": len({a["id"] for a in ads})}
+    f["statement_en"] = gloss.en_text(statement_en or statement, _all_terms(ads))
     if den is not None:
         f["counts"] = {"numerator": num, "denominator": den}
     return f
@@ -237,11 +247,13 @@ def build_brief(body, ev=None, allow_model=True):
                 parts.append("a maximum of %d" % mx)
             if mn is not None:
                 parts.append("a minimum of %d" % mn)
-            s = "This ad (%s) states %s" % (title, " and ".join(parts)) + ("; you entered %d" % age if age is not None else "") + "."
+            tail = " and ".join(parts) + ("; you entered %d" % age if age is not None else "") + "."
+            s, s_en = "This ad (%s) states %s" % (title, tail), "This ad (%s) states %s" % (_title_en(a), tail)
             ex = _exceptions(a)
             if ex:
-                s += " The ad also says “%s”, which suggests exceptions may be possible — ask how they are decided." % ex[0]
-            findings.append(_finding("A%d" % (shown + 1), s, [a], "ad_fact"))
+                more = " The ad also says “%s”, which suggests exceptions may be possible — ask how they are decided."
+                s, s_en = s + more % ex[0], s_en + more % ex[0]
+            findings.append(_finding("A%d" % (shown + 1), s, [a], "ad_fact", statement_en=s_en))
             shown += 1
 
     # ---- 3. unclear ----
@@ -290,7 +302,8 @@ def build_brief(body, ev=None, allow_model=True):
         questions.append({"text": "The ad mentions that some requirements may be relaxed. What criteria are used, and who decides?", "evidence_ids": _ids(exc_ads)})
     conf_ads = [a for a in ads if _conflict_snippets(a)]
     if conf_ads:
-        questions.append({"text": "The ad's age wording contradicts itself (%s). Which of these applies to this role?" % _quoted(_conflict_snippets(conf_ads[0])), "evidence_ids": _ids(conf_ads)})
+        questions.append({"text": "The ad's age wording contradicts itself (%s). Which of these applies to this role?" % _quoted(_conflict_snippets(conf_ads[0])), "evidence_ids": _ids(conf_ads),
+                          "text_en": gloss.en_text("The ad's age wording contradicts itself (%s). Which of these applies to this role?" % _quoted(_conflict_snippets(conf_ads[0])), _terms(conf_ads[0]))})
     if amb:
         questions.append({"text": "Some age wording in the ad is ambiguous. Could you clarify what it means for this role?", "evidence_ids": _ids(amb)})
     questions.append({"text": "At which stage of the process (screening, interview, offer) are age-related requirements applied, if at all?", "evidence_ids": _ids(with_max_all or ads)})
@@ -319,6 +332,8 @@ def build_brief(body, ev=None, allow_model=True):
                    "This summary is not legal advice and does not predict any hiring outcome."]
 
     model_ads = sorted(ads, key=lambda a: (not _terms(a), 0 if a.get("description") else 1))[:MODEL_ADS]
+    for q in questions:
+        q.setdefault("text_en", gloss.en_text(q["text"], _all_terms(ads)))
     llm_input = llm.build_input(question, profile, model_ads, scope, max_chars=MODEL_CHARS)
     answer, index = _answer(ads, llm_input, profile, question, n, insufficient, status, with_max_all, exc_ads, amb, questions, demo)
     scope["data_version"] = _data_version(ev)
@@ -328,7 +343,12 @@ def build_brief(body, ev=None, allow_model=True):
     if res["ran"] and res["ok"]:
         ai_status, note, report = "used", "Model-written statements below are labelled “Model inference” or “Ad text” and were checked by code against the ad texts. The check is not a guarantee; confirm against the original wording.", res["report"]
         for st in res["statements"]:
-            answer[st["section"]].append(dict(st, id="M%d" % (len(answer[st["section"]]) + 1), source="model"))
+            m = dict(st, id="M%d" % (len(answer[st["section"]]) + 1), source="model")
+            tt = _all_terms([a for a in ads if a["id"] in (st.get("evidence_ids") or [])])
+            m["text_en"] = gloss.en_text(m.get("text") or "", tt)
+            if m.get("quote"):
+                m["quote_en"] = gloss.quote_en(m["quote"], tt)
+            answer[st["section"]].append(m)
         for ev_id in {i for st in res["statements"] for i in st["evidence_ids"]}:
             index.setdefault(ev_id, _index_entry(next((a for a in ads if a["id"] == ev_id), {"id": ev_id})))
     elif res["ran"]:
@@ -346,7 +366,8 @@ def build_brief(body, ev=None, allow_model=True):
         "sections": SECTIONS, "insufficient": insufficient, "using_demo": bool(demo),
         "question_background": {"question": question, "profile": profile, "missing_fields": missing,
                                 "question_missing": not question},
-        "findings": findings, "unclear": unclear, "questions": questions, "next_steps": steps, "scope": scope,
+        "findings": findings, "unclear": unclear, "unclear_en": [gloss.en_text(u, _all_terms(exc_ads or ads)) for u in unclear],
+        "questions": questions, "next_steps": steps, "scope": scope,
         "limitations": limitations,
         "disclaimer": "This summary organises ad wording as evidence. It is not legal advice, does not say whether you are eligible, and does not predict hiring outcomes. Age is used only to explain conditions.",
     }
@@ -372,8 +393,11 @@ def _data_version(ev):
 
 
 def _index_entry(a):
+    company_en = a.get("company_en") or (a.get("company") if a.get("company") and not gloss.has_cjk(a.get("company")) else None)
     return {"title": a.get("title"), "company": a.get("company"), "source": a.get("source"), "posted_date": a.get("posted_date"),
-            "province": a.get("province"), "is_demo": bool(a.get("is_demo"))}
+            "province": a.get("province"), "is_demo": bool(a.get("is_demo")),
+            "title_en": _title_en(a), "company_en": company_en, "province_en": gloss.province_en(a.get("province")),
+            "source_en": gloss.source_en(a.get("source"), bool(a.get("is_demo")))}
 
 
 def _quote(ad, snippet):
@@ -387,10 +411,14 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
 
     def add(sec, typ, text, ads_=(), quote=None, counts=None):
         counter[sec] += 1
+        terms = _all_terms(ads_)
         st = {"id": sec[0].upper() + str(counter[sec]), "type": typ, "text": text, "source": "rules",
-              "evidence_ids": list(dict.fromkeys(a["id"] for a in ads_))[:MAX_IDS]}
+              "evidence_ids": list(dict.fromkeys(a["id"] for a in ads_))[:MAX_IDS],
+              # display text without Chinese: quoted ad wording is replaced by its gloss; user input keeps its English parts
+              "text_en": gloss.strip_cjk(text) if typ == "user_stated" else gloss.en_text(text, terms)}
         if quote:
             st["quote"] = quote
+            st["quote_en"] = gloss.quote_en(quote, terms)
         if counts:
             st["counts"] = {"numerator": counts[0], "denominator": counts[1]}
         A[sec].append(st)
@@ -515,11 +543,16 @@ def _region_en(region):
 TAG = {"ad_fact": "Ad text", "user_stated": "You said", "rules": "Rules", "model_inference": "Model inference"}
 
 
+def _en(s):
+    """Last guard for the English exports: no Chinese characters leave in Markdown or Word."""
+    return gloss.strip_cjk(s) if isinstance(s, str) else s
+
+
 def to_markdown(b):
     L = ["# AgeLens brief", ""]
     badges = [b["data_label"]] if b.get("data_label") else []
     badges.append(b["model"]["label"] if not b["model"]["ran"] else "Model connected (output checked by code, not guaranteed)")
-    L += ["**" + " · ".join(badges) + "**", "", "*" + b["disclaimer"] + "*", ""]
+    L += ["**" + " · ".join(_en(x) for x in badges) + "**", "", "*" + b["disclaimer"] + "*", ""]
     if b["model"]["note"]:
         L += ["> " + b["model"]["note"], ""]
     if b["insufficient"]:
@@ -530,22 +563,25 @@ def to_markdown(b):
         for st in b["answer"][h["key"]]:
             tag = TAG[st["type"]]
             tail = " [%d of %d ads]" % (st["counts"]["numerator"], st["counts"]["denominator"]) if st.get("counts") else ""
-            L.append("- **[%s]** %s%s" % (tag, st["text"], tail))
+            L.append("- **[%s]** %s%s" % (tag, _en(st.get("text_en") or st["text"]), tail))
             if st.get("quote"):
-                L.append("  > %s" % st["quote"].replace("\n", " "))
+                L.append("  > Ad wording, in English: %s" % _en(st.get("quote_en") or gloss.quote_en(st["quote"])).replace("\n", " "))
             if st["evidence_ids"]:
                 refs = []
                 for i in st["evidence_ids"][:5]:
                     e = idx.get(i, {})
-                    refs.append("%s (%s%s)" % (i, e.get("source") or "source n/a", ", " + e["posted_date"] if e.get("posted_date") else ""))
+                    src = e.get("source_en") or gloss.source_en(e.get("source"), e.get("is_demo")) or "source n/a"
+                    title = e.get("title_en")
+                    refs.append("%s%s (%s%s)" % (i, (" · " + _en(title)) if title else "", _en(src), ", " + e["posted_date"] if e.get("posted_date") else ""))
                 L.append("  - Evidence: " + "; ".join(refs) + (" and %d more" % (len(st["evidence_ids"]) - 5) if len(st["evidence_ids"]) > 5 else ""))
         L.append("")
     s = b["scope"]
     L += ["## Scope and provenance", "",
-          "- Data: %s; data version: %s; rule versions: %s" % (b["data_label"] or "imported data", s.get("data_version") or "not reported", ", ".join(s["rule_versions"]) or "n/a"),
+          "- Data: %s; data version: %s; rule versions: %s" % (_en(b["data_label"] or "imported data"), _en(s.get("data_version") or "not reported"), ", ".join(s["rule_versions"]) or "n/a"),
           "- Matched ads: %s; analysed: %s" % (s["matched_total"], s["ads_analysed"]),
           "- Posting dates: %s" % ((s["date_min"] + " to " + s["date_max"]) if s["date_min"] else "not available"),
           "- Generated: %s (%s)%s" % (b["generated_at"], b["generation_mode"], "; prompt " + b["prompt_version"] if b.get("prompt_version") else ""),
+          "- Ad wording is shown as an English gloss of what the rules read; the original Chinese text is kept in the ad record.",
           "- Provenance tags: Ad text = quoted or paraphrased from an ad; You said = from your input; Rules = counts and templates computed by code; Model inference = a model's reading, checked by code but not guaranteed.",
           "- This brief needs human confirmation against the original ad text before you rely on it.", ""]
     return "\n".join(L)

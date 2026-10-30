@@ -2,14 +2,14 @@
    AgeLens is built the way it is (design decisions from the team's design pitch). "How" says WHAT the tool does; this
    section says WHY. Figures and detailed numbers live in the "Why it matters" section (home_literature.js, order 50);
    full text with citations: docs/MOTIVATION.md. Verification of every number: docs/LITERATURE.md.
-   Chinese text appears only as quoted ad evidence, marked lang="zh-CN". */
+   English only: the ad line is shown in English translation (docs/ENGLISH_UI.md). */
 (function () {
   const AL = window.AgeLens, h = AL.h;
 
   // [decision, because, source]
   const DECISIONS = [
-    ['Quote the original words',
-      'The meaning sits in the exact wording. A paraphrase can silently drop “may be relaxed”, and that clause is what a 38-year-old needs to see.',
+    ['Keep the whole sentence',
+      'The meaning sits in the exact wording. A short summary can silently drop “may be relaxed”, and that clause is what a 38-year-old needs to see.',
       'Pitch, slide 3: connect original ad excerpts and make evidence and uncertainty explicit.'],
     ['Separate explicit, exception and unclear',
       'A hard cap, an exception for strong candidates and a soft preference lead to different next steps. Caps are binding in practice, so it matters which one an ad states.',
@@ -123,8 +123,8 @@
   AL.home.sections.push({ id: 'motivation', order: 25, render(el) {
     const ad = h('figure.mv-ad.reveal', {},
       h('p.mv-ad-k', {}, 'A line from a job ad'),
-      h('blockquote.mv-ad-q', {}, h('p', { lang: 'zh-CN' }, '35岁以下，条件优秀者可放宽')),
-      h('figcaption.mv-ad-en', {}, '“Under 35; may be relaxed for outstanding candidates.”'),
+      h('blockquote.mv-ad-q', {}, h('p', {}, '“Under 35; may be relaxed for outstanding candidates.”')),
+      h('figcaption.mv-ad-en', {}, 'English translation of a typical requirement line in a Chinese job ad.'),
       h('ul.mv-tags', { 'aria-label': 'How AgeLens reads it' },
         h('li.mv-tag.t-exp', {}, h('b', {}, 'Explicit: '), 'a cap at 35'),
         h('li.mv-tag.t-exc', {}, h('b', {}, 'Exception: '), 'it may be relaxed'),

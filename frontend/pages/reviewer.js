@@ -127,7 +127,7 @@
       r.is_demo ? h('div.notice.info', {}, 'Simulated case: the ad evidence below comes from synthetic demo data, not from real postings or a real person.') : null,
       h('section.card', {}, h('h3', {}, 'Question'), h('p.rq-question', {}, r.question)),
       h('section.card', {}, h('h3', {}, 'Shared with consent'), consentBlock(r.consent, 'reviewer'), profileList(r.profile)),
-      h('section', {}, h('h3', {}, 'Evidence (' + r.evidence.length + ')'), h('p.hint', {}, 'Original text and age wording as snapshotted at submission. Review actions never edit it.'),
+      h('section', {}, h('h3', {}, 'Evidence (' + r.evidence.length + ')'), h('p.hint', {}, 'The ads and their age wording as snapshotted at submission, shown in English. Review actions never edit them.'),
         h('div.rq-evs', {}, r.evidence.map((e, i) => evidenceCard(e, false, i === 0)))),
       h('section', {}, h('h3', {}, 'Conversation'), h('ol.rq-log', {}, r.messages.filter((m) => m.kind !== 'draft').map((m) =>
         h('li.' + m.author, {}, h('strong', {}, who[m.kind] || m.kind), ' ', h('span.hint', {}, fmt(m.created_at)),

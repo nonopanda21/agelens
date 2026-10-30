@@ -2,7 +2,7 @@
 (function () {
   const AL = window.AgeLens, h = AL.h;
   const CARDS = [
-    ['Read what the ad actually says', 'AgeLens finds ads that match your role and region and quotes the age wording exactly as written, with its source.', 'Nothing is paraphrased away: the original sentence stays next to every finding.'],
+    ['Read what the ad actually says', 'AgeLens finds ads that match your role and region and shows its age wording in plain English, sentence by sentence, with its source.', 'Nothing is summarised away: the whole age sentence, exception included, stays next to every finding.'],
     ['Separate rules from uncertainty', 'A stated cap, an exception for “outstanding” candidates and a soft preference are different things. AgeLens labels each one.', 'What the ad does not say, such as who decides, is listed as unknown rather than guessed.'],
     ['Turn it into a clear question', 'You get neutral questions you can send to the employer, and you can ask a human reviewer to look at the same evidence.', 'AgeLens never decides whether you qualify. People answer; the tool prepares.'],
   ];
@@ -11,7 +11,7 @@
     el.append(h('div.wrap.xs', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'From an age requirement, to a question you can ask'),
         // key phrases get a marker sweep once the heading is revealed (css/intro.css)
-        h('p.xs-lead', {}, 'An age line in a job ad is short. What it means for you is not. AgeLens keeps ', h('span.xw-mark', {}, 'the original words'),
+        h('p.xs-lead', {}, 'An age line in a job ad is short. What it means for you is not. AgeLens keeps ', h('span.xw-mark', {}, 'the whole age sentence'),
           ' next to what is explicit and ', h('span.xw-mark', {}, 'what is still unclear'), ', helps you write a question an employer can answer, and leaves every decision to ',
           h('span.xw-mark', {}, 'a person'), '.')),
       h('div.xc-grid', {}, CARDS.map(([t, a, b], i) => h('article.xc.reveal', { style: `--d:${i * 70}ms` },

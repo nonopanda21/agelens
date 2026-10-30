@@ -18,7 +18,7 @@ body[data-route="home"] .home-motivation>.xs{padding-block:var(--xpad)}
 .mv-ad-k{margin:0 0 8px;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-light)}
 .mv-ad-q{margin:0;padding:10px 14px;border-left:4px solid var(--pink);background:var(--pink-soft);border-radius:0 8px 8px 0}
 .mv-ad-q p{margin:0;font-size:clamp(1.2rem,2.4vw,1.45rem);line-height:1.5;color:var(--brown);font-weight:700;overflow-wrap:anywhere}
-.mv-ad-en{margin:10px 0 14px;font-style:italic;color:var(--text);font-size:.95rem}
+.mv-ad-en{margin:10px 0 14px;color:var(--text-light);font-size:.85rem}
 .mv-tags{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .mv-tag{font-size:.9rem;line-height:1.45;color:var(--brown);padding:6px 12px;border-radius:8px;border:1.5px solid rgba(74,55,40,.35)}
 .mv-tag.t-exp{background:var(--blue-soft)}.mv-tag.t-exc{background:var(--mint-soft)}.mv-tag.t-unk{background:var(--yellow-soft);border-style:dashed}

@@ -52,8 +52,8 @@ class SimulatedProvider:
     def draft(self, task):
         p, f = task["profile"], task["facts"]
         bg = "I am %s and have %s years of %s experience." % (p["age"], p["years_experience"], p["occupation"].lower())
-        quote = f.get("quote")
-        lines = ["Hello, I am writing about the %s (ad %s). %s" % (task["job_title"].replace(" (fictional)", ""), task["ad_id"], bg)]
+        quote = f.get("quote_en") or f.get("quote")   # English rendering of the ad's age wording when the task has one
+        lines = ["Hello, I am writing about the %s (ad %s). %s" % (task.get("job_title_en", task["job_title"]).replace(" (fictional)", ""), task["ad_id"], bg)]
         if f.get("truncated"):
             lines.append("The text of the ad I have ends at \"%s\", so I cannot see the full age requirement." % quote)
             lines.append("Could you send the complete age requirement, and tell me whether it is a requirement or a preference and whether any exceptions apply?")
@@ -124,17 +124,19 @@ def agelens_aid(task):
         b = api_seeker.check_pasted({"text": task["ad_text"], "question": task["question"], "profile": task["profile"]}, allow_model=False)
         lines, pz = [], b.get("pasted") or {}
         # the same notes the Job Seeker page shows above the answer
+        # English only: the rules read the Chinese ad text, the aid shows the English glosses (quote_en / text_en)
         if pz.get("truncated"):
-            lines += ["Note: the text seems to stop in the middle of an age condition (" + pz["truncated"][0] + "). No age limit was read from the cut-off part. Ask for the full ad.", ""]
+            lines += ["Note: the text seems to stop in the middle of an age condition (" + (pz.get("truncated_en") or ["cut-off age wording"])[0] + "). No age limit was read from the cut-off part. Ask for the full ad.", ""]
         if pz.get("conflict"):
-            lines += ["Note: the ad's age wording contradicts itself (" + " and ".join(pz["conflict"]) + "). Both parts are shown; AgeLens does not choose one.", ""]
+            lines += ["Note: the ad's age wording contradicts itself (" + " and ".join(pz.get("conflict_en") or ["two different age statements"]) + "). Both parts are shown; AgeLens does not choose one.", ""]
         for hd in b["headings"]:
             items = b["answer"].get(hd["key"]) or []
             if not items:
                 continue
             lines.append(hd["title"])
             for st in items:
-                lines.append("- " + st["text"] + (" [ad text: " + st["quote"] + "]" if st.get("quote") else ""))
+                q = st.get("quote_en") if st.get("quote") else None
+                lines.append("- " + (st.get("text_en") or st["text"]) + (" [ad text: " + q + "]" if q else ""))
             lines.append("")
         rv = (b.get("pasted") or {}).get("rule_version") or ""
         return dict(base, text="\n".join(lines).strip(), provider="agelens-rules " + rv, failed=False, latency_ms=int((time.time() - t0) * 1000))

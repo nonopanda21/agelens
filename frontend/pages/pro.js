@@ -55,7 +55,7 @@
     catch (e) { box.replaceChildren(h('p.notice.error', { role: 'alert' }, e.message)); return; }
     const sm = o.summary;
     const preview = h('div.pro-preview', {},
-      h('p', {}, h('strong', {}, 'Full report (Word, about ' + o.pages_estimate + ' pages): '), sm.analysed + ' ads analysed, with every ad’s age wording quoted, region and occupation comparisons, and a draft message.'),
+      h('p', {}, h('strong', {}, 'Full report (Word, about ' + o.pages_estimate + ' pages): '), sm.analysed + ' ads analysed, with every ad’s age wording in plain English, region and occupation comparisons, and a draft message.'),
       h('ol.pro-toc', {}, o.sections.map((t, i) => h('li', { class: i === 0 ? 'open' : '' }, t))),
       h('div.pro-sum', {}, h('p.hint', {}, 'Preview of section 1 (free):'),
         h('ul', {}, Object.entries(sm.by_class).filter(([, v]) => v).map(([k, v]) => h('li', {}, k + ': ' + v + (v === 1 ? ' ad' : ' ads'))),
@@ -94,7 +94,7 @@
         ['Job Seeker answer on the page, Markdown download', '✓', '✓'],
         ['Ask a human reviewer', '✓', '✓'],
         ['Full report preview (contents and summary numbers)', '✓', '✓'],
-        ['Full Word report: every ad quoted, comparisons, draft message', '—', '✓ (one credit each)'],
+        ['Full Word report: every ad’s age wording in English, comparisons, draft message', '—', '✓ (one credit each)'],
       ].map(([f, a, b]) => h('tr', {}, h('th', { scope: 'row' }, f), h('td', {}, a), h('td', {}, b)))));
     const walletBox = h('section.card.pro-wallet', { 'aria-live': 'polite' });
     const paint = async () => {
@@ -112,7 +112,7 @@
         h('div.row', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Go to Job Seeker'), out));
     };
     wrap.append(h('h1', {}, 'AgeLens ', h('span.ink-pink', {}, 'Pro')),
-      h('p.hint.rq-lede', {}, 'Reading the data stays free. Pro adds a full Word report you can keep, print or send: every matching ad’s age wording quoted, what is explicit and what is unclear, how your region and occupation compare, and a draft message to the employer.'),
+      h('p.hint.rq-lede', {}, 'Reading the data stays free. Pro adds a full Word report you can keep, print or send: every matching ad’s age wording in plain English, what is explicit and what is unclear, how your region and occupation compare, and a draft message to the employer.'),
       table, walletBox,
       h('p.hint', {}, 'The report is built by fixed rules from the same evidence the free answer uses. It is not legal advice, does not say whether you qualify and does not predict any hiring outcome. All data in this demo is simulated.'));
     paint();

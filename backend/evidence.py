@@ -9,7 +9,7 @@ import json
 import sqlite3
 import statistics
 
-from . import db
+from . import db, gloss
 from .ageparse import ad_class as _ad_class, has_conflict as _has_conflict, term_class as _term_class
 
 LABEL = "Demo · Synthetic data"   # badge text for every simulated/demo-derived number
@@ -35,6 +35,7 @@ for _p in PROVINCES:
 # preference terms (35岁以下优先) are not limits and never enter max-age statistics
 MAXAGE_SQL = ("LEFT JOIN (SELECT ad_id, MIN(max_age) AS m FROM age_terms "
               "WHERE max_age IS NOT NULL AND confidence='high' AND kind <> 'preference' GROUP BY ad_id) mx ON mx.ad_id = a.id")
+EN_COLUMNS = ("title_en", "company_en", "city_en", "description_en", "age_sentence_en")
 AGE_CLASSES = ("hard_cap", "cap_with_exception", "preference", "range_or_min", "ambiguous", "none")
 
 
@@ -51,6 +52,9 @@ def ensure_columns(conn):
         if col not in have:
             conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {ddl}")
             added = True
+    for col in EN_COLUMNS:          # English display columns (simulated ads carry them); NULL for older rows
+        if col not in ac:
+            conn.execute(f"ALTER TABLE ads ADD COLUMN {col} TEXT")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_ads_class ON ads(is_demo, age_class)")
     if added:
         _backfill(conn)
@@ -226,7 +230,8 @@ def _terms(conn, ad_ids):
     return out
 
 
-_SUM = "a.id,a.title,a.company,a.occupation,a.province,a.city,a.posted_date,a.source,a.is_demo,a.age_status,a.age_class,a.conflict"
+_SUM = ("a.id,a.title,a.company,a.occupation,a.province,a.city,a.posted_date,a.source,a.is_demo,a.age_status,a.age_class,a.conflict,"
+        "a.title_en,a.company_en,a.city_en,a.age_sentence_en")
 _SORTS = {"date_desc": "a.posted_date IS NULL, a.posted_date DESC, a.id",
           "date_asc": "a.posted_date IS NULL, a.posted_date ASC, a.id",
           "max_age_asc": "mx.m IS NULL, mx.m ASC, a.id", "max_age_desc": "mx.m IS NULL, mx.m DESC, a.id",
@@ -242,7 +247,7 @@ def _summary(row, terms):
     d["label"] = LABEL if d.get("is_demo") else None
     hi = next((t for t in terms if t["confidence"] == "high" and t["kind"] != "ambiguous"), terms[0] if terms else None)
     d["snippet_highlight"] = hi["snippet"] if hi else None
-    return d
+    return gloss.enrich_ad(d)   # English display fields (*_en); the original fields stay
 
 
 def search_ads(filters=None, page=1, page_size=20, sort="date_desc"):
@@ -263,7 +268,7 @@ def search_ads(filters=None, page=1, page_size=20, sort="date_desc"):
 
 def get_ad(ad_id):
     with _connect() as c:
-        r = c.execute(f"SELECT {_SUM}, a.description, a.url, a.batch_id, a.duplicate_count, a.raw_id, "
+        r = c.execute(f"SELECT {_SUM}, a.description, a.description_en, a.url, a.batch_id, a.duplicate_count, a.raw_id, "
                       "b.filename, b.rule_version, r.raw_json, r.source_row "
                       "FROM ads a JOIN import_batches b ON b.id=a.batch_id JOIN raw_ads r ON r.id=a.raw_id WHERE a.id=?",
                       (ad_id,)).fetchone()
@@ -346,7 +351,7 @@ def by_province(filters=None):
     for prov, row in agg.items():
         _, n, ex, wex, aw = row[:5]
         a = ages.get(prov, [])
-        out.append({"province": prov, "ads": n, "explicit": ex or 0, "explicit_share": (ex or 0) / n if n else None,
+        out.append({"province": prov, "province_en": gloss.province_en(prov), "ads": n, "explicit": ex or 0, "explicit_share": (ex or 0) / n if n else None,
                     "with_exception": wex or 0, "min_max_age": min(a) if a else None,
                     "median_max_age": statistics.median(a) if a else None,
                     "age_wording": aw or 0, "age_wording_share": (aw or 0) / n if n else None,
@@ -359,7 +364,7 @@ def by_occupation(filters=None, limit=15):
     limit = max(1, min(200, _int(limit) or 15))
     with _connect() as c:
         where, p, joins, *_ = _where(c, filters)
-        return [{"occupation": r[0], "ads": r[1], "explicit": r[2] or 0, "explicit_share": (r[2] or 0) / r[1]}
+        return [{"occupation": r[0], "occupation_en": gloss.occupation_en(r[0]), "ads": r[1], "explicit": r[2] or 0, "explicit_share": (r[2] or 0) / r[1]}
                 for r in c.execute(
                     f"SELECT a.occupation, COUNT(*) n, SUM(a.age_status='explicit') FROM ads a {joins} "
                     f"WHERE {where} AND a.occupation IS NOT NULL AND a.occupation <> '' "

@@ -50,13 +50,21 @@
     ambiguous: ['Unclear wording', 'The rules found age wording but could not read it as one clear condition.'],
     none: ['No age wording found', 'The rules found no age condition in this line. That is not proof the ad has none: other parts of the ad may still mention age.'],
   };
-  const EXAMPLES = ['年龄35岁以下，特别优秀者可放宽至40岁', '35岁以下优先', '年龄25-40岁'];
+  /* Example chips (docs/ENGLISH_UI.md): the visible label is English. The rules read Chinese ad wording, so a click sends the
+     Chinese test line to the checker directly, WITHOUT putting it in the input box: the page never shows Chinese, and the
+     result names the example in English. Only text the user types or pastes goes through the box. */
+  const EXAMPLES = [
+    ['Under 35, up to 40 for strong candidates', '\u5e74\u9f8435\u5c81\u4ee5\u4e0b\uff0c\u7279\u522b\u4f18\u79c0\u8005\u53ef\u653e\u5bbd\u81f340\u5c81'],
+    ['Under 35 preferred', '35\u5c81\u4ee5\u4e0b\u4f18\u5148'],
+    ['Age 25 to 40', '\u5e74\u9f8425-40\u5c81'],
+  ];
   const tab = h('button.sk-tab', { type: 'button', 'aria-expanded': 'false', 'aria-controls': 'sk-panel' }, h('span', {}, 'Quick check'));
   const input = h('textarea#sk-in', { rows: 3, maxlength: 300, placeholder: 'Paste one line from the ad, for example the age requirement', spellcheck: 'false' });
   const out = h('div.sk-out', { 'aria-live': 'polite' });
   const form = h('form.sk-form', {},
     h('label', { for: 'sk-in' }, 'One line of age wording'), input,
-    h('div.sk-ex', {}, h('span', {}, 'Try:'), EXAMPLES.map((t) => h('button.sk-chip', { type: 'button', lang: 'zh', 'data-ex': t }, t))),
+    h('div.sk-ex', {}, h('span', {}, 'Try an example:'), EXAMPLES.map(([label], i) => h('button.sk-chip', { type: 'button', 'data-ex': String(i) }, label))),
+    h('p.sk-hint', {}, 'Each example checks a real-style line from a Chinese ad. The reading is shown in English.'),
     h('button.btn.sk-go', { type: 'submit' }, 'Read this line'));
   const panel = h('section#sk-panel.sk-panel', { 'aria-label': 'Quick check', hidden: '' },
     h('div.sk-head', {}, h('h2', {}, 'Quick check'), h('button.sk-x', { type: 'button', 'aria-label': 'Close quick check' }, '×')),
@@ -78,27 +86,31 @@
   panel.querySelector('.sk-x').addEventListener('click', () => setOpen(false));
   panel.querySelector('.sk-more').addEventListener('click', () => setOpen(false));
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) setOpen(false); });
-  form.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c) { input.value = c.dataset.ex; form.requestSubmit(); } });
+  form.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c) { const ex = EXAMPLES[+c.dataset.ex]; if (ex) { input.value = ''; check(ex[1], ex[0]); } } });
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
 
   const years = (t) => t.kind === 'range' ? `${t.min_age}–${t.max_age}` : t.max_age != null ? `up to ${t.max_age}` : t.min_age != null ? `${t.min_age} or older` : null;
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) { out.replaceChildren(h('p.sk-err', {}, 'Paste a line of age wording first.')); input.focus(); return; }
+    check(text, null);
+  });
+  async function check(text, exampleLabel) {
     out.replaceChildren(h('p.hint', {}, 'Reading…'));
     let r;
     try { r = await AL.api('/api/age/check', { method: 'POST', json: { text } }); }
     catch (err) { out.replaceChildren(h('p.sk-err', { role: 'alert' }, err.message)); return; }
     const [name, why] = LABEL[r.age_class] || LABEL.ambiguous;
     out.replaceChildren(h('div.sk-res.sk-' + r.age_class, {},
+      exampleLabel ? h('p.sk-exl', {}, 'Example: ' + exampleLabel) : null,
       h('p.sk-cls', {}, name), h('p.sk-why', {}, why),
       r.terms.length ? h('ul.sk-terms', {}, r.terms.map((t) => h('li', {},
-        h('q.quote', { lang: 'zh' }, t.snippet),
+        h('span.sk-gloss', {}, AL.labels.termGloss(t)),
         years(t) ? h('span.sk-age', {}, 'Ages: ' + years(t)) : null,
-        t.exception_text ? h('span.sk-age', {}, 'Exception: ', h('span', { lang: 'zh' }, t.exception_text)) : null))) : null,
+        AL.labels.en(t.exception_en) ? h('span.sk-age', {}, 'Exception: ' + AL.labels.en(t.exception_en)) : null))) : null,
       h('p.sk-ver', {}, 'Rule set ' + r.rule_version + ' · not stored')));
-  });
+  }
 
   // the study must not be influenced by an extra reading aid; elsewhere the tab is always there
   const route = () => {

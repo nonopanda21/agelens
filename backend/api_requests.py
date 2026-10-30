@@ -20,7 +20,7 @@ import threading
 import time
 from datetime import datetime, timezone
 
-from . import db
+from . import db, gloss
 from .server import HTTPError, hash_token, new_owner_token, require_reviewer
 
 STATUSES = ("pending", "needs_info", "replied", "closed")
@@ -150,9 +150,44 @@ def message_out(m):
     return out
 
 
+_EN_COLS = ("title_en", "company_en", "city_en", "age_sentence_en")
+
+
+def evidence_en(evs, conn=None):
+    """Read path only: English display fields for evidence snapshots (gloss_en per term, title_en, ...). The stored snapshot
+    is never changed; English columns of ads still in the database fill title_en/company_en/city_en when the snapshot lacks them."""
+    if not isinstance(evs, list):
+        return evs
+    out, stored = [], {}
+    ids = [e["id"] for e in evs if isinstance(e, dict) and isinstance(e.get("id"), str) and not e.get("title_en")]
+    if ids:
+        own = conn is None
+        try:
+            c = conn or db.connect()
+            try:
+                for row in c.execute("SELECT id," + ",".join(_EN_COLS) + " FROM ads WHERE id IN (%s)" % ",".join("?" * len(ids)), ids):
+                    stored[row[0]] = {k: row[i + 1] for i, k in enumerate(_EN_COLS) if row[i + 1]}
+            finally:
+                if own:
+                    c.close()
+        except sqlite3.Error:          # older database without the English columns, or no ads table
+            stored = {}
+    for e in evs:
+        if not isinstance(e, dict):
+            out.append(e)
+            continue
+        d = dict(e)
+        for k, v in stored.get(d.get("id"), {}).items():
+            d.setdefault(k, v)
+        if isinstance(d.get("age_terms"), list):
+            d["age_terms"] = [dict(t) if isinstance(t, dict) else t for t in d["age_terms"]]
+        out.append(gloss.enrich_ad(d))
+    return out
+
+
 def request_out(r, messages, reviewer, conn=None):
     d = {"code": r["code"], "status": r["status"], "question": r["question"],
-         "profile": jloads(r["profile_json"], {}), "evidence": jloads(r["evidence_json"], []),
+         "profile": jloads(r["profile_json"], {}), "evidence": evidence_en(jloads(r["evidence_json"], []), conn),
          "scope": jloads(r["scope_json"], None), "is_demo": bool(r["is_demo"]),
          "created_at": r["created_at"], "updated_at": r["updated_at"],
          "published_at": r["published_at"], "closed_at": r["closed_at"]}

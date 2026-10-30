@@ -66,14 +66,14 @@ def participant(pw, i, shoot=False):
             r = rng.random()
             if kind in P_GOOD:  # crossover: scripted quality difference (assumption, see header)
                 if r < P_GOOD[kind]:
-                    page.fill("#st-answer", GOOD.format(job="position", ad=re.search(r"SIM-S0\d", page.inner_text(".st-ad")).group(0), age=38, yrs=8, quote=ad.split("\n")[-2][:30]))
+                    page.fill("#st-answer", GOOD.format(job="position", ad=re.search(r"SIM-S0\d", page.inner_text(".st-ad")).group(0), age=38, yrs=8, quote=(ad.split("\n")[-2:-1] or [ad])[0][:30]))
                 else:
                     page.fill("#st-answer", rng.choice(BAD))
             elif kind == "assisted" and r < 0.8:
                 page.once("dialog", lambda d: d.accept())
                 page.click("text=Insert into my answer")
             elif r < 0.6:
-                page.fill("#st-answer", GOOD.format(job="position", ad=re.search(r"SIM-S0\d", page.inner_text(".st-ad")).group(0), age=38, yrs=8, quote=ad.split("\n")[-2][:30]))
+                page.fill("#st-answer", GOOD.format(job="position", ad=re.search(r"SIM-S0\d", page.inner_text(".st-ad")).group(0), age=38, yrs=8, quote=(ad.split("\n")[-2:-1] or [ad])[0][:30]))
             else:
                 page.fill("#st-answer", rng.choice(BAD))
             page.click("text=/Submit/")

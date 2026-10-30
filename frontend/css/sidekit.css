@@ -68,3 +68,6 @@ body.sk-open .sk-tab{background:var(--pink)}
 }
 html[data-motion="reduced"] :is(.sk-panel,.sk-res){animation:none}
 html[data-motion="reduced"] :is(.sk-tab,.sk-dot,.sk-rail a){transition:none}
+.sk-hint{margin:4px 0 0;font-size:.78rem;color:var(--text-light)}
+.sk-gloss{display:block;font-weight:600;color:var(--brown)}
+.sk-exl{margin:0 0 4px;font-size:.78rem;font-weight:700;color:var(--text-light)}

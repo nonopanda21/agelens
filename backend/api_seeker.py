@@ -3,7 +3,7 @@ Never logs bodies, CV text, pasted ad text or questions (the server logger recor
 import re
 import unicodedata
 
-from . import ageparse, brief, cv, llm
+from . import ageparse, brief, cv, gloss, llm
 from .server import HTTPError, Response  # noqa: F401  (HTTPError used below)
 
 # ---- pasted ad text (live adversarial exchange: someone hands you an ad) --------------------------------------
@@ -66,7 +66,25 @@ def check_age_line(body):
     terms = ageparse.parse_age(text)
     keep = ("kind", "min_age", "max_age", "exception_text", "flag", "snippet", "age_class")
     return {"age_class": ageparse.ad_class(terms), "age_status": ageparse.age_status(terms), "rule_version": ageparse.RULE_VERSION,
-            "terms": [{k: t.get(k) for k in keep} for t in terms], "stored": False}
+            "terms": [_term_out(t, keep) for t in terms], "stored": False}
+
+
+def _term_out(t, keep):
+    d = {k: t.get(k) for k in keep}
+    d["gloss_en"] = gloss.term_en(t)
+    d["class_en"] = gloss.class_en(t.get("age_class"))
+    e = t.get("exception_text")
+    d["exception_en"] = (None if not e else "No age limit" if "unlimited" in (t.get("flag") or "")
+                         else gloss.exception_en(e)[:1].upper() + gloss.exception_en(e)[1:])
+    return d
+
+
+def _instruction_en(line):
+    """English display of an instruction-like line: an English line is shown as is, a Chinese one is described, not shown."""
+    if not gloss.has_cjk(line):
+        return line
+    rest = gloss.strip_cjk(line).replace("[Chinese text]", "").strip(" .,:;")
+    return "A line in Chinese that reads like an instruction (not followed)" + ((": " + rest) if len(rest) >= 4 else "")
 
 
 def check_pasted(body, allow_model=True):
@@ -96,7 +114,7 @@ def check_pasted(body, allow_model=True):
     b["scope"].update(basis="pasted text", data_version=None, stored=False)
     for st in b["answer"]["cannot"]:
         if st["text"].startswith("Only 1 ad matched"):
-            st["text"] = "This answer covers only the one pasted ad. It says nothing about other ads or the job market."
+            st["text"] = st["text_en"] = "This answer covers only the one pasted ad. It says nothing about other ads or the job market."
     b["next_steps"] = [s for s in b["next_steps"] if "Broaden" not in s]
     trunc = [t["snippet"] for t in terms if "truncated" in (t.get("flag") or "")]
     conflict = [t["snippet"] for t in terms if "conflict" in (t.get("flag") or "")]
@@ -104,11 +122,14 @@ def check_pasted(body, allow_model=True):
                    "age_status": ad["age_status"], "age_class": ad["age_class"], "rule_version": ageparse.RULE_VERSION,
                    "instruction_like": _instruction_lines(text), "truncated": trunc[:1],
                    "conflict": list(dict.fromkeys(conflict))[:3],
+                   "truncated_en": [gloss.quote_en(x, terms) for x in trunc[:1]],
+                   "conflict_en": [gloss.quote_en(x, terms) for x in list(dict.fromkeys(conflict))[:3]],
                    "note": "Instructions inside ads are ignored: the pasted text is read as data only, and nothing in it changes how AgeLens answers."}
+    b["pasted"]["instruction_like_en"] = [_instruction_en(x) for x in b["pasted"]["instruction_like"]]
     note = ["> **%s.** %s" % (PASTE_LABEL, b["pasted"]["note"])]
     if b["pasted"]["instruction_like"]:
         note.append("> Wording that looks like an instruction was found and NOT followed (quoted as text only): "
-                    + "; ".join("`%s`" % x.replace("`", "'") for x in b["pasted"]["instruction_like"]))
+                    + "; ".join("`%s`" % x.replace("`", "'") for x in b["pasted"]["instruction_like_en"]))
     b["markdown"] = brief.to_markdown(b).replace("\n## ", "\n" + "\n".join(note) + "\n\n## ", 1)
     return b
 

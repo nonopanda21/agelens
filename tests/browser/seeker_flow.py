@@ -60,12 +60,15 @@ with sync_playwright() as pw:
     p = Path(dl.value.path()); md = p.read_text(encoding="utf-8")
     obs["md_labels"] = [s for s in ("Demo · Synthetic data", "Template demo", "What does the ad explicitly say?", "[Ad text]", "[Rules]", "[You said]") if s in md]
     obs["md_has_data_version"] = "data version" in md
+    obs["md_cjk_chars"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", md))   # English-only brief (backend)
+    obs["answer_cjk"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", page.evaluate("document.body.innerText")))
     # print rendering
     page.emulate_media(media="print"); page.evaluate("document.body.classList.add('print-brief')")
     shot(page, "03_print_view_1280.png"); obs["print_hidden_nav"] = page.evaluate("getComputedStyle(document.querySelector('.nav')).display")
     page.evaluate("document.body.classList.remove('print-brief')"); page.emulate_media(media="screen")
     # evidence page via link
-    page.click(".stmts a[href^='#/evidence/']"); page.wait_for_selector(".orig")
+    page.click(".stmts a[href^='#/evidence/']"); page.wait_for_selector(".ev-sec")
+    obs["evidence_cjk"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", page.evaluate("document.body.innerText")))
     shot(page, "04_evidence_1280.png"); page.go_back(); page.wait_for_selector(".answer-sec")
     obs["state_kept_after_evidence"] = page.input_value("#f-question")[:20]
 

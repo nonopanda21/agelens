@@ -45,12 +45,13 @@
     return parts.length ? parts.join(' · ') : 'all ads in the default scope';
   }
 
-  /** Compact metadata line: English province / occupation / source; company and the original location stay as muted original text. */
+  /** Compact metadata line, English only: company (when it has an English name), place, occupation, date, source. */
   function metaLine(it) {
     const L = LB(), kids = [], sep = () => (kids.length ? ' · ' : null);
     const add = (...n) => { const s = sep(); if (s) kids.push(s); kids.push(...n.filter((x) => x != null)); };
-    if (it.company) add(h('span.zh-orig', { lang: 'zh-CN' }, it.company));
-    if (it.province || it.city) add(it.province ? L.prov(it.province) : 'Unknown region', ' ', L.orig([it.province, it.city].filter(Boolean).join(' ')));
+    const co = L.company ? L.company(it) : null;
+    if (co) add(co);
+    if (it.province || it.city) add(L.place ? L.place(it) : L.prov(it.province));
     if (it.occupation) add(L.occ(it.occupation));
     if (it.posted_date) add(it.posted_date);
     if (it.source && !it.is_demo) add(L.source(it.source));   // synthetic labelling is shown once per view, not per card
@@ -98,7 +99,7 @@
       sortSel.addEventListener('change', () => { sort = sortSel.value; page = 1; loadList(); });
 
       el.append(h('div.wrap.section.ex', {},
-        h('div.reveal.in', {}, h('h1', {}, 'Explore the ', h('span.ink-pink', {}, 'evidence'), demoBadge), h('p.lead', {}, 'Filter the imported ads, compare charts, then read the original wording. Counts describe the ads in this dataset only. They are not unemployment rates, hiring rates or the chance that anyone is rejected.')),
+        h('div.reveal.in', {}, h('h1', {}, 'Explore the ', h('span.ink-pink', {}, 'evidence'), demoBadge), h('p.lead', {}, 'Filter the imported ads, compare charts, then read each ad’s age wording in plain English. Counts describe the ads in this dataset only. They are not unemployment rates, hiring rates or the chance that anyone is rejected.')),
         form, scopeEl, kpi, chips,
         h('div.ex-charts', {},
           card('Stated maximum age', 'Number of ads per stated upper age limit; 35 is highlighted. Click a column to filter. (Ignores the max-age filter so you can compare.)', dHost),
@@ -182,12 +183,12 @@
           const href = '#/evidence/' + encodeURIComponent(it.id);
           // whole card is clickable (the title link stretches over it); one trailing text link
           return h('li.card.ex-ad', {}, h('div.ex-ad-h', {},
-            h('a.ex-ad-t', { href }, it.title || it.id),
+            h('a.ex-ad-t', { href }, LB().adTitle ? LB().adTitle(it) : it.id),
             h('span.ex-stat.st-' + (it.age_status === 'explicit' ? 'exp' : it.age_status === 'uncertain' ? 'unc' : 'none'), {}, STATUS[it.age_status] || it.age_status)),
             metaLine(it),
-            t ? h('p.ex-snip', { lang: 'zh-CN' }, '“', h('mark.age', {}, t.snippet), '”', t.exception_text ? h('span.hint', { style: 'display:block' }, 'Exception wording: ' + t.exception_text) : null)
+            t ? h('p.ex-snip', {}, h('mark.age', {}, LB().ageLine(it)), LB().en(t.exception_en) ? h('span.hint', { style: 'display:block' }, 'Exception: ' + LB().en(t.exception_en)) : null)
               : h('p.hint', {}, 'No explicit age condition detected in this text (this does not mean there is no age preference).'),
-            h('span.ex-more', { 'aria-hidden': 'true' }, 'View original text ›'));
+            h('span.ex-more', { 'aria-hidden': 'true' }, 'View the ad ›'));
         })));
         const pages = Math.max(1, Math.ceil(total / PAGE));
         const go = (p) => { page = p; loadList(); listHead.focus({ preventScroll: false }); };

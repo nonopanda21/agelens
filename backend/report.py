@@ -2,22 +2,19 @@
 tables and an evidence appendix. No model is called (allow_model=False), so the same request gives the same report.
 
 Sections: cover (question, background, data label, disclaimer) · 1 summary in numbers · 2-6 the five answer sections with
-the ads' own wording quoted · 7 how your region and occupation compare (simulated dataset) · 8 questions to send, with an
-editable draft message · 9 evidence appendix (every ad, its age wording verbatim) · 10 method and limits.
+the ads' wording glossed in English · 7 how your region and occupation compare (simulated dataset) · 8 questions to send, with an
+editable draft message · 9 evidence appendix (every ad, its age wording as an English gloss) · 10 method and limits.
 It never says whether someone qualifies, never predicts an outcome and never calls an employer's practice illegal.
 outline(b) is the free preview: section titles plus the summary numbers."""
 import io
 from collections import Counter
 from datetime import datetime, timezone
 
-from . import brief
+from . import brief, gloss
 
-OCC_EN = {"销售": "Sales", "工程技术": "Engineering", "采购": "Procurement", "客户服务": "Customer service", "物流仓储": "Logistics & warehousing",
-          "财务": "Finance", "运营管理": "Operations", "市场营销": "Marketing", "生产制造": "Manufacturing", "行政": "Administration",
-          "人力资源": "Human resources", "设计": "Design", "数据分析": "Data analysis", "教育培训": "Education & training",
-          "医疗护理": "Healthcare & nursing", "法务合规": "Legal & compliance"}
-CLASS_EN = {"hard_cap": "Hard cap", "cap_with_exception": "Cap with an exception", "preference": "Preference, not a rule",
-            "range_or_min": "Range or minimum", "ambiguous": "Unclear wording", "none": "No age wording"}
+OCC_EN = gloss.OCC_EN        # one table for the whole app (backend/gloss.py)
+CLASS_EN = gloss.CLASS_EN
+_en = brief._en              # last guard: no Chinese characters in the Word file
 REPORT_VERSION = "report-v1"
 TITLES = ["Summary in numbers", "What the ads explicitly say", "Exceptions in the wording", "How this relates to your question",
           "What cannot be determined yet", "What you could ask next", "How your region and occupation compare",
@@ -25,7 +22,7 @@ TITLES = ["Summary in numbers", "What the ads explicitly say", "Exceptions in th
 
 
 def occ_en(v):
-    return OCC_EN.get(v, v or "Not stated")
+    return gloss.occupation_en(v) or "Not stated"
 
 
 def build(body):
@@ -102,10 +99,10 @@ def to_docx(b, ctx):
             p = doc.add_paragraph(style="List Bullet")
             tag = brief.TAG.get(s.get("type"), s.get("type", ""))
             p.add_run("[%s] " % tag).bold = True
-            p.add_run(s["text"])
+            p.add_run(_en(s.get("text_en") or s["text"]))
             if s.get("quote"):
                 q = doc.add_paragraph(); q.paragraph_format.left_indent = Pt(18)
-                r = q.add_run("Ad text: “%s”" % s["quote"]); r.font.size = Pt(10)
+                r = q.add_run("Ad wording, in English: “%s”" % _en(s.get("quote_en") or gloss.quote_en(s["quote"]))); r.font.size = Pt(10)
             if s.get("evidence_ids"):
                 note("Evidence: " + ", ".join(s["evidence_ids"][:6]) + (" and %d more" % (len(s["evidence_ids"]) - 6) if len(s["evidence_ids"]) > 6 else ""))
 
@@ -115,15 +112,15 @@ def to_docx(b, ctx):
 
     # cover
     doc.add_heading("AgeLens report: age wording in job ads", 0)
-    p = doc.add_paragraph(); r = p.add_run("%s · rules only, no AI model · %s · %s" % (b["data_label"], REPORT_VERSION, now)); r.bold = True
+    p = doc.add_paragraph(); r = p.add_run("%s · rules only, no AI model · %s · %s" % (_en(b["data_label"]), REPORT_VERSION, now)); r.bold = True
     doc.add_paragraph(b["disclaimer"])
     if b.get("using_demo"):
         p = doc.add_paragraph(); r = p.add_run("All ads in this report are simulated demonstration data, not real postings."); r.bold = True
-    doc.add_heading("Your question", 2); doc.add_paragraph(b["question_background"]["question"] or "(no question given)")
+    doc.add_heading("Your question", 2); doc.add_paragraph(_en(b["question_background"]["question"]) or "(no question given)")
     doc.add_heading("Background you entered", 2)
-    shown = [("Age", prof.get("age")), ("Occupation", prof.get("occupation")), ("Years of experience", prof.get("years_experience")),
-             ("Region", brief._region_en(prof.get("region")) if prof.get("region") else None), ("Education", prof.get("education")),
-             ("Skills / experience", ", ".join(prof.get("skills") or []))]
+    shown = [("Age", prof.get("age")), ("Occupation", _en(prof.get("occupation"))), ("Years of experience", prof.get("years_experience")),
+             ("Region", _en(brief._region_en(prof.get("region"))) if prof.get("region") else None), ("Education", _en(prof.get("education"))),
+             ("Skills / experience", _en(", ".join(prof.get("skills") or [])))]
     table(["Field", "Value"], [(k, v) for k, v in shown if v not in (None, "", [])])
     note("Your age is used only to explain conditions. No ads are hidden or ranked by it.")
 
@@ -144,11 +141,11 @@ def to_docx(b, ctx):
 
     # 7 context
     doc.add_heading("7. " + TITLES[6], 1)
-    note("Shares of ads in the whole simulated dataset (%s). They describe this dataset only, not hiring or unemployment." % (sm["data_version"] or b["data_label"]))
+    note("Shares of ads in the whole simulated dataset (%s). They describe this dataset only, not hiring or unemployment." % _en(sm["data_version"] or b["data_label"]))
     mine, tot = _region_row(ctx)
     rows = [("All regions", tot["denominator"], "%.1f%%" % (100 * tot["explicit_share"]))]
     if mine:
-        rows.insert(0, (brief._region_en(ctx["region"]), mine["ads"], "%.1f%%" % (100 * mine["explicit_share"])))
+        rows.insert(0, (_en(brief._region_en(ctx["region"])), mine["ads"], "%.1f%%" % (100 * mine["explicit_share"])))
     occ = next((o for o in ctx["occupations"] if o["occupation"] == ctx["occupation_key"]), None)
     if occ:
         rows.insert(1 if mine else 0, (occ_en(occ["occupation"]) + " (all regions)", occ["ads"], "%.1f%%" % (100 * occ["explicit_share"])))
@@ -156,11 +153,11 @@ def to_docx(b, ctx):
     top = sorted(ctx["provinces"], key=lambda p: -p["ads"])[:8]
     num = lambda v: "—" if v is None else ("%d" % v if float(v).is_integer() else "%.1f" % v)
     table(["Region", "Ads", "Explicit age condition", "Median stated maximum"],
-          [(brief._region_en(p["province"]), p["ads"], "%.1f%%" % (100 * p["explicit_share"]), num(p["median_max_age"])) for p in top], "The 8 largest regions in the dataset")
+          [(_en(brief._region_en(p["province"])), p["ads"], "%.1f%%" % (100 * p["explicit_share"]), num(p["median_max_age"])) for p in top], "The 8 largest regions in the dataset")
 
     # 8 questions + draft
     doc.add_heading("8. " + TITLES[7], 1)
-    qs = [q["text"] for q in b["questions"]]
+    qs = [_en(q.get("text_en") or q["text"]) for q in b["questions"]]
     for q in qs:
         doc.add_paragraph(q, style="List Number")
     doc.add_heading("Draft message (edit before sending)", 2)
@@ -168,7 +165,7 @@ def to_docx(b, ctx):
     if prof.get("age") is not None:
         bg.append("I am %s" % prof["age"])
     if prof.get("years_experience") is not None:
-        bg.append("with %s years of experience%s" % (prof["years_experience"], " in " + prof["occupation"] if prof.get("occupation") else ""))
+        bg.append("with %s years of experience%s" % (prof["years_experience"], " in " + _en(prof["occupation"]) if prof.get("occupation") else ""))
     lines = ["Hello,", "", "I am interested in the position \"[job title]\" (ad [ad id]). " + (" ".join(bg) + "." if bg else ""),
              "The ad says: \"[quote the age-related wording from the ad]\".",
              "Before I apply, could you please clarify:"] + ["%d. %s" % (i + 1, q) for i, q in enumerate(qs[:3])] + ["", "Thank you for your time."]
@@ -179,19 +176,25 @@ def to_docx(b, ctx):
     # 9 appendix
     doc.add_heading("9. " + TITLES[8], 1)
     for a in ctx["ads"]:
-        doc.add_heading("%s · %s" % (a["id"], a.get("title") or ""), 3)
-        meta = [brief._region_en(a.get("province")) if a.get("province") else "", a.get("city") or "", occ_en(a.get("occupation")), a.get("posted_date") or "",
-                CLASS_EN.get(a.get("age_class") or "none", "")]
+        doc.add_heading("%s · %s" % (a["id"], _en(brief._title_en(a))), 3)
+        if a.get("company_en"):
+            note(_en(a["company_en"]))
+        meta = [gloss.province_en(a.get("province")) or "", a.get("city_en") or gloss.city_en(a.get("city")) or "", occ_en(a.get("occupation")),
+                a.get("posted_date") or "", CLASS_EN.get(a.get("age_class") or "none", "")]
+        meta = [_en(x) for x in meta]
         note(" · ".join(x for x in meta if x) + (" · simulated" if a.get("is_demo") else ""))
         terms = a.get("age_terms") or []
         if not terms:
             doc.add_paragraph("No explicit age condition detected in this text (this does not mean there is no age preference).")
+        if a.get("age_sentences_en"):
+            note("Age wording in the English version of this simulated ad: " + _en(" / ".join(a["age_sentences_en"])))
         for t in terms:
             p = doc.add_paragraph(style="List Bullet")
-            p.add_run("“%s”" % t.get("snippet", ""))
+            p.add_run(_en(t.get("gloss_en") or gloss.term_en(t)))
             ages = ("max %s" % t["max_age"]) if t.get("max_age") is not None else ""
             ages += ((", " if ages else "") + "min %s" % t["min_age"]) if t.get("min_age") is not None else ""
-            extra = [x for x in (ages, CLASS_EN.get(t.get("age_class"), ""), ("exception: " + t["exception_text"]) if t.get("exception_text") else "", t.get("flag") or "") if x]
+            exc = t.get("exception_en") or (gloss.exception_en(t["exception_text"]) if t.get("exception_text") else "")
+            extra = [x for x in (ages, CLASS_EN.get(t.get("age_class"), ""), ("exception: " + _en(exc)) if exc else "", t.get("flag") or "") if x]
             if extra:
                 p.add_run("  (" + "; ".join(extra) + ")").italic = True
 
@@ -199,9 +202,11 @@ def to_docx(b, ctx):
     doc.add_heading("10. " + TITLES[9], 1)
     for lim in b["limitations"]:
         doc.add_paragraph(lim, style="List Bullet")
-    doc.add_paragraph("Method: AgeLens reads the age wording in each ad with fixed rules (%s), groups ads by the kind of wording, and quotes the "
-                      "original text next to every statement. No AI model was used for this report. Search scope: %s." %
-                      (", ".join(b["scope"].get("rule_versions") or []), (b["scope"].get("filters_applied") or {}).get("scope_label", "")))
+    doc.add_paragraph("Method: AgeLens reads the age wording in each ad with fixed rules (%s), groups ads by the kind of wording, and shows an "
+                      "English gloss of the original wording next to every statement. No AI model was used for this report. Search scope: %s." %
+                      (", ".join(b["scope"].get("rule_versions") or []), _en((b["scope"].get("filters_applied") or {}).get("scope_label", ""))))
+    doc.add_paragraph("Language: this report is in English only. Ad wording is shown as an English gloss of what the rules read from the "
+                      "original Chinese text; the original text is kept in each ad's record in AgeLens.")
     f = doc.add_paragraph(); f.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r = f.add_run("AgeLens · Northwestern SEPOL 425 course project · not legal advice · no hiring decisions"); r.font.size = Pt(8); r.font.color.rgb = muted
     buf = io.BytesIO(); doc.save(buf)

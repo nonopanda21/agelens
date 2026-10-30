@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / "scripts"))
 from backend import db, evidence  # noqa: E402
 from backend.ageparse import parse_age, age_status, ad_class, has_conflict, RULE_VERSION  # noqa: E402
-from backend.datasource import (ALIASES, ALIAS_MAP, FIELDS, CsvSource, SimulatedSource, detect_encoding,  # noqa: E402,F401
+from backend.datasource import (ALIASES, ALIAS_MAP, EN_FIELDS, FIELDS, CsvSource, SimulatedSource, detect_encoding,  # noqa: E402,F401
                                 detect_delimiter, suggest_mapping, sha256_file)
 from geo_table import CITY_TO_PROVINCE, NAMES  # noqa: E402
 
@@ -181,7 +181,8 @@ def import_source(src, demo=False, chunk=5000, quiet=False, now=None):
             keyed.append((sr, json.dumps(raw, ensure_ascii=False), aid, dict(
                 title=title or None, company=comp or None, occupation=clean_occupation(f["category"], title),
                 province=prov, city=city, posted_date=posted, source=f["source"] or None,
-                url=f["url"] or None, description=desc_ or None)))
+                url=f["url"] or None, description=desc_ or None,
+                **{k: (f.get(k) or None) for k in EN_FIELDS})))
         with conn:
             if not conn.in_transaction:
                 conn.execute("BEGIN IMMEDIATE")  # single writer: raw ids below are contiguous
@@ -207,12 +208,14 @@ def import_source(src, demo=False, chunk=5000, quiet=False, now=None):
                 st["class_" + cls] += 1
                 st["conflict"] += conf
                 ad_rows.append((aid, bid, rid, d["title"], d["company"], d["occupation"], d["province"], d["city"],
-                                d["posted_date"], d["source"], d["url"], d["description"], status, 1 if demo else 0, cls, conf))
+                                d["posted_date"], d["source"], d["url"], d["description"], status, 1 if demo else 0, cls, conf,
+                                *[d[k] for k in EN_FIELDS]))
                 for t in ts:
                     terms.append((aid, t["kind"], t["min_age"], t["max_age"], t["snippet"], t["start_offset"],
                                   t["end_offset"], t["exception_text"], t["confidence"], t["rule_version"],
                                   t["age_class"], t.get("flag")))
-            conn.executemany("INSERT INTO ads(id,batch_id,raw_id,title,company,occupation,province,city,posted_date,source,url,description,age_status,is_demo,age_class,conflict) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ad_rows)
+            conn.executemany("INSERT INTO ads(id,batch_id,raw_id,title,company,occupation,province,city,posted_date,source,url,description,"
+                             "age_status,is_demo,age_class,conflict," + ",".join(EN_FIELDS) + ") VALUES (" + ",".join("?" * (16 + len(EN_FIELDS))) + ")", ad_rows)
             conn.executemany("INSERT INTO age_terms(ad_id,kind,min_age,max_age,snippet,start_offset,end_offset,exception_text,confidence,rule_version,age_class,flag) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", terms)
             conn.executemany("UPDATE ads SET duplicate_count=duplicate_count+? WHERE id=?", [(n, a) for a, n in dups.items()])
             st["unique"] += len(new_rows); st["dups"] += sum(dups.values())
