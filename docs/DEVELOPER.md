@@ -44,7 +44,7 @@ It says "DO NOT PUSH" on the first failure.
 
 ## Tests
 ```bash
-.venv/bin/python -m unittest discover -s tests          # 287 tests OK at the last full run (2026-10-28)
+.venv/bin/python -m unittest discover -s tests          # 364 tests OK at the last full run (2026-10-29)
 ```
 - Browser checks are Playwright scripts in `tests/browser/`. Run them with the separate environment `~/agelens-tools/pw/bin/python`, which is not a project dependency.
 - **Scripts marked "own server"** start their own server on a temporary database.

@@ -95,7 +95,7 @@ Full plan, power analysis and dry run: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
   - CVs are read in memory, and the fields are shown to you to confirm;
   - your age is used only to explain conditions, never to hide or rank ads;
   - every key and code is stored only as a hash.
-- **Tests:** 287 unit tests and 19 browser test scripts (desktop and phone widths). See [`docs/DEVELOPER.md`](docs/DEVELOPER.md).
+- **Tests:** 364 unit tests and 21 browser test scripts (desktop and phone widths). See [`docs/DEVELOPER.md`](docs/DEVELOPER.md).
 
 Development was assisted by an AI coding assistant. [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md) records what was built, what was run and verified, and what was not.
 
