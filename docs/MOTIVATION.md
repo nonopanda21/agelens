@@ -11,6 +11,8 @@ The PDFs are kept in `data/raw/motivation/` (git-ignored) and are not copied int
 
 ## 1. The problem
 
+Revised position (2026-10-29): high mid-career earnings can coexist with difficulty getting a new job. The focus is workers changing jobs or returning to work. AgeLens is an evidence-grounded clarification assistant, not a hiring tool.
+
 Many Chinese job ads put an age in the requirements, and 35 is the usual number.
 - Lin (2025) analyses 59.69 million postings from five job sites (2016–2021). Of these, 18.95% state an age limit, 17.47% an upper limit and 16.35% a lower limit (p. 105).
 - On all five sites, "under 35" is the most common upper limit (p. 105, Fig. 1b, p. 106).
@@ -45,7 +47,11 @@ Neither study tells us whether a given ad's exception will be applied to a given
   - which part is a rule, which is an exception and which is simply unknown, for their own background;
   - a clear question to send the employer before deciding.
 
-## 4. Why AgeLens is designed this way
+## 4. How we expect it to help (theory of change)
+
+Shown as Figure 3 on the home page. Full text, evidence and limits: `docs/THEORY_OF_CHANGE.md`. In short: better interpretation of one ad, then cheaper clarification, then a better-informed application decision. The first claim is decision support only.
+
+## 5. Why AgeLens is designed this way
 
 | Decision | Reason | Source |
 |---|---|---|
@@ -57,7 +63,7 @@ Neither study tells us whether a given ad's exception will be applied to a given
 
 The pitch's macro pathway (slide 4) runs from better matching to less income scarring (Şahin et al. 2014; Huckfeldt 2022). The pitch itself labels these "impact pathways, not measured product effects", so the site does not present them as results.
 
-## 5. Where AgeLens stands today (accurate version)
+## 6. Where AgeLens stands today (accurate version)
 
 - AgeLens reads ads with rules. No AI model is connected, and the UI says "Template demo". The pitch's feasibility slide (6) budgets API credits for DeepSeek or Claude Haiku. That is a plan, not the current product.
 - The public demo uses simulated ads. Real Zhaopin data (2016–2025.7) was received on 2026-10-28 and is being prepared for local analysis only (see DEVELOPMENT_LOG.md).

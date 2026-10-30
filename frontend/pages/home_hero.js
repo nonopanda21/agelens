@@ -45,7 +45,7 @@
     const toHow = () => { const n = document.getElementById('how'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };
     const stat = (n, label) => h('div.xh-stat', {}, h('p.xh-stat-n', {}, n), h('p.xh-stat-l', {}, label));
     const stats = h('div.xh-stats', { 'aria-label': 'Dataset size' }, stat('–', 'Job ads'), stat('–', 'Regions'), stat('–', 'Occupations'));
-    const badge = h('p.xh-badge', {}, 'A tool for reading age limits in job ads');
+    const badge = h('p.xh-badge', {}, 'A clarification assistant for mid-career jobseekers');
     const art = h('div.xh-art'); art.innerHTML = DOODLE;
     // ink every outlined shape stroke by stroke, then colour it in (css/intro.css); the dashed ground line keeps its dashes
     let k = 0;
@@ -61,7 +61,7 @@
         h('div.xh-inner', {},
           badge,
           h('h1.xh-title', { 'aria-label': 'Make sense of the age requirement' }, h('span.xh-l1', { 'aria-hidden': 'true' }, letters('Make sense of', 0)), h('span.xh-l2', { 'aria-hidden': 'true' }, letters('the age requirement', 14))),
-          h('p.xh-sub', {}, 'Bring your experience and your question. AgeLens reads the original hiring evidence with you and helps you prepare what to ask a person.'),
+          h('p.xh-sub', {}, 'Changing jobs or returning to work? Bring your background and one job ad. AgeLens lists the age conditions and exceptions the ad states, what is still unclear, and a question you can send to a person.'),
           h('div.xh-actions', {}, h('a.xbtn.xbtn-lg', { href: '#/seeker' }, 'Ask about my situation'), h('button.xbtn.xbtn-2.xbtn-lg', { type: 'button', onclick: toHow }, 'See how it works')),
           stats,
           h('p.xh-fine', {}, 'Not legal advice. AgeLens never decides whether you qualify.'),

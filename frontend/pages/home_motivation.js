@@ -114,6 +114,44 @@
     return fig;
   }
 
+  /* Theory of change: a plain chain of four steps (an ordered list, so it reads in order without the arrows), what the
+     cited studies suggest, what is NOT shown, and one neutral worked example. Studies: docs/LITERATURE.md. */
+  function theoryFigure() {
+    const STEPS = [
+      ['Hard-to-read age wording', 'An ad says “normally under 35; exceptions possible” and does not say what that means.'],
+      ['Better interpretation', 'AgeLens reads the ad and lists what is explicit and what is unclear.'],
+      ['Cheaper to ask', 'A targeted question is ready to send, so asking takes less effort.'],
+      ['Better-informed application decision', 'You decide whether to apply, and what to ask first, knowing more.'],
+    ];
+    const SUGGESTS = [
+      ['Feng et al. (2026): ', 'older applicants can face a disadvantage in entry-level hiring on one Chinese platform, while experience helps in higher-level positions.'],
+      ['Lin (2025): ', 'in China, job loss for an employer reason jumps at age 35.'],
+      ['Neumark et al. (2019): ', 'in a US experiment, callbacks fall with age, more clearly for women.'],
+      ['Burn et al. (2022): ', 'ageist wording in ads lowers the share of applicants over 40.'],
+      ['Belot et al. (2019): ', 'in a UK lab study, tailored search information raised interviews for some jobseekers.'],
+    ];
+    const NOT_SHOWN = [
+      'That AgeLens changes interviews, hiring or employment.',
+      'That employers answer clarification requests.',
+      'That the tool removes a binding age limit. It cannot.',
+    ];
+    return h('figure.mv-fig.mv-toc.reveal', {},
+      h('figcaption.mv-fig-t', {}, h('span.mv-fig-n', {}, 'Figure 3'), 'From clearer reading to a better-informed choice'),
+      h('ol.mv-chain', {}, STEPS.map(([t, d], i) => h('li.mv-step', {},
+        h('span.mv-step-n', { 'aria-hidden': 'true' }, String(i + 1)), h('b.mv-step-t', {}, t), h('span.mv-step-d', {}, d)))),
+      h('p.mv-take', {}, 'Our first claim is limited to ', h('b', {}, 'better decision support'), '. Hiring effects and wider economic effects are left for future evaluation.'),
+      h('div.mv-cols', {},
+        h('section.mv-colbox.sug', { 'aria-labelledby': 'toc-sug' }, h('h4#toc-sug', {}, 'What the evidence suggests'),
+          h('ul', {}, SUGGESTS.map(([a, b]) => h('li', {}, h('b', {}, a), b))),
+          h('p.mv-cite', {}, 'These findings motivate our approach but do not establish its effectiveness.')),
+        h('section.mv-colbox.not', { 'aria-labelledby': 'toc-not' }, h('h4#toc-not', {}, 'What we have NOT shown'),
+          h('ul', {}, NOT_SHOWN.map((t) => h('li', {}, t))))),
+      h('aside.mv-example', { 'aria-labelledby': 'toc-ex' },
+        h('h4#toc-ex', {}, 'A worked example'),
+        h('p', {}, 'A 38-year-old applicant sees “normally under 35; exceptions possible”. AgeLens marks the cap at 35 as explicit and the exception as unclear. It then drafts a neutral question: “Does eight years of operations experience qualify for the advertised exception?”'),
+        h('p.mv-cite', {}, 'The employer decides what happens next. The question may get no answer, and the answer may be no.')));
+  }
+
   const toLit = () => {
     const t = document.getElementById('literature');
     if (t) t.scrollIntoView({ behavior: AL.motion && AL.motion.reduced() ? 'auto' : 'smooth', block: 'start' });
@@ -138,6 +176,7 @@
       h('div.mv-block.mv-problem', {},
         h('div.mv-copy.reveal', {},
           h('h3.mv-h', {}, h('span.xc-n', {}, '01'), 'The problem'),
+          h('p', {}, 'High earnings in mid-career can go together with real difficulty getting a new job. AgeLens is for workers who are changing jobs or returning to work.'),
           h('p', {}, 'Age limits in Chinese recruitment are common, and 35 is the usual number. Many ads soften the cap with an exception, but rarely say what the exception means.'),
           h('p', {}, 'Mid-career job seekers in engineering, operations, sales and professional services are left to guess. Some may rule themselves out of jobs they could get; others apply without knowing where they stand.')),
         ad),
@@ -162,8 +201,12 @@
             h('li', {}, 'Which part is a rule, an exception or simply unknown, for their own background.'),
             h('li', {}, 'A clear question to send the employer before deciding.')))),
 
-      // 4 · design decisions
-      h('h3.mv-h.reveal', {}, h('span.xc-n', {}, '04'), 'Why AgeLens is designed this way'),
+      // 4 · theory of change
+      h('h3.mv-h.reveal', {}, h('span.xc-n', {}, '04'), 'How we expect it to help'),
+      theoryFigure(),
+
+      // 5 · design decisions
+      h('h3.mv-h.reveal', {}, h('span.xc-n', {}, '05'), 'Why AgeLens is designed this way'),
       h('div.mv-dec', {}, DECISIONS.map(([t, b, s], i) => h('article.xc.mv-dec-card.reveal', { style: `--d:${i * 60}ms` },
         h('h4.xc-title', {}, t), h('p', {}, h('b', {}, 'Because: '), b), h('p.mv-src', {}, s)))),
 

@@ -1,6 +1,6 @@
 # Preregistration — DRAFT
 
-> **SUPERSEDED 2026-10-27:** the claim, threshold and sample to pre-register are in `docs/EVAL_PLAN.md` section 2. The text below belongs to the legacy parallel design.
+> **SUPERSEDED 2026-10-29:** the claim, outcomes, decision rules and sample to pre-register are in `docs/EVAL_PLAN.md` sections 4, 6 and 7 (design `crossover-ai-v1`, contextual AI versus fixed template, identical evidence; the 2026-10-27 rules-versus-ad plan is `docs/EVAL_PLAN_v1_rules_vs_ad.md`). The text below belongs to the legacy parallel design. No model is connected and nothing is filed.
 
 > **DRAFT — NOT FILED, NOT APPROVED.** This text has not been submitted to any registry, has no registration id or hash, and has not been approved by the teacher. Nothing below may be described as preregistered until it is filed, its SHA-256 recorded in `data/study/APPROVAL.json`, and the teacher has approved. Bracketed items [TEACHER] are open decisions. Details and rationale: `docs/EVAL_PROTOCOL.md`.
 

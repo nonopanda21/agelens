@@ -1,0 +1,31 @@
+==============================================================================
+SIMULATED: software test only. No AI model was used. Not study data, not a result, says nothing about AI.
+==============================================================================
+Design crossover-ai-v1 | export 2026-10-30T03:28:43Z | tasks tasks-v0.2-draft | rubric rubric-ai-v0.1-draft
+
+Participants: enrolled 6, analysed (primary) 6, withdrawn 0, dropouts 0, incomplete 0, excluded 0; by sequence {'AB-S1': 2, 'AB-S2': 2, 'BA-S1': 1, 'BA-S2': 1}
+
+PRIMARY  interpretation accuracy (share of key facts)
+   template 0.549   contextual (SIMULATED script, not an AI) 0.743   mean difference (contextual - template) +0.195   95% CI [-0.028, 0.431]   p 0.1875 (exact (2^6 sign patterns))   n=6
+SAFETY   unsupported claims per task (lower is better)
+   template 0.250   contextual (SIMULATED script, not an AI) 0.417   mean difference (contextual - template) +0.167   95% CI [-0.167, 0.583]   p 0.7500 (exact (2^6 sign patterns))   n=6
+SECOND.  actionable question (share of tasks)
+   template 0.833   contextual (SIMULATED script, not an AI) 0.917   mean difference (contextual - template) +0.083   95% CI [0.000, 0.250]   p 1.0000 (exact (2^6 sign patterns))   n=6
+SECOND.  completion time (seconds per task)
+   template 0.300   contextual (SIMULATED script, not an AI) 0.342   mean difference (contextual - template) +0.042   95% CI [-0.158, 0.250]   p 0.8125 (exact (2^6 sign patterns))   n=6
+
+Decision (primary): NO EVIDENCE OF BENEFIT (accuracy): needs mean difference >= +0.10 AND CI lower bound > 0 AND p < 0.05; got +0.195, CI [-0.028, 0.431], p 0.1875. This is not evidence that the AI does not help.
+No safety signal under the pre-specified rule (CI lower bound of the unsupported-claims difference is not above 0); with a small N this is weak reassurance.
+Secondary p, Holm-adjusted over actionable/unsupported/time: {'unsupported': 1.0, 'time': 1.0, 'actionable': 1.0}
+Order check (descriptive): mean accuracy difference, template first +0.188, AI first +0.208, n=[4, 2]
+
+Accuracy by task and tool (descriptive, tasks are not independent): {'T1/ai_contextual': {'tasks': 3, 'mean': 0.667}, 'T1/template': {'tasks': 3, 'mean': 0.444}, 'T2/ai_contextual': {'tasks': 3, 'mean': 0.75}, 'T2/template': {'tasks': 3, 'mean': 0.417}, 'T3/ai_contextual': {'tasks': 3, 'mean': 0.778}, 'T3/template': {'tasks': 3, 'mean': 0.667}, 'T4/ai_contextual': {'tasks': 3, 'mean': 0.778}, 'T4/template': {'tasks': 3, 'mean': 0.667}}
+
+Inter-rater (R1 vs R2, before adjudication):
+  fact_bits          n=78   kappa=0.685 raw agreement=0.846
+  question_criteria  n=96   kappa=1.0 raw agreement=1.0
+  unsupported_count  n=24   exact agreement=0.958 mean abs difference=0.042
+
+Scoring status: {'items_disagreement': 12, 'unresolved': 0, 'adjudicated': 12, 'missing_answers': 0, 'timed_out': 0, 'model_failures': 0}
+
+This is a SIMULATED software test; no AI model was used and the numbers are NOT results. It makes no claim about interviews, hiring, employment or GDP.

@@ -381,8 +381,9 @@ RATERS = ("R1", "R2", "R3")
 
 
 class CrossoverTests(Scoring):
-    """The default design (tasks.json "design": crossover-rules-v1): each participant gets 2 ad-only and 2 AgeLens tasks."""
-    DESIGN = None
+    """The LEGACY crossover design (tasks.json "design": crossover-rules-v1): each participant gets 2 ad-only and 2 AgeLens tasks.
+    Adapted 2026-10-29: the default design is now crossover-ai-v1 (tests/test_study_ai.py), so these tests force the legacy id."""
+    DESIGN = S.RULES_DESIGN
 
     def conds(self, code):
         with S.conn() as c:

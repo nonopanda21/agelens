@@ -16,6 +16,7 @@
       if (!v) { stats.hidden = true; return; }
       stats.querySelector('.xf-stat-l').textContent = real ? 'Real job ads, ' + real.years : 'Simulated ads';
       stats.querySelectorAll('.xf-stat-n').forEach((n, i) => { n.textContent = typeof v[i] === 'number' ? v[i].toLocaleString('en-US') : '–'; });
+      if (real) AL.heteroData().then((hd) => { if (hd) note.textContent = note.textContent.replace('Statistics come from real Zhaopin job ads (' + real.years + ')', 'Statistics come from real Zhaopin job ads (' + real.years + '), including required experience and stated gender requirements'); });
       if (real) {
         note.textContent = 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads (' + real.years + '); the examples and cases are simulated. Not legal advice; no hiring decisions.';
         barData.textContent = 'Real ad statistics · simulated examples';

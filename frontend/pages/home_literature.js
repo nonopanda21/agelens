@@ -60,11 +60,31 @@ AgeLens.home.sections.push({
           h('li', {}, h('b', {}, 'When: '), 'also found in the 2005 census, but not significant in 2010 (p. 117).'),
           h('li', {}, h('b', {}, 'Limits: '), 'the outcome is a dismissal share among all working-age people, not an unemployment rate. The link to negative age stereotypes uses city-level keyword patterns in ads, which the author notes can be confounded by other city factors (p. 115). Whether the anchor at 35 comes from civil-service age limits is untested (p. 117). Robustness tables are in an online appendix we did not read.'))));
 
+    // three more studies, text only (read in full from the working-paper versions; see docs/lit_notes/)
+    const more = [
+      ['Callbacks fall with age (US)', 'Neumark, Burn and Button (2019)', 'NBER Working Paper 21669', 'https://www.nber.org/papers/w21669',
+        'In a US resume experiment with 40,223 applications to four occupations, callback rates fall with the applicant’s age. The evidence of age discrimination is stronger and more robust for women than for men.',
+        'US only. It measures employer callbacks, not hires. It does not look at ad text, and it is not about China.'],
+      ['Ad wording changes who applies', 'Burn, Firoozi, Ladd and Neumark (2022)', 'NBER Working Paper 30287', 'https://www.nber.org/papers/w30287',
+        'The researchers wrote artificial ads for three occupations and varied the wording at random. Ageist wording lowered the average age of the people who applied and the share of applicants over 40.',
+        'Three occupations. It measures who applied, not who was hired. A related paper by Burn, Button, Munguia Corella and Neumark (NBER Working Paper 26552) links ad wording to employer callbacks.'],
+      ['Tailored search information (UK)', 'Belot, Kircher and Muller (2019)', 'IZA Discussion Paper 10068, July 2016', 'https://docs.iza.org/dp10068.pdf',
+        'In a lab experiment with about 300 unemployed jobseekers in Edinburgh, an online tool that suggested related occupations broadened their search and raised their interviews. The overall rise (about 44%) was only marginally significant and was larger for narrow searchers who had been unemployed longer, from a very low starting level.',
+        'No effect on job offers or employment was shown. Nothing on age, China, ad wording or chatbots.'],
+    ];
+    const moreCard = ([t, who, ver, href, plain, lim]) => h('article.lit-card.lit-mini', {},
+      h('div.lit-head', {}, h('h3', {}, t), h('span.lit-status.ok', {}, 'Checked in full text')),
+      h('p.lit-plain', {}, plain),
+      h('p.lit-src', {}, who + ', ', h('a', { href, target: '_blank', rel: 'noopener' }, ver), ' (working paper version read; the journal text was not).'),
+      h('p.mv-lim', {}, h('b', {}, 'Limit: '), lim));
+
     el.append(h('div.wrap.section.lit-sec', {},
       h('h2', {}, 'Why it matters'),
-      h('p.lit-lead', {}, 'In Chinese recruitment, a number such as 35 in an ad can decide who applies and who gets a reply. Two studies show how strongly stated age limits shape outcomes, which is why AgeLens asks what an ad’s age wording really means before you apply.'),
+      h('p.lit-lead', {}, 'In Chinese recruitment, a number such as 35 in an ad can decide who applies and who gets a reply. Five studies point to the same problem and to one possible help. They motivate our approach but do not establish its effectiveness.'),
       h('p.hint', {}, 'This is background reading, not an evaluation of AgeLens.'),
       h('div.lit-grid', {}, feng, lin),
+      h('h3.lit-sub', {}, 'Three more studies'),
+      h('div.lit-grid.lit-grid3', {}, more.map(moreCard)),
       h('details.lit-notes', {}, h('summary', {}, 'Notes and limits'),
         h('ul', {},
           h('li', {}, 'Feng et al. is a working paper and has not been peer-reviewed. Its sample is college-educated applicants in one province on one platform.'),

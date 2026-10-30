@@ -76,7 +76,21 @@
           "whether the cap is applied strictly to this vacancy",
           "whether any exception exists (the ad states none)"
         ]
-      }
+      },
+      "key_facts": [
+        {
+          "id": "F1",
+          "text": "The ad sets an age limit of 35 (age 35 or under)."
+        },
+        {
+          "id": "F2",
+          "text": "The ad states no exception or relaxation to the limit."
+        },
+        {
+          "id": "F3",
+          "text": "The ad does not say whether the limit is applied strictly to this vacancy."
+        }
+      ]
     },
     {
       "id": "T2",
@@ -107,7 +121,25 @@
           "how experience is verified",
           "whether 'generally' makes the 35 figure flexible beyond the stated exception"
         ]
-      }
+      },
+      "key_facts": [
+        {
+          "id": "F1",
+          "text": "The normal age limit is 35 (the ad says 'generally not above 35')."
+        },
+        {
+          "id": "F2",
+          "text": "The limit may be relaxed to 40 for candidates with an intermediate or higher title, or 8+ years of relevant industry experience."
+        },
+        {
+          "id": "F3",
+          "text": "The ad does not say whether the applicant's 9 years in e-commerce operations count as relevant industry experience (the applicant has no title)."
+        },
+        {
+          "id": "F4",
+          "text": "The ad does not say how the relaxation is decided or how experience is checked."
+        }
+      ]
     },
     {
       "id": "T3",
@@ -136,7 +168,21 @@
           "how much weight the preference carries",
           "whether applicants over 30 are considered in the same round"
         ]
-      }
+      },
+      "key_facts": [
+        {
+          "id": "F1",
+          "text": "'Under 30' is worded as a preference, not as a stated hard limit."
+        },
+        {
+          "id": "F2",
+          "text": "The ad states no maximum age."
+        },
+        {
+          "id": "F3",
+          "text": "The ad does not say how much weight the preference carries or whether applicants over 30 are considered."
+        }
+      ]
     },
     {
       "id": "T4",
@@ -167,7 +213,21 @@
           "any exception",
           "location and other requirements (missing)"
         ]
-      }
+      },
+      "key_facts": [
+        {
+          "id": "F1",
+          "text": "The age line is cut off ('28-3'), so the full age requirement cannot be read."
+        },
+        {
+          "id": "F2",
+          "text": "It is unknown whether the age wording is a requirement, a preference, or has exceptions."
+        },
+        {
+          "id": "F3",
+          "text": "No upper age limit can be assumed from the text shown."
+        }
+      ]
     }
   ],
   "rubric": {
@@ -316,5 +376,230 @@
       "rationale": "Invents a cap of 35 and an exception that are not in the cut-off text (S1); asserts eligibility; no real question."
     }
   ],
-  "_english": "English display fields: tasks[*].ad_text_en, job_title_en, facts.quote_en (the age rules read the Chinese ad_text; participants see ad_text_en). Added 2026-10-28; the sha256 of this file changed with it (study not approved)."
+  "_english": "English display fields: tasks[*].ad_text_en, job_title_en, facts.quote_en (the age rules read the Chinese ad_text; participants see ad_text_en). Added 2026-10-28; the sha256 of this file changed with it (study not approved).",
+  "design_ai": {
+    "id": "crossover-ai-v1",
+    "decided": "2026-10-29",
+    "summary": "Within-participant crossover, contextual AI assistance versus a fixed template, identical evidence. Every participant does all 4 tasks: 2 with the fixed template (condition A) and 2 with contextual AI assistance (condition B). Sequence XY-Sk: the first two tasks use condition X, the last two Y; the tasks of set Sk get condition B (AI), the other set gets A (template). Permuted blocks of 4 sequences, seeded. Within each half the task order is shuffled (seeded per participant). Both tools get the same evidence package (rules age-rules-2.1.0). Participants see only Tool A (first two tasks) and Tool B (last two); which tool is which is not shown.",
+    "conditions": {
+      "A": {
+        "kind": "template",
+        "label": "Fixed template"
+      },
+      "B": {
+        "kind": "ai_contextual",
+        "label": "Contextual AI assistance"
+      }
+    },
+    "optional_arms": {
+      "ad_only": {
+        "kind": "none",
+        "label": "Ad text only",
+        "status": "NOT in the primary design: a third arm with 4 tasks cannot be balanced within a person and cuts observations per arm by a third. The old ad-only versus rules-aid comparison stays available as the separate legacy design crossover-rules-v1."
+      }
+    },
+    "task_sets": {
+      "S1": [
+        "T1",
+        "T3"
+      ],
+      "S2": [
+        "T2",
+        "T4"
+      ]
+    },
+    "sequences": [
+      "AB-S1",
+      "AB-S2",
+      "BA-S1",
+      "BA-S2"
+    ],
+    "model_required_for": [
+      "B"
+    ],
+    "outcomes": {
+      "primary": "interpretation_accuracy",
+      "secondary": [
+        "actionable_question",
+        "completion_time"
+      ],
+      "key_safety": "unsupported_claims",
+      "definitions": {
+        "interpretation_accuracy": "Per task: share of the task's key_facts that the participant's reading states correctly (0/1 per fact, scored by raters). Per participant and condition: mean over that condition's 2 tasks. Missing or empty = all facts 0.",
+        "actionable_question": "Per task: 1 if the question meets all four criteria q1-q4, else 0 (no question = 0). Per participant and condition: share over 2 tasks.",
+        "unsupported_claims": "Per task: count of statements in the participant's reading and question that the ad text or the profile does not support (rubric_ai.unsupported). Per participant and condition: mean count per task. Lower is better.",
+        "completion_time": "Per task: server-side seconds from task open to final submission. Per participant and condition: mean over 2 tasks. Descriptive; a timed-out task is capped at the time limit."
+      }
+    },
+    "decision_rules": {
+      "primary_alpha": 0.05,
+      "min_meaningful_difference": 0.1,
+      "evidence_of_benefit": "Primary: mean paired difference (AI minus template) in accuracy >= +0.10 AND the 95% CI lower bound > 0 AND the two-sided exact/permutation p < 0.05.",
+      "no_evidence_of_benefit": "Anything else. This does NOT show the AI does not help; with a small N the CI will be wide and is reported.",
+      "safety_signal": "If the paired mean difference in unsupported claims per task (AI minus template) has a 95% CI lower bound > 0, the AI arm is reported as adding unsupported claims, whatever the accuracy result.",
+      "family": "One confirmatory test (primary). The three other outcomes are secondary: estimate and 95% CI, with Holm-adjusted p over those three; exploratory.",
+      "test": "Exact sign-flip permutation test on participant-level differences (exact when N <= 16, otherwise 100,000 random flips, seed 20261023); percentile bootstrap 95% CI (20,000 resamples, seed 20261023)."
+    },
+    "recruitment_target": 24,
+    "minimum_to_analyse": 16,
+    "claim": "Improved decision support only. No claim about interviews, hiring, employment or GDP. Any benefit to employment would depend on employers responding and considering applicants; the tool cannot remove a binding age restriction."
+  },
+  "instructions_ai": "You are helping the job seeker described in the task. You get an evidence package (what a set of rules found in the ad) and a writing tool. Using ONLY the ad text, the evidence package and the background shown, write (1) your plain-language reading of what the ad's age wording says and what it leaves unclear, and (2) the one question the job seeker would send to the employer's hiring contact before applying. The tool's draft may be wrong or incomplete; check it against the ad. Do not type any real personal information. Every task has the same time limit and layout.",
+  "consent_ai_draft": "DRAFT for teacher / ethics approval — NOT APPROVED. Purpose: this classroom study compares two writing tools for reading the age wording in fictional job ads: a fixed question template and a tool that gives context-aware (AI) assistance. Both get the same evidence from the ad. You will do four short tasks (about 7 minutes each, about 30 minutes in total): in each you write a plain-language reading of the ad's age wording and the question you would send the employer. In two tasks you use one tool and in the other two the other tool. They are called Tool A and Tool B; which is which is explained after the last task. All ads and job seekers are fictional; please do not type real personal information. We record your anonymous participant code, which tool was used on which task, timing, and the text you write; we do not record your name, email or IP address. Your text is scored by two people who do not see which tool you used. Taking part is voluntary; you can stop at any time, and if you withdraw we delete the text you wrote and keep only the fact that you withdrew. Results are reported only in aggregate. This study measures only how accurately people read the wording, whether their questions are usable, whether they make unsupported claims, and how long they take. It cannot show effects on interviews, hiring or employment, and the tool cannot remove an age limit an employer applies.",
+  "rubric_ai": {
+    "version": "rubric-ai-v0.1-draft",
+    "kind": "ai",
+    "how": "Raters see only the task (ad, profile), the participant's reading and the participant's question. Judge what is written, not what the author probably meant. Do not guess which tool the author used. Score every item blind to tool and to other raters.",
+    "facts_rule": "Interpretation accuracy: for each key fact listed with the task, mark it 'stated correctly' (1) only if the reading says it, in any wording, without contradicting the ad. A fact that is missing, wrong or contradicted is 0.",
+    "question_criteria": [
+      {
+        "id": "q1",
+        "name": "Specific",
+        "definition": "The question refers to the ad's actual age wording (quote or close paraphrase) AND to the applicant's situation (for example age or years of experience).",
+        "met_example": "\"Does my nine years in e-commerce operations count as relevant industry experience for the relaxation to 40?\"",
+        "not_met_example": "\"Can you tell me more about the age requirement?\""
+      },
+      {
+        "id": "q2",
+        "name": "Answerable",
+        "definition": "An employer could answer it in one short reply (yes/no, a criterion, or a named document). It asks one thing, or a small number of closely linked things.",
+        "met_example": "\"Is the 35 limit strict for this vacancy?\"",
+        "not_met_example": "\"Explain your whole hiring process and how age is used everywhere.\""
+      },
+      {
+        "id": "q3",
+        "name": "Neutral",
+        "definition": "Polite and factual. No accusation, no legal claim, no assumption about what the answer will be.",
+        "met_example": "\"I am not sure how the preference is applied.\"",
+        "not_met_example": "\"Your ad is discriminatory; explain yourself.\""
+      },
+      {
+        "id": "q4",
+        "name": "No demands",
+        "definition": "It asks; it does not demand a promise, an exemption, or a confirmation that the applicant qualifies.",
+        "met_example": "\"What would you need from me to assess the relaxation?\"",
+        "not_met_example": "\"Confirm that I qualify and that my application will be considered.\""
+      }
+    ],
+    "actionable_rule": "A question is ACTIONABLE only if q1, q2, q3 and q4 are all met. No question in the text = not actionable. Binary was chosen over a 0-2 score because with two raters and a small sample a 0-2 scale loses agreement and adds noise; the four sub-checks are kept so that partial quality can be described.",
+    "unsupported": {
+      "definition": "Count the separate statements in the reading and the question that the ad text or the profile does not support. Count each statement once. Questions and expressions of uncertainty are not claims. Enter the count (0-10).",
+      "types": [
+        {
+          "id": "U1",
+          "name": "Invented content",
+          "definition": "States an ad detail, employer practice or policy that is not in the ad (including filling in the cut-off part of T4).",
+          "example": "T4: \"The ad limit is 35.\""
+        },
+        {
+          "id": "U2",
+          "name": "Eligibility or outcome claim",
+          "definition": "States or promises that the applicant does or does not qualify, will be rejected, or will be hired.",
+          "example": "\"I qualify for the exception.\""
+        },
+        {
+          "id": "U3",
+          "name": "Legal conclusion or accusation",
+          "definition": "Says or implies the ad or employer is illegal, unlawful or discriminatory.",
+          "example": "\"This ad is illegal.\""
+        },
+        {
+          "id": "U4",
+          "name": "Misstated ad or profile",
+          "definition": "Gets the ad's age wording (number, preference versus limit, exception) or the applicant's own facts (age, years, title) wrong.",
+          "example": "T2: \"Nobody over 35 is accepted.\""
+        }
+      ]
+    },
+    "disagreement_rule": "R1 and R2 score every non-empty item independently, blind to tool and to each other. An item is a DISAGREEMENT if they differ on any fact bit, any of q1-q4, or the unsupported count. R3 scores only disagreements, blind to R1/R2. FINAL value: per fact bit and per q bit the majority of R1, R2, R3; unsupported count = the R1/R2 value when equal, otherwise the median of R1, R2, R3. Until R3 has scored, the item is 'unresolved' and reported, not guessed. Submitted scores are never edited.",
+    "calibration_rule": "Before scoring real items each rater scores the frozen calibration_ai set, sees the reference and rationale, and the team discusses the rubric wording (not real items). Target: raw agreement with the reference on at least 90% of all judgements (fact bits, q1-q4, unsupported counts). If not reached, clarify the wording and repeat with a new frozen set. Calibration scores are never mixed into study data."
+  },
+  "calibration_ai": [
+    {
+      "id": "CA1",
+      "task_id": "T1",
+      "reading": "The ad says age 35 or under and lists no exception. It does not say how strictly the limit is applied.",
+      "question": "I am 38 with eight years of procurement experience. The ad lists \"age 35 or under\". Is this limit applied strictly for this vacancy, and are applications from people over 35 reviewed?",
+      "reference": {
+        "facts": {
+          "F1": 1,
+          "F2": 1,
+          "F3": 1
+        },
+        "q": {
+          "q1": 1,
+          "q2": 1,
+          "q3": 1,
+          "q4": 1
+        },
+        "unsupported": 0
+      },
+      "rationale": "All three facts stated; question specific, answerable, neutral, no demand; no unsupported statement."
+    },
+    {
+      "id": "CA2",
+      "task_id": "T2",
+      "reading": "People over 35 are not accepted, but maybe 40 for senior people. I definitely qualify because I have nine years.",
+      "question": "Please confirm that I qualify for the relaxation.",
+      "reference": {
+        "facts": {
+          "F1": 1,
+          "F2": 0,
+          "F3": 0,
+          "F4": 0
+        },
+        "q": {
+          "q1": 0,
+          "q2": 1,
+          "q3": 1,
+          "q4": 0
+        },
+        "unsupported": 2
+      },
+      "rationale": "States the 35 limit (F1) but the relaxation is vague ('senior people'), F3 and F4 absent. Question has no reference to the wording or the applicant's facts, and demands a confirmation. Unsupported: 'definitely qualify' (U2) and 'people over 35 are not accepted' (U4, ignores the stated exception)."
+    },
+    {
+      "id": "CA3",
+      "task_id": "T3",
+      "reading": "Under 30 is preferred, which reads as a preference rather than a limit. No maximum age is stated. The ad does not say how much weight the preference carries or whether applicants over 30 are considered.",
+      "question": "I am 41 with twelve years in administration. The ad says \"under 30 preferred\". How much weight does this preference carry, and are applicants over 30 reviewed in the same round?",
+      "reference": {
+        "facts": {
+          "F1": 1,
+          "F2": 1,
+          "F3": 1
+        },
+        "q": {
+          "q1": 1,
+          "q2": 1,
+          "q3": 1,
+          "q4": 1
+        },
+        "unsupported": 0
+      },
+      "rationale": "All three facts stated; the question is specific to the wording and the applicant (41, twelve years), answerable, neutral and makes no demand; nothing unsupported."
+    },
+    {
+      "id": "CA4",
+      "task_id": "T4",
+      "reading": "The age limit is 28 to 35 and the ad is cut off after that.",
+      "question": "Could you send the complete age line, and say whether it is a requirement or a preference?",
+      "reference": {
+        "facts": {
+          "F1": 1,
+          "F2": 0,
+          "F3": 0
+        },
+        "q": {
+          "q1": 0,
+          "q2": 1,
+          "q3": 1,
+          "q4": 1
+        },
+        "unsupported": 1
+      },
+      "rationale": "Notes the cut-off (F1) but invents '28 to 35' (U1), so F3 fails and F2 is not stated in the reading. The question is answerable, neutral and makes no demand, but does not refer to the actual wording or the applicant's situation (q1 0)."
+    }
+  ],
+  "_ai_note": "design_ai, rubric_ai, calibration_ai, instructions_ai, consent_ai_draft and tasks[*].key_facts were added additively on 2026-10-29 for the evaluation design crossover-ai-v1 (docs/EVAL_PLAN.md). All legacy fields are unchanged; the file's sha256 changed with them (study not approved). Key facts are English only."
 }

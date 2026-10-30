@@ -81,4 +81,14 @@ Limits stated by the paper itself: callback-rate differences may partly reflect 
   - Panel (b): 0.3970% (Table 1, col. 1) vs 0.3970 + 0.1403 = 0.5373% (Table 2, col. 1; the sum is stated by the author on p. 109), with the SE 0.0594.
   - Not reproduced: Fig. 1's other sites and ages, and Fig. 2's binned points and confidence bands.
 
+## 3. Three further papers (added 2026-10-29; full notes in `docs/lit_notes/`)
+
+All three were read in full as working papers, not as the journal text. No journal volume, page or DOI is cited because none was verified.
+
+- **Neumark, Burn, Button (2019)**, NBER Working Paper 21669 (revised November 2017). US resume correspondence study, 40,223 applications, four occupations. Callbacks fall with applicant age, with stronger and more robust evidence of age discrimination against women than against men. Limits: US only; callbacks, not hires; no ad text; not China. Notes: `docs/lit_notes/neumark_2019.md`.
+- **Burn, Firoozi, Ladd, Neumark (2022)**, "Help Really Wanted? The Impact of Age Stereotypes in Job Ads on Applications from Older Workers", NBER Working Paper 30287. Randomised artificial ads for three occupations: ageist wording lowers the average age of applicants and the share over 40 (any-treatment estimate: 2.7 years and 9.4 points). Limits: measures who applies, not who is hired. **Correction:** the team's draft cited Burn, Button, Munguia Corella, Neumark for "age-stereotyped ads affect application behaviour". That paper (NBER Working Paper 26552, "Older Workers Need Not Apply?") links ad wording to employer callbacks, not to who applies. Use WP 30287 for application behaviour and mention WP 26552 only as callback evidence. Notes: `docs/lit_notes/burn_2022.md`.
+- **Belot, Kircher, Muller (2019)**, IZA Discussion Paper 10068 (July 2016 version read). About 300 unemployed jobseekers in Edinburgh, lab experiment: an online tool suggesting related occupations broadened search and raised interviews (about 44% overall, only marginally significant; larger for narrow searchers unemployed longer, from a tiny base). No effect on offers or employment was shown. Nothing on age, China, ad wording or chatbots. Notes: `docs/lit_notes/belot_2019.md`.
+
+With Feng et al. (2026) and Lin (2025) above, the five papers motivate the AgeLens approach but do not establish its effectiveness. None evaluates a clarification tool.
+
 This literature shows why age thresholds matter. It is not an evaluation of AgeLens.

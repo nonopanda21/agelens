@@ -28,6 +28,7 @@
 
       const tile = (label, value, sub) => h('div.dt-tile', {}, h('p.dt-value', {}, value), h('p.dt-label', {}, label), h('p.hint.dt-sub', {}, sub));
       const real = await AL.realSummary();
+      const hetero = real && AL.heteroData ? await AL.heteroData() : null;
       let tiles;
       if (real) {
         // real Zhaopin aggregate (counts only); the explorer and Job Seeker keep the simulated set
@@ -98,7 +99,7 @@
         : 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.';
       el.append(h('div.wrap.section.dt', {},
         h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), real ? h('span.badge.mint', {}, real.label) : h('span.badge.sim', {}, 'Demo · Synthetic data')),
-        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.'),
+        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.', hetero ? ' Further down, the same ads are split by required experience, occupation and explicit gender requirements.' : null),
         tiles,
         h('div.dt-actions', {}, jump, h('a.btn.btn-secondary', { href: '#/explore' }, 'Open the evidence explorer')),
         h('div.dt-maphead', {}, h('div', {}, h('h3', {}, 'Where and in which jobs age wording appears'),

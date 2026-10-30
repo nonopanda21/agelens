@@ -75,14 +75,12 @@ Steps and free-plan limits are in [`docs/DEPLOY.md`](docs/DEPLOY.md). Before pus
 
 ## How we will evaluate it
 
-The claim is that **seeing AgeLens's evidence check makes the clarification request a person writes more often usable** than reading the ad alone.
+The team's decision (2026-10-29): compare **contextual AI assistance with fixed templates, using identical evidence**. The claim is improved decision support only; nothing about interviews, hiring or employment, and the tool cannot remove a binding age limit.
 
-- **Design:** a pre-registered within-participant crossover.
-  - Each participant writes 4 requests for fictional ads: 2 with the ad only, 2 with AgeLens.
-  - Two blind raters score them against a 4-criterion rubric.
-  - Success threshold: a mean difference of at least +0.20, with the 95% CI above 0.
+- **Design:** a within-participant crossover. Each participant does 4 fictional tasks: 2 with a fixed template, 2 with contextual AI assistance.
+  - Outcomes, scored blind by raters: interpretation accuracy (primary), unsupported claims (key safety), actionable question, completion time.
   - Target: 24 participants.
-- **Status:** the study tools are built, and a simulated dry run worked end to end. The plan awaits teacher approval, and **no results exist yet.**
+- **Status:** the study tools are built and rehearsed with a SIMULATED dry run (a script wrote the "AI" text). **No AI model is connected, no participant is recruited, no approval exists, and no results exist.**
 
 Full plan, power analysis and dry run: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
 

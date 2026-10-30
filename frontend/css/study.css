@@ -51,3 +51,9 @@
 @media (max-width:640px){.st-page{padding-left:var(--s4);padding-right:var(--s4)}}
 /* QA: the DRAFT badge sat flush against the consent heading */
 .st-consent>.badge{margin-bottom:var(--s3)}
+/* crossover-ai-v1 */
+.st-tool{display:grid;gap:var(--s3)}.st-tool h3,.st-answer h3{font-size:.95rem;margin:0 0 var(--s1)}.st-tool p,.st-tool ul{margin:0}.st-tool ul{padding-left:var(--s5)}
+.st-evidence ul{margin:0;padding-left:var(--s5)}.st-evidence li{margin-bottom:var(--s1)}
+.st-fact{padding:var(--s3) 0;border-top:1px solid var(--line)}.st-fact p{margin:0 0 var(--s2);max-width:none}
+#f-unsup{width:5rem}
+.st-write textarea{width:100%}

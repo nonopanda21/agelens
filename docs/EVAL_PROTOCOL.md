@@ -1,6 +1,6 @@
 # AgeLens evaluation protocol
 
-> **SUPERSEDED 2026-10-27 by `docs/EVAL_PLAN.md`** (within-participant crossover, ad only vs AgeLens evidence check, no model needed). This file describes the legacy parallel model-vs-template design (`parallel-llm-v0`), which is still selectable in code but is not the planned study.
+> **SUPERSEDED 2026-10-29 by `docs/EVAL_PLAN.md`** (2026-10-27: first by the rules-vs-ad crossover) (within-participant crossover, ad only vs AgeLens evidence check, no model needed). This file describes the legacy parallel model-vs-template design (`parallel-llm-v0`), which is still selectable in code but is not the planned study.
 
 > **STATUS: DRAFT — NOT FILED, NOT APPROVED.** No participant has been recruited, no approval has been given, nothing has been preregistered, and there are no study results. Every number from the tools in this repository comes from SIMULATED sessions (software tests). Items marked **TEACHER** need the teacher's decision before any formal collection. Companion: `docs/PREREGISTRATION_DRAFT.md`, `data/study/EXPORT_SCHEMA.md`.
 

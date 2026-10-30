@@ -13,6 +13,15 @@ _REAL_CACHE = {}          # path -> (mtime_ns, size, parsed json)
 _REAL_LOCK = threading.Lock()
 
 
+def _has_hetero():
+    """True when the experience/gender counts exist, so the page only asks for them when they are there."""
+    try:
+        from .api_hetero import load_hetero
+        return load_hetero() is not None
+    except Exception:
+        return False
+
+
 def real_dir():
     return Path(os.environ.get("AGELENS_REAL_DIR") or (_ROOT / "data" / "real"))
 
@@ -136,11 +145,11 @@ def register(router):
         """Whether a real-data matrix exists, and its headline facts (from its meta)."""
         data = load_real()
         if data is None:
-            return {"available": False, "label": None, "years": None, "rows_used": None, "generated_at": None, "method": None}
+            return {"available": False, "label": None, "years": None, "rows_used": None, "generated_at": None, "method": None, "hetero": False}
         meta = data.get("meta") or {}
         return {"available": True, "label": data.get("label"), "years": meta.get("years"), "rows_used": meta.get("rows_used"),
                 "generated_at": meta.get("generated_at"), "method": meta.get("method"), "source": real_source_en(meta.get("source")),
-                "total_ads": (data.get("total") or {}).get("ads")}
+                "total_ads": (data.get("total") or {}).get("ads"), "hetero": _has_hetero()}
 
     @router.get("/api/status")
     def status(req):

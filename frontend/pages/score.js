@@ -25,7 +25,8 @@
             try { await api('/api/study/rater/status'); main('score'); } catch (e) { ss.del(TK); err.textContent = e.message; err.hidden = false; }
           } },
           h('span.badge.sim', {}, 'Demo-grade access — not production authentication'),
-          h('p', {}, 'Raters score each answer on four yes/no criteria plus a severe-error flag. You will not see which writing aid the author had, who the author is, or any other rater\'s scores.'),
+          h('p', {}, cfg.ai_design ? 'Raters score each answer on three things: which key facts the reading states correctly, four yes/no checks on the question, and a count of unsupported statements. You will not see which tool the author used, who the author is, or any other rater\'s scores.'
+            : 'Raters score each answer on four yes/no criteria plus a severe-error flag. You will not see which writing aid the author had, who the author is, or any other rater\'s scores.'),
           h('p.hint', {}, 'The token stays in this tab\'s session storage.'),
           h('label', { for: 'sc-tok' }, 'Study token'), tok, sel, err, h('button.btn.btn-primary', { type: 'submit' }, 'Sign in'),
           h('details.ops', {}, h('summary', {}, 'For operators'), h('div', {}, h('p', {}, 'The token is in ', h('code', {}, 'data/study/study_token'), ' (or the ', h('code', {}, 'AGELENS_STUDY_TOKEN'), ' environment variable).')))));
@@ -45,8 +46,41 @@
         else if (tab === 'disagreements') disagreements(pane); else operator(pane);
       }
 
+      /* crossover-ai-v1: the rater sees the two texts only (never the tool, the arm or the author) */
+      const answerBlock = (it) => st0.ai
+        ? h('section.card.st-answer', {}, h('h2', {}, 'Texts to score'), h('h3', {}, 'Reading of the age wording'), h('blockquote.st-quote', {}, it.reading || '(empty)'),
+            h('h3', {}, 'Question to the employer'), h('blockquote.st-quote', {}, it.question || '(empty)'))
+        : h('section.card.st-answer', {}, h('h2', {}, 'Answer to score'), h('blockquote.st-quote', {}, it.answer));
+      const st0 = { ai: !!cfg.ai_design };
+
+      function aiScoreForm(st, task, onSubmit, label) {
+        const R = st.rubric, fget = {}, qget = {};
+        const yn = (name, a, b) => h('div.st-yn', {}, [['yes', a], ['no', b]].map(([v, l]) => h('label.st-radio', {}, h('input', { type: 'radio', name, value: v, required: true }), ' ' + l)));
+        const pick = (box) => { const x = box.querySelector('input:checked'); return x ? x.value === 'yes' : null; };
+        const facts = h('fieldset.st-crit', {}, h('legend', {}, 'Interpretation accuracy: key facts'), h('p.hint', {}, R.facts_rule),
+          (task.key_facts || []).map((f) => { const box = h('div.st-fact', {}, h('p', {}, h('strong', {}, f.id + ': '), f.text), yn('f-' + f.id, 'Stated correctly', 'Missing or wrong')); fget[f.id] = () => pick(box); return box; }));
+        const qs = R.question_criteria.map((c) => { const fs = h('fieldset.st-crit', {}, h('legend', {}, 'Question: ' + c.id + ' ' + c.name), h('p.hint', {}, c.definition),
+            h('details', {}, h('summary', {}, 'Examples'), h('p', {}, h('strong', {}, 'Met: '), c.met_example), h('p', {}, h('strong', {}, 'Not met: '), c.not_met_example)), yn('f-' + c.id, 'Met', 'Not met')); qget[c.id] = () => pick(fs); return fs; });
+        const un = h('input', { id: 'f-unsup', type: 'number', min: 0, max: 10, step: 1, value: 0, required: true });
+        const unsup = h('fieldset.st-crit.st-severe', {}, h('legend', {}, 'Unsupported statements'), h('p.hint', {}, R.unsupported.definition),
+          h('ul.st-sev', {}, R.unsupported.types.map((t) => h('li', {}, h('strong', {}, t.id + ' ' + t.name + ': '), t.definition + ' e.g. ' + t.example))), h('label', { for: 'f-unsup' }, 'Count (0-10)'), un);
+        const notes = h('textarea', { id: 'f-notes', rows: 3, maxlength: 500, placeholder: 'Optional. No names or personal details.' });
+        const err = h('p.notice.error', { role: 'alert', hidden: true });
+        const btn = h('button.btn.btn-primary', { type: 'submit' }, label);
+        return h('form.st-scoreform', { onsubmit: async (ev) => {
+          ev.preventDefault(); err.hidden = true;
+          const body = { facts: {}, notes: notes.value, unsupported: parseInt(un.value, 10) };
+          for (const id of Object.keys(fget)) { body.facts[id] = fget[id](); if (body.facts[id] === null) { err.textContent = 'Mark every key fact.'; err.hidden = false; return; } }
+          for (const id of Object.keys(qget)) { body[id] = qget[id](); if (body[id] === null) { err.textContent = 'Answer all four question checks.'; err.hidden = false; return; } }
+          if (!(body.unsupported >= 0 && body.unsupported <= 10)) { err.textContent = 'Enter a count from 0 to 10.'; err.hidden = false; return; }
+          btn.disabled = true;
+          try { await onSubmit(body); } catch (e) { err.textContent = e.message; err.hidden = false; btn.disabled = false; }
+        } }, facts, qs, unsup, h('label', { for: 'f-notes' }, 'Notes'), notes, err, btn);
+      }
+
       /* ---- rubric form shared by calibration and live scoring ---- */
-      function scoreForm(st, onSubmit, label) {
+      function scoreForm(st, onSubmit, label, task) {
+        if (st.rubric.kind === 'ai') return aiScoreForm(st, task, onSubmit, label);
         const yn = {};
         const fields = st.rubric.criteria.map((c) => {
           const name = 'f-' + c.id;
@@ -79,24 +113,26 @@
       async function calibration(pane, st) {
         const { items } = await api('/api/study/calibration');
         const pending = items.filter((i) => !i.scored);
-        pane.replaceChildren(h('p', {}, 'Score the frozen calibration examples first. After each one you see the reference scores and the reasoning. ' + st.rubric.usable_rule));
+        pane.replaceChildren(h('p', {}, 'Score the frozen calibration examples first. After each one you see the reference scores and the reasoning. ' + (st.rubric.usable_rule || st.rubric.how)));
         pane.append(h('details', {}, h('summary', {}, 'Calibration target and rule'), h('p', {}, 'See rubric: calibration_rule in data/study/tasks.json.')));
         if (!pending.length) {
           const s = await api('/api/study/calibration/summary');
-          pane.append(h('div.card', {}, h('h2', {}, 'Calibration complete'), h('p', {}, 'Agreement with the reference: ' + Math.round(s.agreement * 100) + '% of ' + s.judgements + ' judgements; severe-flag mismatches: ' + s.severe_mismatches + '. Target (90% and no severe mismatch): ' + (s.target_met ? 'met.' : 'NOT met — discuss the rubric wording with the team before scoring real answers.')),
+          pane.append(h('div.card', {}, h('h2', {}, 'Calibration complete'), h('p', {}, 'Agreement with the reference: ' + Math.round(s.agreement * 100) + '% of ' + s.judgements + ' judgements' + (cfg.ai_design ? '' : '; severe-flag mismatches: ' + s.severe_mismatches) + '. Target (90%' + (cfg.ai_design ? '' : ' and no severe mismatch') + '): ' + (s.target_met ? 'met.' : 'NOT met — discuss the rubric wording with the team before scoring real answers.')),
             h('button.btn.btn-primary', { type: 'button', onclick: () => main('score') }, 'Go to scoring')));
           return;
         }
         const it = pending[0];
         const box = h('div');
         box.append(h('p.hint', {}, 'Example ' + (items.length - pending.length + 1) + ' of ' + items.length + ' (frozen, synthetic)'), taskFacts(it.task),
-          h('section.card.st-answer', {}, h('h2', {}, 'Answer to score'), h('blockquote.st-quote', {}, it.answer)),
+          answerBlock(it),
           scoreForm(st, async (body) => {
             const r = await api('/api/study/calibration/' + it.id, body);
-            const rows = Object.entries(r.match).map(([k, ok]) => h('li', {}, (k === 'severe' ? 'Severe flag' : 'Criterion ' + k.slice(1)) + ': reference ' + (r.reference[k] ? (k === 'severe' ? 'present' : 'met') : (k === 'severe' ? 'absent' : 'not met')) + ' — ' + (ok ? 'you agreed' : 'you differed')));
-            box.replaceChildren(h('div.card', {}, h('h2', {}, 'You agreed on ' + r.agreed + ' of 5'), h('ul', {}, rows), h('p', {}, h('strong', {}, 'Reasoning: '), r.rationale),
+            const lab = (k) => k === 'severe' ? 'Severe flag' : k === 'unsupported' ? 'Unsupported count' : /^F\d/.test(k) ? 'Key fact ' + k : /^q\d/.test(k) ? 'Question check ' + k : 'Criterion ' + k.slice(1);
+            const refTxt = (k) => cfg.ai_design ? (k === 'unsupported' ? String(r.reference[k]) : (r.reference[k] ? 'yes' : 'no')) : (r.reference[k] ? (k === 'severe' ? 'present' : 'met') : (k === 'severe' ? 'absent' : 'not met'));
+            const rows = Object.entries(r.match).map(([k, ok]) => h('li', {}, lab(k) + ': reference ' + refTxt(k) + ' — ' + (ok ? 'you agreed' : 'you differed')));
+            box.replaceChildren(h('div.card', {}, h('h2', {}, 'You agreed on ' + r.agreed + ' of ' + (r.of || 5)), h('ul', {}, rows), h('p', {}, h('strong', {}, 'Reasoning: '), r.rationale),
               h('button.btn.btn-primary', { type: 'button', onclick: () => main('calibration') }, 'Next')));
-          }, 'Submit and see reference'));
+          }, 'Submit and see reference', it.task));
         pane.append(box);
       }
 
@@ -110,8 +146,8 @@
           return;
         }
         pane.replaceChildren(h('p.hint', {}, r.remaining + ' answer' + (r.remaining === 1 ? '' : 's') + ' left for you. Item ' + r.item.item_key), taskFacts(r.item.task),
-          h('section.card.st-answer', {}, h('h2', {}, 'Answer to score'), h('blockquote.st-quote', {}, r.item.answer)),
-          scoreForm(st, async (body) => { body.item_key = r.item.item_key; await api('/api/study/rater/score', body); main('score'); }, 'Submit score and next'));
+          answerBlock(r.item),
+          scoreForm(st, async (body) => { body.item_key = r.item.item_key; await api('/api/study/rater/score', body); main('score'); }, 'Submit score and next', r.item.task));
       }
 
       async function disagreements(pane) {
@@ -142,7 +178,8 @@
         } }, 'Try to switch to formal mode');
         pane.replaceChildren(
           h('section.card', {}, h('h2', {}, 'Study mode'), h('p', {}, 'Current mode: ', h('strong', {}, c.mode), '. Model: ', h('strong', {}, c.model.label), '.'),
-            h('p.hint', {}, 'Formal mode is refused by the server unless data/study/APPROVAL.json holds the teacher approval and preregistration reference, the task file hash matches, and a model is connected. This page cannot create that file.'),
+            h('p.hint', {}, cfg.ai_design ? 'Formal mode is refused by the server unless data/study/APPROVAL.json holds the teacher approval and preregistration reference, the task file hash matches, AND an AI model is connected for the contextual AI arm. This page cannot create that file. ' + (c.ai_arm && c.ai_arm.note ? c.ai_arm.note : '')
+              : 'Formal mode is refused by the server unless data/study/APPROVAL.json holds the teacher approval and preregistration reference, the task file hash matches, and a model is connected. This page cannot create that file.'),
             c.formal_blockers.length ? h('ul', {}, c.formal_blockers.map((b) => h('li', {}, b))) : h('p', {}, 'All formal-mode conditions are currently met.'), modeBtn),
           h('section.card', {}, h('h2', {}, 'Anonymous export'), h('p.hint', {}, 'Participant codes only. Answers and rater notes are not exported. Simulated sessions export only as SIMULATED; the formal export refuses until the gate above is open.'),
             h('div.st-actions', {}, [['simulated', 'json', 'task', 'Simulated · tasks JSON'], ['simulated', 'csv', 'task', 'Simulated · tasks CSV'], ['simulated', 'csv', 'participant', 'Simulated · participants CSV'], ['formal', 'csv', 'task', 'Formal · tasks CSV']].map(([s, f, l, t]) =>

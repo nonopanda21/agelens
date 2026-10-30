@@ -1,0 +1,27 @@
+# SIMULATION — not study data | schema export-ai-v1 | generated 2026-10-30T03:28:43Z | simulated=1
+# SIMULATED: No AI model was used; text drafted by a script for the rehearsal.
+participant_code,sequence,condition,tool,tool_source,no_model_used,data_label,simulated,task_id,task_kind,position,attempted,submitted,missing,timed_out,late,elapsed_s,completion_time_s,time_limit_s,reading_chars,question_chars,aid_inserted,model_failure,r1_facts,r1_q,r1_unsupported,r2_facts,r2_q,r2_unsupported,r3_facts,r3_q,r3_unsupported,notes_present,disagreement,resolution,final_facts,final_n_facts,final_facts_correct,final_accuracy,final_q,final_actionable,final_unsupported,participant_status,dropout
+SIM-VFV4QG,AB-S2,A,template,fixed-template,0,SIMULATED,1,T1,age_cap,1,1,1,0,0,0,0.9,0.9,420,106,119,0,0,011,1111,0,010,1111,0,011,1111,0,0,1,adjudicated,011,3,2,0.6667,1111,1,0,completed,0
+SIM-VFV4QG,AB-S2,A,template,fixed-template,0,SIMULATED,1,T3,age_preference,2,1,1,0,0,0,0.2,0.2,420,146,135,0,0,101,1111,0,001,1111,0,101,1111,0,0,1,adjudicated,101,3,2,0.6667,1111,1,0,completed,0
+SIM-VFV4QG,AB-S2,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T4,incomplete_evidence,3,1,1,0,0,0,0.2,0.2,420,231,128,0,0,111,1111,1,111,1111,1,,,,0,0,agree,111,3,3,1.0,1111,1,1,completed,0
+SIM-VFV4QG,AB-S2,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T2,qualification_exception,4,1,1,0,0,0,0.2,0.2,420,219,130,0,0,1011,1111,1,1111,1111,1,1011,1111,1,0,1,adjudicated,1011,4,3,0.75,1111,1,1,completed,0
+SIM-5PTXX6,BA-S1,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T3,age_preference,1,1,1,0,0,0,0.2,0.2,420,75,135,0,0,110,1111,0,010,1111,0,110,1111,0,0,1,adjudicated,110,3,2,0.6667,1111,1,0,completed,0
+SIM-5PTXX6,BA-S1,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T1,age_cap,2,1,1,0,0,0,0.5,0.5,420,249,53,1,0,110,0110,1,111,0110,2,110,0110,1,0,1,adjudicated,110,3,2,0.6667,0110,0,1,completed,0
+SIM-5PTXX6,BA-S1,A,template,fixed-template,0,SIMULATED,1,T2,qualification_exception,3,1,1,0,0,0,0.2,0.2,420,102,35,0,0,0100,0011,0,0100,0011,0,,,,0,0,agree,0100,4,1,0.25,0011,0,0,completed,0
+SIM-5PTXX6,BA-S1,A,template,fixed-template,0,SIMULATED,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,0.2,420,191,128,0,0,111,1111,0,101,1111,0,111,1111,0,0,1,adjudicated,111,3,3,1.0,1111,1,0,completed,0
+SIM-GYKTWV,BA-S2,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T2,qualification_exception,1,1,1,0,0,0,1.1,1.1,420,255,130,0,0,0111,1111,0,0111,1111,0,,,,0,0,agree,0111,4,3,0.75,1111,1,0,completed,0
+SIM-GYKTWV,BA-S2,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T4,incomplete_evidence,2,1,1,0,0,0,0.2,0.2,420,156,128,0,0,110,1111,0,100,1111,0,110,1111,0,0,1,adjudicated,110,3,2,0.6667,1111,1,0,completed,0
+SIM-GYKTWV,BA-S2,A,template,fixed-template,0,SIMULATED,1,T1,age_cap,3,1,1,0,0,0,0.2,0.2,420,31,35,0,0,100,0011,0,000,0011,0,100,0011,0,0,1,adjudicated,100,3,1,0.3333,0011,0,0,completed,0
+SIM-GYKTWV,BA-S2,A,template,fixed-template,0,SIMULATED,1,T3,age_preference,4,1,1,0,0,0,0.2,0.2,420,45,135,0,0,100,1111,0,100,1111,0,,,,0,0,agree,100,3,1,0.3333,1111,1,0,completed,0
+SIM-Z5BPZS,AB-S1,A,template,fixed-template,0,SIMULATED,1,T2,qualification_exception,1,1,1,0,0,0,0.3,0.3,420,240,130,0,0,1110,1111,1,0110,1111,1,1110,1111,1,0,1,adjudicated,1110,4,3,0.75,1111,1,1,completed,0
+SIM-Z5BPZS,AB-S1,A,template,fixed-template,0,SIMULATED,1,T4,incomplete_evidence,2,1,1,0,0,0,0.2,0.2,420,191,128,0,0,111,1111,0,111,1111,0,,,,0,0,agree,111,3,3,1.0,1111,1,0,completed,0
+SIM-Z5BPZS,AB-S1,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T3,age_preference,3,1,1,0,0,0,0.3,0.3,420,396,135,1,0,111,1111,0,111,1111,0,,,,0,0,agree,111,3,3,1.0,1111,1,0,completed,0
+SIM-Z5BPZS,AB-S1,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T1,age_cap,4,1,1,0,0,0,0.6,0.6,420,51,119,0,0,100,1111,1,100,1111,1,,,,0,0,agree,100,3,1,0.3333,1111,1,1,completed,0
+SIM-HMU37D,AB-S2,A,template,fixed-template,0,SIMULATED,1,T1,age_cap,1,1,1,0,0,0,0.2,0.2,420,40,119,0,0,010,1111,0,010,1111,0,,,,0,0,agree,010,3,1,0.3333,1111,1,0,completed,0
+SIM-HMU37D,AB-S2,A,template,fixed-template,0,SIMULATED,1,T3,age_preference,2,1,1,0,0,0,0.2,0.2,420,204,135,0,0,111,1111,1,101,1111,1,111,1111,1,0,1,adjudicated,111,3,3,1.0,1111,1,1,completed,0
+SIM-HMU37D,AB-S2,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T2,qualification_exception,3,1,1,0,0,0,0.2,0.2,420,191,130,0,0,1101,1111,0,1101,1111,0,,,,0,0,agree,1101,4,3,0.75,1111,1,0,completed,0
+SIM-HMU37D,AB-S2,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T4,incomplete_evidence,4,1,1,0,0,0,0.2,0.2,420,156,128,0,0,110,1111,0,010,1111,0,110,1111,0,0,1,adjudicated,110,3,2,0.6667,1111,1,0,completed,0
+SIM-QYCNXR,AB-S1,A,template,fixed-template,0,SIMULATED,1,T2,qualification_exception,1,1,1,0,0,0,0.2,0.2,420,26,130,0,0,1000,1111,0,1000,1111,0,,,,0,0,agree,1000,4,1,0.25,1111,1,0,completed,0
+SIM-QYCNXR,AB-S1,A,template,fixed-template,0,SIMULATED,1,T4,incomplete_evidence,2,1,1,0,0,0,0.6,0.6,420,27,128,0,0,000,1111,1,000,1111,1,,,,0,0,agree,000,3,0,0.0,1111,1,1,completed,0
+SIM-QYCNXR,AB-S1,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T3,age_preference,3,1,1,0,0,0,0.2,0.2,420,75,135,0,0,110,1111,0,100,1111,0,110,1111,0,0,1,adjudicated,110,3,2,0.6667,1111,1,0,completed,0
+SIM-QYCNXR,AB-S1,B,ai_contextual,SIMULATED-script,1,SIMULATED,1,T1,age_cap,4,1,1,0,0,0,0.2,0.2,420,166,119,0,0,111,1111,1,111,1111,1,,,,0,0,agree,111,3,3,1.0,1111,1,1,completed,0

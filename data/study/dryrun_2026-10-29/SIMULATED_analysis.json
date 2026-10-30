@@ -1,0 +1,157 @@
+{
+ "design": "crossover-ai-v1",
+ "simulated": true,
+ "label": "SIMULATED: software test only. No AI model was used. Not study data, not a result, says nothing about AI.",
+ "meta": {
+  "schema": "export-ai-v1",
+  "scope": "simulated",
+  "generated_at": "2026-10-30T03:28:43Z",
+  "tasks_version": "tasks-v0.2-draft",
+  "rubric_version": "rubric-ai-v0.1-draft"
+ },
+ "n": {
+  "enrolled": 6,
+  "analysed_primary": 6,
+  "withdrawn": 0,
+  "dropouts": 0,
+  "incomplete": 0,
+  "excluded_unscored_or_unresolved": 0,
+  "by_sequence": {
+   "AB-S1": 2,
+   "AB-S2": 2,
+   "BA-S1": 1,
+   "BA-S2": 1
+  }
+ },
+ "outcomes": {
+  "accuracy": {
+   "n": 6,
+   "mean": 0.1945,
+   "sd": 0.3181,
+   "ci95": [
+    -0.0278,
+    0.4306
+   ],
+   "p": 0.1875,
+   "p_method": "exact (2^6 sign patterns)",
+   "mean_template": 0.5486,
+   "mean_ai": 0.7431
+  },
+  "actionable": {
+   "n": 6,
+   "mean": 0.0833,
+   "sd": 0.2041,
+   "ci95": [
+    0.0,
+    0.25
+   ],
+   "p": 1.0,
+   "p_method": "exact (2^6 sign patterns)",
+   "mean_template": 0.8333,
+   "mean_ai": 0.9167
+  },
+  "unsupported": {
+   "n": 6,
+   "mean": 0.1667,
+   "sd": 0.5164,
+   "ci95": [
+    -0.1667,
+    0.5833
+   ],
+   "p": 0.75,
+   "p_method": "exact (2^6 sign patterns)",
+   "mean_template": 0.25,
+   "mean_ai": 0.4167
+  },
+  "time": {
+   "n": 6,
+   "mean": 0.0417,
+   "sd": 0.2888,
+   "ci95": [
+    -0.1583,
+    0.25
+   ],
+   "p": 0.8125,
+   "p_method": "exact (2^6 sign patterns)",
+   "mean_template": 0.3,
+   "mean_ai": 0.3417
+  }
+ },
+ "primary_decision": "NO EVIDENCE OF BENEFIT (accuracy): needs mean difference >= +0.10 AND CI lower bound > 0 AND p < 0.05; got +0.195, CI [-0.028, 0.431], p 0.1875. This is not evidence that the AI does not help.",
+ "primary_benefit": false,
+ "secondary_holm_adjusted_p": {
+  "unsupported": 1.0,
+  "time": 1.0,
+  "actionable": 1.0
+ },
+ "safety_signal": false,
+ "safety_note": "No safety signal under the pre-specified rule (CI lower bound of the unsupported-claims difference is not above 0); with a small N this is weak reassurance.",
+ "order_check_descriptive": {
+  "mean_diff_template_first": 0.1875,
+  "mean_diff_ai_first": 0.2084,
+  "n": [
+   4,
+   2
+  ],
+  "note": "A large gap suggests a period or carryover effect; descriptive only."
+ },
+ "accuracy_by_task_and_tool_DESCRIPTIVE": {
+  "T1/ai_contextual": {
+   "tasks": 3,
+   "mean": 0.667
+  },
+  "T1/template": {
+   "tasks": 3,
+   "mean": 0.444
+  },
+  "T2/ai_contextual": {
+   "tasks": 3,
+   "mean": 0.75
+  },
+  "T2/template": {
+   "tasks": 3,
+   "mean": 0.417
+  },
+  "T3/ai_contextual": {
+   "tasks": 3,
+   "mean": 0.778
+  },
+  "T3/template": {
+   "tasks": 3,
+   "mean": 0.667
+  },
+  "T4/ai_contextual": {
+   "tasks": 3,
+   "mean": 0.778
+  },
+  "T4/template": {
+   "tasks": 3,
+   "mean": 0.667
+  }
+ },
+ "inter_rater_R1_R2": {
+  "fact_bits": {
+   "n_judgements": 78,
+   "kappa": 0.685,
+   "raw_agreement": 0.846
+  },
+  "question_criteria": {
+   "n_judgements": 96,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "unsupported_count": {
+   "n_items": 24,
+   "exact_agreement": 0.958,
+   "mean_abs_difference": 0.042
+  }
+ },
+ "scoring_status": {
+  "items_disagreement": 12,
+  "unresolved": 0,
+  "adjudicated": 12,
+  "missing_answers": 0,
+  "timed_out": 0,
+  "model_failures": 0
+ }
+}

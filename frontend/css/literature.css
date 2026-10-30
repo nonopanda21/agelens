@@ -27,3 +27,9 @@ details.lit-more,details.lit-notes{margin-top:var(--s4)}
 .lit-table thead th{color:var(--brown);font-weight:700}
 @media (max-width:860px){.lit-grid{grid-template-columns:minmax(0,1fr);gap:var(--s6)}.lit-card,.lit-card.pending,.lit-card.lin{rotate:0deg}}
 @media (max-width:640px){.lit-svg{min-width:480px}.lit-table{display:block;overflow-x:auto}.lit-card{padding:20px 18px}}
+/* three text-only studies under the two figure cards */
+.lit-sub{max-width:900px;margin:44px auto 0;font-family:var(--font-sketch);font-weight:400;font-size:1.5rem;color:var(--brown)}
+.lit-grid.lit-grid3{margin-top:18px;gap:22px}
+.lit-mini{padding:20px 22px 16px;rotate:0deg}
+.lit-mini .lit-plain{margin:10px 0 8px}
+.lit-mini .mv-lim{margin-top:10px}

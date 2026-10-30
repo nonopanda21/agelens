@@ -18,10 +18,11 @@ import os
 import random
 import re
 import secrets
+import sys
 import time
 from datetime import datetime, timezone
 
-from . import db, study_arms
+from . import db, study_arms, study_ai
 from .server import HTTPError, Response, hash_token
 
 STUDY_DIR = db.DATA_DIR / "study"
@@ -30,8 +31,12 @@ APPROVAL_PATH = STUDY_DIR / "APPROVAL.json"
 SIM_SEED = 20261023          # documented allocation seed for SIMULATION mode only
 BLOCK_SIZE = 4               # permuted blocks: crossover = one of each of the 4 sequences; legacy = 2 template + 2 assisted
 LEGACY_DESIGN = "parallel-llm-v0"
-DESIGN_OVERRIDE = None       # tests may force LEGACY_DESIGN; otherwise tasks.json "design" decides
-AID_LABELS = {"template": "Fixed template", "assisted": "Drafted help", "none": "Ad only", "agelens": "AgeLens evidence check"}
+RULES_DESIGN = "crossover-rules-v1"   # legacy crossover: ad only versus AgeLens rules aid (tasks.json "design")
+AI_DESIGN = study_arms.AI_DESIGN_ID    # default from 2026-10-29: fixed template versus contextual AI (tasks.json "design_ai")
+# Selects the design. None = the default (AI_DESIGN). Tests, or the env var AGELENS_STUDY_DESIGN for a rehearsal server, may force
+# LEGACY_DESIGN or RULES_DESIGN so that old exports and tests still work.
+DESIGN_OVERRIDE = os.environ.get("AGELENS_STUDY_DESIGN") or None
+AID_LABELS = {"template": "Fixed template", "assisted": "Drafted help", "none": "Ad only", "agelens": "AgeLens evidence check", "ai_contextual": "Contextual AI assistance"}
 RATERS = ("R1", "R2", "R3")
 CRITERIA = ("c1", "c2", "c3", "c4")
 SCHEMA_VERSION = "export-v2"
@@ -55,6 +60,12 @@ CREATE TABLE IF NOT EXISTS study_task_runs (
   aid_inserted INTEGER NOT NULL DEFAULT 0, model_failure INTEGER NOT NULL DEFAULT 0, model_error TEXT,
   aid_latency_ms INTEGER, state TEXT NOT NULL DEFAULT 'started', PRIMARY KEY (code, task_id));
 CREATE UNIQUE INDEX IF NOT EXISTS ix_study_item ON study_task_runs(item_key);
+CREATE TABLE IF NOT EXISTS study_scores_ai (
+  item_key TEXT NOT NULL, rater TEXT NOT NULL, facts TEXT NOT NULL, q1 INTEGER NOT NULL, q2 INTEGER NOT NULL, q3 INTEGER NOT NULL, q4 INTEGER NOT NULL,
+  unsupported INTEGER NOT NULL, notes TEXT, scored_at TEXT NOT NULL, PRIMARY KEY (item_key, rater));
+CREATE TABLE IF NOT EXISTS study_calibration_ai (
+  rater TEXT NOT NULL, cal_id TEXT NOT NULL, facts TEXT NOT NULL, q1 INTEGER NOT NULL, q2 INTEGER NOT NULL, q3 INTEGER NOT NULL, q4 INTEGER NOT NULL,
+  unsupported INTEGER NOT NULL, notes TEXT, scored_at TEXT NOT NULL, PRIMARY KEY (rater, cal_id));
 CREATE TABLE IF NOT EXISTS study_scores (
   item_key TEXT NOT NULL, rater TEXT NOT NULL, c1 INTEGER NOT NULL, c2 INTEGER NOT NULL, c3 INTEGER NOT NULL, c4 INTEGER NOT NULL,
   severe INTEGER NOT NULL, notes TEXT, scored_at TEXT NOT NULL, PRIMARY KEY (item_key, rater));
@@ -66,11 +77,19 @@ CREATE TABLE IF NOT EXISTS study_calibration (
 
 # ---- helpers ----------------------------------------------------------------------------------
 def design(doc=None):
-    """-> the crossover design dict from tasks.json, or None for the legacy parallel design."""
+    """-> the crossover design dict from tasks.json (default crossover-ai-v1; crossover-rules-v1 if forced), or None for the legacy parallel design."""
     doc = doc or load_tasks()
-    if DESIGN_OVERRIDE == LEGACY_DESIGN or not isinstance(doc.get("design"), dict):
+    if DESIGN_OVERRIDE == LEGACY_DESIGN:
         return None
-    return doc["design"]
+    if DESIGN_OVERRIDE != RULES_DESIGN and isinstance(doc.get("design_ai"), dict):
+        return doc["design_ai"]
+    return doc["design"] if isinstance(doc.get("design"), dict) else None
+
+
+def is_ai(d=None):
+    """True when the active design is crossover-ai-v1 (template versus contextual AI)."""
+    d = design() if d is None else d
+    return bool(d) and d.get("id") == AI_DESIGN
 
 
 def design_id(doc=None):
@@ -105,6 +124,10 @@ def iso():
 def conn():
     c = db.connect()
     c.executescript(SCHEMA)
+    cols = {r[1] for r in c.execute("PRAGMA table_info(study_task_runs)")}
+    for col in ("reading", "question_text"):   # crossover-ai-v1: the participant's two outputs (answer keeps both, joined)
+        if col not in cols:
+            c.execute("ALTER TABLE study_task_runs ADD COLUMN %s TEXT" % col)
     return c
 
 
@@ -211,8 +234,11 @@ def read_approval():
 def formal_blockers():
     _, problems = read_approval()
     ms = study_arms.model_status()
-    if design() is None and not ms["connected"]:  # only the legacy model-vs-template design needs a model
+    d = design()
+    if d is None and not ms["connected"]:  # the legacy model-vs-template design needs a model
         problems = problems + ["No model is connected (Template demo). A formal trial needs the model arm to be real."]
+    elif d and not ms["connected"] and any(c["kind"] == "ai_contextual" for c in d["conditions"].values()):
+        problems = problems + ["No AI model is connected, so the contextual AI arm cannot run for real. Only a SIMULATED rehearsal (script-written text, no AI) is possible."]
     return problems
 
 
@@ -260,10 +286,15 @@ def public_config(c):
     return {"mode": mode, "requested_mode": get_setting(c, "mode", "simulation"), "simulated": mode == "simulation",
             "banner": BANNER if mode == "simulation" else None, "model": ms,
             "formal_allowed": not blockers, "formal_blockers": blockers,
-            "tasks_version": doc["version"], "tasks_status": doc["_status"], "consent_draft": doc["consent_draft"],
-            "instructions": doc["instructions"], "n_tasks": len(doc["tasks"]), "time_limit_s": time_limit_s(c, doc),
-            "template_aid": doc["template_aid"]["label"], "design": design_id(doc),
-            "conditions": {k: v["label"] for k, v in design(doc)["conditions"].items()} if design(doc) else None}
+            "tasks_version": doc["version"], "tasks_status": doc["_status"],
+            "consent_draft": doc["consent_ai_draft"] if is_ai() else doc["consent_draft"],
+            "instructions": doc["instructions_ai"] if is_ai() else doc["instructions"], "n_tasks": len(doc["tasks"]), "time_limit_s": time_limit_s(c, doc),
+            "template_aid": None if is_ai() else doc["template_aid"]["label"], "design": design_id(doc), "ai_design": is_ai(),
+            # AI design: arm names are never sent to participants (they see Tool A / Tool B only)
+            "conditions": ({"first": "Tool A", "second": "Tool B"} if is_ai() else {k: v["label"] for k, v in design(doc)["conditions"].items()}) if design(doc) else None,
+            "ai_arm": {"runnable_for_real": bool(ms["connected"]) if is_ai() else None,
+                       "note": ("A model is connected." if ms["connected"] else "No AI model is connected. The contextual AI arm runs only as a SIMULATED rehearsal (script-written text); formal mode is refused.") if is_ai() else None},
+            "sim_notice": study_arms.SIM_NOTICE if (mode == "simulation" and is_ai()) else None}
 
 
 def time_limit_s(c, doc):
@@ -273,9 +304,16 @@ def time_limit_s(c, doc):
     return int(doc["time_limit_s"])
 
 
-def task_payload(task):
+def task_payload(task, english=None, facts=False):
+    """What the browser gets. english (default: on for crossover-ai-v1) sends English text only: the Chinese ad_text is replaced by ad_text_en.
+    facts=True (raters only) adds the task's key_facts for the accuracy rubric."""
+    english = is_ai() if english is None else english
     out = {k: task[k] for k in ("id", "kind", "title", "ad_id", "job_title", "ad_text", "gloss", "profile", "question")}
     out.update({k: task[k] for k in ("ad_text_en", "job_title_en") if k in task})   # English display fields (docs/ENGLISH.md)
+    if english and "ad_text_en" in task:
+        out["ad_text"], out["job_title"] = task["ad_text_en"], task.get("job_title_en", task["job_title"])
+    if facts and task.get("key_facts"):
+        out["key_facts"] = task["key_facts"]
     return out
 
 
@@ -291,8 +329,9 @@ def session_view(c, p):
     crossover = design(doc) is not None and "-" in p["arm"]
     return {"code": p["code"], "status": p["status"], "simulated": bool(p["simulated"]), "mode": p["mode"], "design": design_id(doc),
             "aid_kind": "crossover" if crossover else p["arm"],
-            "aid_label": "Ad only on two tasks, AgeLens evidence check on two" if crossover else (study_arms.template_aid(doc)["label"] if p["arm"] == "template" else "Drafted help"),
-            "steps": steps, "done": done, "total": len(order), "time_limit_s": int(time_limit_s(c, doc))}
+            "aid_label": ("Tool A on the first two tasks, Tool B on the last two" if is_ai() else "Ad only on two tasks, AgeLens evidence check on two") if crossover else (study_arms.template_aid(doc)["label"] if p["arm"] == "template" else "Drafted help"),
+            "steps": steps, "done": done, "total": len(order), "time_limit_s": int(time_limit_s(c, doc)),
+            **({"reveal": study_ai.reveal(design(doc), p)} if is_ai() and crossover and p["status"] == "completed" else {})}
 
 
 def register(router):
@@ -389,7 +428,10 @@ def register(router):
             if run is None:
                 limit_ms = time_limit_s(c, doc) * 1000
                 d = design(doc)
-                if d and "-" in p["arm"]:
+                if d and "-" in p["arm"] and is_ai(d):
+                    ckind = d["conditions"][condition_of(d, p["arm"], task["id"])]["kind"]
+                    aid = study_arms.tool_aid(task, ckind, study_arms.evidence_package(task), simulation_ok=(p["mode"] == "simulation"))
+                elif d and "-" in p["arm"]:
                     aid = study_arms.agelens_aid(task) if condition_of(d, p["arm"], task["id"]) == "B" else study_arms.no_aid()
                 elif p["arm"] == "template":
                     aid = study_arms.template_aid(doc)
@@ -403,6 +445,8 @@ def register(router):
                 c.execute("UPDATE study_participants SET status='in_progress', last_activity_ms=? WHERE code=?", (now_ms(), p["code"]))
                 run = c.execute("SELECT * FROM study_task_runs WHERE code=? AND task_id=?", (p["code"], task["id"])).fetchone()
             remaining = max(0, run["started_ms"] + run["limit_ms"] - now_ms())
+            if is_ai():
+                return study_ai.start_view(c, p, task, run, remaining, len(order), task_payload(task))
             return {"task": task_payload(task), "position": run["position"], "total": len(order), "remaining_ms": remaining,
                     "limit_ms": run["limit_ms"], "state": run["state"], "answer": run["answer"] if run["state"] == "submitted" else "",
                     "aid": {"kind": run["aid_kind"], "label": AID_LABELS.get(run["aid_kind"], run["aid_kind"]),
@@ -413,6 +457,10 @@ def register(router):
     def submit(req):
         body = req.json()
         answer = str(body.get("answer") or "")[:6000]
+        reading = question = None
+        if is_ai():   # crossover-ai-v1: two separate texts; "answer" keeps both so scoring and blinding use one field
+            reading, question = str(body.get("reading") or "").strip()[:3000], str(body.get("question") or "").strip()[:3000]
+            answer = study_ai.join_answer(reading, question)
         with conn() as c:
             p = participant(c, req)
             run = c.execute("SELECT * FROM study_task_runs WHERE code=? AND task_id=?", (p["code"], req.params["tid"])).fetchone()
@@ -426,8 +474,9 @@ def register(router):
             timed_out = bool(body.get("timed_out")) or elapsed >= run["limit_ms"]
             cel = body.get("client_elapsed_ms")
             cel = int(cel) if isinstance(cel, (int, float)) and 0 <= cel < 10 ** 9 else None
-            c.execute("UPDATE study_task_runs SET state='submitted', submitted_ms=?, elapsed_ms=?, client_elapsed_ms=?, late=?, timed_out=?, answer=?, answer_chars=?, aid_inserted=? WHERE code=? AND task_id=?",
-                      (t, elapsed, cel, 1 if late else 0, 1 if timed_out else 0, answer, len(answer.strip()), 1 if body.get("aid_inserted") else 0, p["code"], req.params["tid"]))
+            nchars = (len(reading) + len(question)) if reading is not None else len(answer.strip())
+            c.execute("UPDATE study_task_runs SET state='submitted', submitted_ms=?, elapsed_ms=?, client_elapsed_ms=?, late=?, timed_out=?, answer=?, answer_chars=?, aid_inserted=?, reading=?, question_text=? WHERE code=? AND task_id=?",
+                      (t, elapsed, cel, 1 if late else 0, 1 if timed_out else 0, answer, nchars, 1 if body.get("aid_inserted") else 0, reading, question, p["code"], req.params["tid"]))
             done = c.execute("SELECT COUNT(*) FROM study_task_runs WHERE code=? AND state='submitted'", (p["code"],)).fetchone()[0]
             c.execute("UPDATE study_participants SET last_activity_ms=?, status=? WHERE code=?",
                       (t, "completed" if done >= len(json.loads(p["task_order"])) else "in_progress", p["code"]))
@@ -439,7 +488,7 @@ def register(router):
         with conn() as c:
             p = participant(c, req)
             c.execute("UPDATE study_participants SET status='withdrawn', withdrawn_at=?, last_activity_ms=? WHERE code=?", (iso(), now_ms(), p["code"]))
-            c.execute("UPDATE study_task_runs SET answer=NULL, answer_chars=0, aid_text=NULL, state=CASE WHEN state='submitted' THEN 'withdrawn' ELSE state END WHERE code=?", (p["code"],))
+            c.execute("UPDATE study_task_runs SET answer=NULL, answer_chars=0, aid_text=NULL, reading=NULL, question_text=NULL, state=CASE WHEN state='submitted' THEN 'withdrawn' ELSE state END WHERE code=?", (p["code"],))
             return {"ok": True, "message": "You have withdrawn. The text you wrote was deleted; only the fact that you withdrew is kept."}
 
     # ---- raters -------------------------------------------------------------------------------
@@ -450,6 +499,8 @@ def register(router):
 
     @router.get("/api/study/rater/status")
     def rater_status(req):
+        if is_ai():
+            return study_ai.rater_status(sys.modules[__name__], req)
         rater = require_study(req, RATERS)
         doc = load_tasks()
         with conn() as c:
@@ -467,6 +518,8 @@ def register(router):
 
     @router.get("/api/study/calibration")
     def calibration(req):
+        if is_ai():
+            return study_ai.calibration(sys.modules[__name__], req)
         rater = require_study(req, RATERS)
         doc = load_tasks()
         with conn() as c:
@@ -484,6 +537,8 @@ def register(router):
 
     @router.post("/api/study/calibration/<cid>")
     def calibration_score(req):
+        if is_ai():
+            return study_ai.calibration_score(sys.modules[__name__], req)
         rater = require_study(req, RATERS)
         doc = load_tasks()
         item = next((i for i in doc["calibration"] if i["id"] == req.params["cid"]), None)
@@ -500,6 +555,8 @@ def register(router):
 
     @router.get("/api/study/calibration/summary")
     def calibration_summary(req):
+        if is_ai():
+            return study_ai.calibration_summary(sys.modules[__name__], req)
         rater = require_study(req, RATERS)
         doc = load_tasks()
         with conn() as c:
@@ -532,6 +589,8 @@ def register(router):
 
     @router.get("/api/study/rater/next")
     def rater_next(req):
+        if is_ai():
+            return study_ai.rater_next(sys.modules[__name__], req)
         rater = require_study(req, RATERS)
         doc = load_tasks()
         with conn() as c:
@@ -554,6 +613,8 @@ def register(router):
 
     @router.post("/api/study/rater/score")
     def rater_score(req):
+        if is_ai():
+            return study_ai.rater_score(sys.modules[__name__], req)
         rater = require_study(req, RATERS)
         body = req.json()
         s = parse_score(body)
@@ -577,6 +638,8 @@ def register(router):
 
     @router.get("/api/study/disagreements")
     def disagreements(req):
+        if is_ai():
+            return study_ai.disagreements(sys.modules[__name__], req)
         require_study(req, RATERS)
         with conn() as c:
             sim = 1 if current_mode(c) == "simulation" else 0
@@ -597,9 +660,11 @@ def register(router):
             keys = [r["item_key"] for r in c.execute("SELECT item_key FROM study_task_runs r JOIN study_participants p USING(code) WHERE p.simulated=1")]
             for k in keys:
                 c.execute("DELETE FROM study_scores WHERE item_key=?", (k,))
+                c.execute("DELETE FROM study_scores_ai WHERE item_key=?", (k,))
             c.execute("DELETE FROM study_task_runs WHERE code IN (SELECT code FROM study_participants WHERE simulated=1)")
             n = c.execute("DELETE FROM study_participants WHERE simulated=1").rowcount
             c.execute("DELETE FROM study_calibration WHERE 1=1")
+            c.execute("DELETE FROM study_calibration_ai WHERE 1=1")
             return {"deleted_participants": n}
 
     @router.get("/api/study/export")
@@ -615,14 +680,16 @@ def register(router):
             if blockers:
                 return 403, {"error": "A formal export is refused: no approved formal trial is configured.", "blockers": blockers}
         with conn() as c:
-            data = build_export(c, scope)
+            data = study_ai.build_export(sys.modules[__name__], c, scope) if is_ai() else build_export(c, scope)
         stamp = ("SIMULATED_" if scope == "simulated" else "") + "agelens_study_" + level
         if fmt == "json":
             return Response(json.dumps(data, ensure_ascii=False, indent=1), 200, "application/json; charset=utf-8",
                             {"Content-Disposition": 'attachment; filename="%s.json"' % stamp})
         rows = data["tasks"] if level == "task" else data["participants"]
         buf = io.StringIO()
-        buf.write("# %s | schema %s | generated %s | simulated=%s\n" % (data["meta"]["banner"] or "FORMAL", SCHEMA_VERSION, data["meta"]["generated_at"], int(scope == "simulated")))
+        buf.write("# %s | schema %s | generated %s | simulated=%s\n" % (data["meta"]["banner"] or "FORMAL", data["meta"].get("schema", SCHEMA_VERSION), data["meta"]["generated_at"], int(scope == "simulated")))
+        if data["meta"].get("simulated_notice"):
+            buf.write("# %s\n" % data["meta"]["simulated_notice"])
         w = csv.DictWriter(buf, fieldnames=list(rows[0].keys()) if rows else ["empty"])
         w.writeheader()
         for r in rows:
@@ -631,7 +698,7 @@ def register(router):
 
     @router.get("/api/study/export-schema")
     def export_schema(req):
-        return EXPORT_FIELDS
+        return study_ai.EXPORT_FIELDS if is_ai() else EXPORT_FIELDS
 
 
 EXPORT_FIELDS = {

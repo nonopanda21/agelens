@@ -77,6 +77,10 @@ def kappa(a, b):
 
 
 def analyse(doc):
+    if str(doc["meta"].get("design") or "").startswith("crossover-ai"):   # 2026-10-29 design: scripts/analyze_study_ai.py
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        from backend import study_stats
+        return study_stats.analyse(doc)
     if str(doc["meta"].get("design") or "").startswith("crossover"):
         return analyse_crossover(doc)
     meta, parts, tasks = doc["meta"], doc["participants"], doc["tasks"]
@@ -219,6 +223,9 @@ def render_crossover(o):
 
 
 def render(o):
+    if str(o.get("design") or "").startswith("crossover-ai"):
+        from backend import study_stats
+        return study_stats.render(o)
     if str(o.get("design") or "").startswith("crossover"):
         return render_crossover(o)
     L = ["=" * 78, o["label"], "=" * 78, "Export: %s | tasks %s | rubric %s" % (o["meta"]["generated_at"], o["meta"]["tasks_version"], o["meta"]["rubric_version"]), ""]

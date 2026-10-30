@@ -1,0 +1,9 @@
+# SIMULATION — not study data | schema export-ai-v1 | generated 2026-10-30T03:28:43Z | simulated=1
+# SIMULATED: No AI model was used; text drafted by a script for the rehearsal.
+participant_code,sequence,first_condition,simulated,data_label,block_no,tasks_attempted,tasks_submitted,tasks_missing,acc_template,acc_ai,diff_acc,act_template,act_ai,diff_act,uns_template,uns_ai,diff_uns,time_template,time_ai,diff_time,model_failures,participant_status,dropout
+SIM-VFV4QG,AB-S2,A,1,SIMULATED,0,4,4,0,0.6667,0.875,0.2083,1.0,1.0,0.0,0.0,1.0,1.0,0.55,0.2,-0.35,0,completed,0
+SIM-5PTXX6,BA-S1,B,1,SIMULATED,0,4,4,0,0.625,0.6667,0.0417,0.5,0.5,0.0,0.0,0.5,0.5,0.2,0.35,0.15,0,completed,0
+SIM-GYKTWV,BA-S2,B,1,SIMULATED,0,4,4,0,0.3333,0.7084,0.3751,0.5,1.0,0.5,0.0,0.0,0.0,0.2,0.65,0.45,0,completed,0
+SIM-Z5BPZS,AB-S1,A,1,SIMULATED,0,4,4,0,0.875,0.6666,-0.2084,1.0,1.0,0.0,0.5,0.5,0.0,0.25,0.45,0.2,0,completed,0
+SIM-HMU37D,AB-S2,A,1,SIMULATED,1,4,4,0,0.6666,0.7084,0.0418,1.0,1.0,0.0,0.5,0.0,-0.5,0.2,0.2,0.0,0,completed,0
+SIM-QYCNXR,AB-S1,A,1,SIMULATED,1,4,4,0,0.125,0.8334,0.7084,1.0,1.0,0.0,0.5,0.5,0.0,0.4,0.2,-0.2,0,completed,0
