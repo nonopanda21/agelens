@@ -3,7 +3,7 @@
   const AL = window.AgeLens, h = AL.h;
   const STEPS = [
     ['Share your background', 'Write your question first, then add your role and experience, or drop in a CV you can edit.'],
-    ['Explore the evidence', 'See matching ads with the age wording quoted, what is explicit, and what stays uncertain.'],
+    ['Read the evidence', 'See matching ads with the age wording quoted, what is explicit, and what stays uncertain.'],
     ['Get a clearer next step', 'Download a short brief with neutral questions, or send it to a human reviewer.'],
   ];
   AL.home = AL.home || { sections: [] };

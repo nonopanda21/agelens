@@ -89,7 +89,7 @@
     el.replaceChildren(wrap);
     const table = h('table.pro-table', {}, h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Feature'), h('th', { scope: 'col' }, 'Free'), h('th', { scope: 'col' }, 'Pro'))),
       h('tbody', {}, [
-        ['Overview, data explorer, regional map, original ad text', '✓', '✓'],
+        ['Overview, findings, regional map, original ad text', '✓', '✓'],
         ['Quick check of one line of age wording', '✓', '✓'],
         ['Job Seeker answer on the page, Markdown download', '✓', '✓'],
         ['Ask a human reviewer', '✓', '✓'],

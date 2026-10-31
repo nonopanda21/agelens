@@ -68,10 +68,6 @@ with sync_playwright() as p:
     pg.locator(".mp-rankbtn").first.click(); pg.wait_for_timeout(1500)
     pg.locator(".mp-guide summary").click(); pg.wait_for_timeout(300)
     scan(pg.evaluate(TEXT, ".dt"), "home:sales+selected+notes")
-    pg.goto(BASE + "/#/explore"); pg.wait_for_timeout(3000)
-    scan(pg.evaluate(TEXT, ".ex-charts"), "explore")
-    pg.locator(".ex-charts .ch-bar").nth(1).click(); pg.wait_for_timeout(2000)
-    scan(pg.evaluate(TEXT, ".ex-charts"), "explore:selected")
     b.close()
 
 worst, bad = 99, []

@@ -80,7 +80,7 @@ try:
             tag = f"@{w}"
             mk = lambda: b.new_context(viewport={"width": w, "height": 900})
             ctx = mk(); ctx.add_init_script("sessionStorage.setItem('al_splash_seen','1')"); pg = page(ctx)
-            for route in ("#/", "#/explore", "#/requests", "#/reviewer", "#/study"):
+            for route in ("#/", "#/findings", "#/requests", "#/reviewer", "#/study"):
                 pg.goto(BASE + "/" + route); pg.wait_for_selector(".inv-form")
             check(f"{tag}: every route shows the invite page first", pg.locator(".inv-form").count() == 1)
             check(f"{tag}: no identity chip and no Reviewer link before entering", pg.evaluate("document.querySelector('.nav-access').hidden && document.querySelector('.nav-reviewer').hidden"))
@@ -94,7 +94,7 @@ try:
             check(f"{tag}: Reviewer link hidden for viewers", pg.evaluate("document.querySelector('.nav-reviewer').hidden"))
             check(f"{tag}: session keeps no invite code", CODES["teacher"].lower() not in (pg.evaluate("localStorage.getItem('al_session')") or "").lower())
             pg.wait_for_timeout(800); pg.screenshot(path=str(SHOTS / f"home_{w}.png"))
-            pg.goto(BASE + "/#/explore"); pg.wait_for_selector(".ex-ads .card, .ex-list .card, article", timeout=15000)
+            pg.goto(BASE + "/#/about"); pg.wait_for_selector("main h1", timeout=15000)
             open_quick_check(pg); pg.click(".sk-chip >> nth=0"); pg.wait_for_selector(".sk-cls")
             check(f"{tag}: Quick check works behind the gate", pg.inner_text(".sk-cls") == "Cap with an exception")
             pg.keyboard.press("Escape")

@@ -190,7 +190,7 @@ with sync_playwright() as p:
     pg.locator(".dt-collapse").click(); pg.wait_for_timeout(600)
 
     # route change disposes
-    pg.goto(BASE + "/#/explore"); pg.wait_for_timeout(1200)
+    pg.goto(BASE + "/#/about"); pg.wait_for_timeout(1200)
     res["canvases_after_leave"] = pg.evaluate("document.querySelectorAll('main canvas').length")
     check(res["canvases_after_leave"] == 0, "canvas left after route change")
     ctx.close()

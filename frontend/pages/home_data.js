@@ -31,7 +31,7 @@
       const hetero = real && AL.heteroData ? await AL.heteroData() : null;
       let tiles;
       if (real) {
-        // real Zhaopin aggregate (counts only); the explorer and Job Seeker keep the simulated set
+        // real Zhaopin aggregate (counts only); Job Seeker keeps the simulated set
         const top = real.maxAges[0];
         tiles = h('div.dt-tiles', {},
           tile('Real job ads', (real.ads / 1e6).toFixed(2) + 'M', fmt(real.ads) + ' Zhaopin ads posted ' + real.years + (real.rowsInFile ? ' (of ' + fmt(real.rowsInFile) + ' rows in the file)' : '')),
@@ -69,7 +69,7 @@
           if (gone) { v.dispose(); return; }
           view = v; AL._mapView = v; view.setVisible(expanded);
         } catch (e) {
-          holder.replaceChildren(h('div.notice.error', { role: 'alert' }, 'The map could not load: ' + e.message + ' Use the evidence explorer instead, or reload to try again.'));
+          holder.replaceChildren(h('div.notice.error', { role: 'alert' }, 'The map could not load: ' + e.message + ' The Findings page has the same counts as charts; reload to try again.'));
         } finally { loading = false; }
       }
       function setExpanded(v) {
@@ -93,15 +93,15 @@
       if (io) io.observe(panel); else { seen = true; load(); }
       AL.onLeave(() => { gone = true; if (io) io.disconnect(); if (view) { view.dispose(); view = null; AL._mapView = null; } });
 
-      // the tiles and the explorer use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
+      // without the real aggregate the tiles use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
       const lead = real
-        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '; no ad text is kept. The ads you can open (Explore, Job Seeker, the demo cases) are fictional, so each one can be shown in full.'
+        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '; no ad text is kept. The ads you can open (Job Seeker answers, the demo cases) are fictional, so each one can be shown in full.'
         : 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.';
       el.append(h('div.wrap.section.dt', {},
         h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), real ? h('span.badge.mint', {}, real.label) : h('span.badge.sim', {}, 'Demo · Synthetic data')),
         h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.', hetero ? h('span', {}, ' The same ads by experience, occupation and gender wording: ', h('a', { href: '#/findings' }, 'Findings'), '.') : null),
         tiles,
-        h('div.dt-actions', {}, jump, h('a.btn.btn-secondary', { href: '#/explore' }, 'Open the evidence explorer')),
+        h('div.dt-actions', {}, jump),
         h('div.dt-maphead', {}, h('div', {}, h('h3', {}, 'Where and in which jobs age wording appears'),
           h('p.hint', {}, 'Compare regions within one industry, or industries within one region. Pick a metric and an industry, then select a region.')), collapse),
         panel));

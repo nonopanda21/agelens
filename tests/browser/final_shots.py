@@ -16,7 +16,6 @@ with sync_playwright() as p:
             pg.screenshot(path=f"{OUT}/{tag}_02_home_{sec}.png")
         pg.goto(BASE + "/#/seeker"); pg.wait_for_timeout(1200); pg.screenshot(path=f"{OUT}/{tag}_03_seeker.png", full_page=True)
         pg.goto(BASE + f"/#/evidence/{ad}"); pg.wait_for_timeout(1200); pg.screenshot(path=f"{OUT}/{tag}_04_evidence.png", full_page=True)
-        pg.goto(BASE + "/#/explore"); pg.wait_for_timeout(2000); pg.screenshot(path=f"{OUT}/{tag}_05_explore.png")
         pg.goto(BASE + "/#/reviewer"); pg.wait_for_timeout(800)
         if TOK:
             pg.locator("input").first.fill(TOK); pg.get_by_role("button").filter(has_text="Sign in").first.click(); pg.wait_for_timeout(1200)

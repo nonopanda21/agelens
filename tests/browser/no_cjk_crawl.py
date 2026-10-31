@@ -37,7 +37,7 @@ made = api("/api/requests", {"question": "The ad says under 35 with exceptions. 
                              "consent": {"fields": ["age", "occupation", "years_experience", "region"]},
                              "evidence": [api("/api/ads/" + a["id"]) for a in ads], "scope": {"matched_total": 2}},
            {"X-Idempotency-Key": "nocjk-" + ads[0]["id"] + str(os.getpid())})
-ROUTES = [("home", "#/"), ("why", "#/why"), ("findings", "#/findings"), ("explore", "#/explore"), ("seeker", "#/seeker"), ("evidence", "#/evidence/" + ads[0]["id"]),
+ROUTES = [("home", "#/"), ("why", "#/why"), ("findings", "#/findings"), ("seeker", "#/seeker"), ("evidence", "#/evidence/" + ads[0]["id"]),
           ("requests", "#/requests"), ("request", "#/requests/" + made["code"]), ("reviewer", "#/reviewer"),
           ("reviewer_req", "#/reviewer/" + made["code"]), ("study", "#/study"), ("score", "#/study/score"),
           ("about", "#/about"), ("access", "#/access"), ("pro", "#/pro"), ("notfound", "#/no-such-page")]
@@ -67,8 +67,6 @@ with sync_playwright() as pw:
             if name == "home":
                 for y in range(0, 14000, 600):
                     page.evaluate(f"window.scrollTo({{top:{y},behavior:'instant'}})"); page.wait_for_timeout(50)
-            if name == "explore":
-                page.wait_for_selector(".ex-ads li", timeout=20000)
             rec(page, f"{name} @{w}")
         # Job Seeker: example search, then every demo case, then the review panel with a selected ad
         page.goto(BASE + "/#/seeker"); page.wait_for_selector("#f-question")

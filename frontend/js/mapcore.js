@@ -533,8 +533,7 @@
             h('span.mp-oval', {}, v == null ? '–' : fmtVal(m, v)), h('span.mp-on', {}, 'n=' + fmt(x.s.den))));
         })), h('p.hint.mp-ohint', {}, 'Paler bars: fewer than ' + SMALL + ' ads. Click an industry to show it on the map.'));
       }
-      if (it && it.ads && isReal()) kids.push(h('p.hint.mp-go-note', {}, 'Only these aggregate counts of the real ads are in the app; the explorer lists the simulated sample, not these ads.'));
-      else if (it && it.ads) kids.push(h('a.btn.btn-secondary.mp-go', { href: '#/explore?province=' + encodeURIComponent(it.name) + (S.industry ? '&occupation=' + encodeURIComponent(S.industry) : '') }, 'Show these ads in the explorer'));
+      if (it && it.ads && isReal()) kids.push(h('p.hint.mp-go-note', {}, 'Only these aggregate counts of the real ads are in the app; no ad text is kept.'));
       if (M.scale !== 'count') kids.push(h('p.hint.mp-not', {}, 'A share of ' + dataWord() + ' ads with this wording. It is not a discrimination rate, a rejection rate or a measure of the job market.'));
       const prevOcc = snap(detail, '.mp-ofill');
       detail.replaceChildren(...kids);

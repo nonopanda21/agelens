@@ -29,7 +29,7 @@
     title: 'Evidence',
     async render(el, params) {
       const h1 = h('h1', {}, 'Evidence');
-      const wrap = h('div.wrap.section.evidence-page', {}, h('p.no-print', {}, h('a', { href: '#/seeker' }, '← Back to your answer'), ' · ', h('a', { href: '#/explore' }, 'Explore data')), h1);
+      const wrap = h('div.wrap.section.evidence-page', {}, h('p.no-print', {}, h('a', { href: '#/seeker' }, '← Back to your answer')), h1);
       el.append(wrap);
       wrap.append(h('div', { role: 'status', 'aria-label': 'Loading the original ad' }, h('div.skel', { 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))));
       let ad;

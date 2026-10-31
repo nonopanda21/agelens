@@ -25,7 +25,7 @@
     const foot = h('footer.xf', {}, canvas, stats,
       h('div.wrap.xf-inner', {},
         h('div.xf-brand', {}, h('p.xf-logo', {}, 'AgeLens'), h('p.xf-tag', {}, 'Age requirements in job ads, read as evidence.')),
-        col('Product', [['Job Seeker', '#/seeker'], ['Explore data', '#/explore'], ['My requests', '#/requests'], ['Reviewer', '#/reviewer']]),
+        col('Product', [['Job Seeker', '#/seeker'],['My requests', '#/requests'], ['Reviewer', '#/reviewer']]),
         col('Project', [['Why it matters', '#/why'], ['Findings', '#/findings'], ['Method and sources', '#/about'], ['Study tools', '#/study'], ['Scoring', '#/study/score']]),
         h('div.xf-col', {}, h('p.xf-h', {}, 'About'), note)),
       h('div.xf-bar', {}, h('div.wrap', {}, h('span', {}, 'AgeLens · course prototype'), AL.motionToggle(), barData)));

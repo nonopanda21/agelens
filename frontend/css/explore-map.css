@@ -1,4 +1,4 @@
-/* AgeLens: home data overview + regional map (dt-, mp-), Explore page (ex-), charts (ch-).
+/* AgeLens: home data overview + regional map (dt-, mp-).
    Sketchbook style (tokens.css): paper, dark-brown ink outlines with hard offset shadows, pastel fills, Patrick Hand titles,
    Press Start 2P for the one big number, hatched bars. Pastels are fills only; text stays brown (>= 4.5:1). */
 .badge[hidden]{display:none}
@@ -250,61 +250,7 @@
 [data-motion="reduced"] .dt-panel:not([hidden]){animation:none}
 @media (prefers-reduced-motion:reduce){.mp-hm-cell:hover,.mp-chip:hover,.mp-segbtn:hover{transform:none}}
 
-/* ---- charts ---- (hatched pastel bars; the selected bar and the 35 highlight turn pink) */
-.ch-bars{list-style:none;margin:0;padding:0;display:grid;gap:3px}
-.ch-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:var(--s3);row-gap:4px;align-items:center;width:100%;font:inherit;font-size:.88rem;color:var(--brown);background:none;border:1.5px solid transparent;border-radius:8px;padding:5px 8px;cursor:pointer;text-align:left;touch-action:manipulation;transition:background var(--t-fast),border-color var(--t-fast)}
-.ch-bar:hover{background:var(--yellow-soft);border-color:rgba(74,55,40,.3)}
-.ch-bar.selected{background:var(--pink-soft);border-color:var(--brown);box-shadow:var(--shadow-sm)}
-.ch-name{grid-column:1;grid-row:1;overflow-wrap:anywhere;font-weight:700;line-height:1.25}
-.ch-val{grid-column:2;grid-row:1}
-.ch-track{grid-column:1 / 3;grid-row:2}
-.ch-val{font-variant-numeric:tabular-nums;font-weight:800}
-.ch-sub{grid-column:1 / 3;color:var(--text);font-size:.76rem;font-variant-numeric:tabular-nums}
-.ch-track{display:block;position:relative;height:14px;border-radius:7px;background:rgba(74,55,40,.06);overflow:hidden}
-.ch-fill{display:block;height:100%;width:100%;border-radius:7px;transform-origin:left center;background:repeating-linear-gradient(-35deg,rgba(74,55,40,.45) 0 1.5px,transparent 1.5px 5px),var(--blue);box-shadow:inset 0 0 0 1.5px rgba(74,55,40,.55)}
-.ch-fill.sel{background:repeating-linear-gradient(-35deg,rgba(74,55,40,.5) 0 1.5px,transparent 1.5px 5px),var(--pink)}
-.ch-rect{transform-box:fill-box;transform-origin:50% 100%}
-.ch-col.has{cursor:pointer}
-.ch-col.has:hover .ch-rect{opacity:.82}
-.ch-col:focus-visible .ch-rect{stroke:var(--brown);stroke-width:2}
-.ch-bars>li{will-change:auto}
-
-/* ---- explore ---- */
-.ex h1{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
-.ex h1 .badge{font-size:.8rem;vertical-align:middle}
-.ex-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:var(--s4);margin:var(--s5) 0 var(--s4);align-items:start}
-.ex-f{min-width:0}
-.ex-f label{margin-bottom:var(--s1)}
-.ex-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2)}
-.ex-pair>span,.ex-pair input{min-width:0;max-width:100%}
-.ex-btns{display:flex;gap:var(--s2);align-items:end;flex-wrap:wrap}
-.ex-scope{margin:0 0 var(--s1);font-weight:700}
-.ex-kpi{margin:0 0 var(--s3)}
-.ex-chips{display:flex;flex-wrap:wrap;gap:var(--s2);margin-bottom:var(--s4)}
-.ex-chips:empty{display:none}
-.ex-chip{font:inherit;font-size:.85rem;font-weight:700;background:var(--pink-soft);color:var(--brown);border:1.5px solid var(--brown);border-radius:var(--r-sm);padding:4px 12px;cursor:pointer;max-width:100%;overflow-wrap:anywhere}
-.ex-chip:hover{background:var(--pink)}
-.ex-charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:var(--s4);margin-bottom:var(--s7)}
-.ex-card{min-width:0}
-.ex-card h3{margin-bottom:var(--s1)}
-.ex-chart{min-height:120px}
-.ex-scroll{max-height:380px;overflow-y:auto;overscroll-behavior:contain}
-.ex-listhead{display:flex;justify-content:space-between;align-items:end;gap:var(--s3);flex-wrap:wrap;margin-bottom:var(--s3)}
-.ex-listhead h2{margin:0;font-size:clamp(1.5rem,2.6vw,2rem)}
-.ex-listhead select{width:auto}
-.ex-ads{list-style:none;margin:0;padding:0;display:grid;gap:var(--s3)}
-.ex-ads .card{padding:var(--s4) var(--s5)}
-.ex-ad-h{display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap}
-.ex-ad-t{font-weight:800;font-size:1.05rem;color:var(--brown);overflow-wrap:anywhere}
-.ex-ad-t:hover{color:var(--pink-ink)}
-.ex-snip{margin:var(--s2) 0;overflow-wrap:anywhere}
-.ex-pager{display:flex;align-items:center;justify-content:center;gap:var(--s4);margin-top:var(--s5);flex-wrap:wrap}
-@media (max-width:640px){.ex-ads .card{padding:var(--s4)}}
 @media (prefers-reduced-motion:reduce){.dt-panel:not([hidden]){transition:none;animation:none}}
-/* buttons get their own row (Apply + Reset side by side); the two date inputs get a double-width cell so mm/dd/yyyy is not clipped */
-.ex-btns{grid-column:1/-1}
-@media (min-width:641px){.ex-dates{grid-column:span 2}}
-@media (max-width:640px){.ex-dates .ex-pair{grid-template-columns:1fr}}
 /* desktop: the map stays in view while the taller detail list scrolls past */
 @media (min-width:901px){.mp-left{position:sticky;top:88px}}
 

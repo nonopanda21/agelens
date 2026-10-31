@@ -166,7 +166,7 @@
   };
 
   const routes = [
-    [/^\/?$/, 'home'], [/^\/why$/, 'why'], [/^\/findings$/, 'findings'], [/^\/explore$/, 'explore'], [/^\/seeker$/, 'seeker'],
+    [/^\/?$/, 'home'], [/^\/why$/, 'why'], [/^\/findings$/, 'findings'], [/^\/seeker$/, 'seeker'],
     [/^\/evidence\/([\w-]+)$/, 'evidence'], [/^\/requests(?:\/([\w-]+))?$/, 'requests'], [/^\/reviewer(?:\/([\w-]+))?$/, 'reviewer'],
     [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
   ];
@@ -196,6 +196,9 @@
     if (AgeLens.needsInvite() && AgeLens.pages.access) {  // public demo without a session: only the invite page, whatever the address
       setRoute('access', 'access', 'Invite code'); main.replaceChildren(); window.scrollTo(0, 0);
       AgeLens.pages.access.gate(main, () => render()); main.focus({ preventScroll: true }); return;
+    }
+    if (/^\/explore(\?|$)/.test(path)) {  // the Explore page was removed: old links land on the Overview's data map
+      AgeLens.home.pendingScroll = 'data'; location.replace('#/'); return;
     }
     for (const [rx, name] of routes) {
       const m = path.split('?')[0].match(rx);

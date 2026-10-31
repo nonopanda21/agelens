@@ -74,7 +74,7 @@ try:
                                  "evidence": [api("/api/ads/" + a["id"]) for a in ads], "scope": {"matched_total": 2}},
                {"X-Idempotency-Key": "sweep-" + str(os.getpid())})
     tokens = json.dumps({made["code"]: made["token"]})
-    ROUTES = [("home", "#/"), ("why", "#/why"), ("findings", "#/findings"), ("explore", "#/explore"), ("seeker", "#/seeker"), ("evidence", "#/evidence/" + ev_id),
+    ROUTES = [("home", "#/"), ("why", "#/why"), ("findings", "#/findings"), ("seeker", "#/seeker"), ("evidence", "#/evidence/" + ev_id),
               ("requests", "#/requests"), ("request_detail", "#/requests/" + made["code"]), ("reviewer", "#/reviewer"),
               ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access"), ("pro", "#/pro")]
 

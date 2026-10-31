@@ -1,5 +1,5 @@
 /* Home section "marquee" (order 35): an Apple-style paddle carousel of data cards with ranked bars (three per row on desktop).
-   Every number comes from the live simulated-data API (same source as Explore and the map). Scroll-snap row, swipe/scroll or the
+   Every number comes from the real-data aggregate, or the simulated-data API when the server has none (same source as the map). Scroll-snap row, swipe/scroll or the
    prev/next buttons; no auto-scroll. English labels only (province English names from /api/provinces; occupation map below). */
 (function () {
   const AL = window.AgeLens, h = AL.h;
@@ -10,15 +10,15 @@
   const pc = (x) => (Math.round(x * 1000) / 10).toFixed(1) + '%';
   const occName = (o) => OCC[o] || 'Other occupation';
 
-  // toMap: real-data cards point to the map (the explorer holds only the simulated ads)
+  // every card points to the Overview map
   const toMapLink = (title) => h('a.xm-link', { href: '#/', 'aria-label': 'See the map: ' + title, onclick: (e) => { e.preventDefault(); AL.home.goto('data', '#/'); } }, 'See the map', h('span.xarrow', { 'aria-hidden': 'true' }, '›'));
-  function card(kicker, title, desc, rows, foot, toMap) {
+  function card(kicker, title, desc, rows, foot) {
     const max = Math.max(...rows.map((r) => r.v), 1e-9);
     return h('article.xm-card', {},
       h('p.xm-kick', {}, kicker), h('h3.xm-title', {}, title), h('p.xm-desc', {}, desc),
       h('ol.xm-rows', {}, rows.map((r, i) => h('li', {}, h('span.xm-i', {}, String(i + 1)), h('span.xm-name', {}, r.name),
         h('span.xm-bar', { 'aria-hidden': 'true' }, h('span', { style: `--w:${(r.v / max * 100).toFixed(1)}%` })), h('span.xm-v', {}, r.label)))),
-      h('div.xm-foot', {}, h('span.xm-n', {}, foot), toMap ? toMapLink(title) : h('a.xm-link', { href: '#/explore', 'aria-label': 'Explore: ' + title }, 'Explore', h('span.xarrow', { 'aria-hidden': 'true' }, '›'))));
+      h('div.xm-foot', {}, h('span.xm-n', {}, foot), toMapLink(title)));
   }
 
   AL.home = AL.home || { sections: [] };
@@ -43,13 +43,13 @@
       const big2 = real.provinces.filter((p) => p.ads >= 500);
       const fmtN = (n) => n.toLocaleString('en-US');
       cards = [
-        card('Stated limits', 'Most common maximum age', 'Among real ads that state a maximum age.', real.maxAges.slice(0, 5).map(([a, c]) => ({ name: 'Under ' + a, v: c, label: pc(sh(c, real.nMax)) })), `${fmtN(real.nMax)} of ${fmtN(real.ads)} ads state a maximum`, true),
-        card('By occupation', 'Explicit age limits', 'Share of ads in each occupation group with an explicit age condition.', top2(real.occs, (r) => sh(r.explicit, r.ads), 5).map((r) => ({ name: occName(r.occupation), v: sh(r.explicit, r.ads), label: pc(sh(r.explicit, r.ads)) })), `${real.occupations} occupation groups`, true),
+        card('Stated limits', 'Most common maximum age', 'Among real ads that state a maximum age.', real.maxAges.slice(0, 5).map(([a, c]) => ({ name: 'Under ' + a, v: c, label: pc(sh(c, real.nMax)) })), `${fmtN(real.nMax)} of ${fmtN(real.ads)} ads state a maximum`),
+        card('By occupation', 'Explicit age limits', 'Share of ads in each occupation group with an explicit age condition.', top2(real.occs, (r) => sh(r.explicit, r.ads), 5).map((r) => ({ name: occName(r.occupation), v: sh(r.explicit, r.ads), label: pc(sh(r.explicit, r.ads)) })), `${real.occupations} occupation groups`),
         card('How it is phrased', 'How age is written', 'Share of all ads. One ad can mention an exception and state a cap.', [
-          ['A maximum age (cap)', real.cap], ['A range or a minimum age', real.explicit - real.cap], ['Mentions an exception', real.withException], ['A preference, not a rule', real.preference]].map(([n, v]) => ({ name: n, v, label: pc(sh(v, real.ads)) })), `${fmtN(real.ads)} ads`, true),
-        card('By region', 'Age wording by province', 'Share of ads with any age wording, provinces with at least 500 ads.', top2(big2, (r) => sh(r.age_wording, r.ads), 5).map((r) => ({ name: en2[r.province] || 'Province', v: sh(r.age_wording, r.ads), label: pc(sh(r.age_wording, r.ads)) })), `${big2.length} provinces with 500+ ads`, true),
-        card('By region', 'Where the ads are', 'Number of real ads per province.', top2(real.provinces, (r) => r.ads, 5).map((r) => ({ name: en2[r.province] || 'Province', v: r.ads, label: fmtN(r.ads) })), `${real.regions} regions with ads`, true),
-        card('Exceptions', 'Exceptions mentioned', 'Ads whose age wording includes an exception or flexibility clause, provinces with at least 500 ads.', top2(big2, (r) => sh(r.with_exception, r.ads), 5).map((r) => ({ name: en2[r.province] || 'Province', v: sh(r.with_exception, r.ads), label: pc(sh(r.with_exception, r.ads)) })), `${fmtN(real.withException)} ads mention one`, true),
+          ['A maximum age (cap)', real.cap], ['A range or a minimum age', real.explicit - real.cap], ['Mentions an exception', real.withException], ['A preference, not a rule', real.preference]].map(([n, v]) => ({ name: n, v, label: pc(sh(v, real.ads)) })), `${fmtN(real.ads)} ads`),
+        card('By region', 'Age wording by province', 'Share of ads with any age wording, provinces with at least 500 ads.', top2(big2, (r) => sh(r.age_wording, r.ads), 5).map((r) => ({ name: en2[r.province] || 'Province', v: sh(r.age_wording, r.ads), label: pc(sh(r.age_wording, r.ads)) })), `${big2.length} provinces with 500+ ads`),
+        card('By region', 'Where the ads are', 'Number of real ads per province.', top2(real.provinces, (r) => r.ads, 5).map((r) => ({ name: en2[r.province] || 'Province', v: r.ads, label: fmtN(r.ads) })), `${real.regions} regions with ads`),
+        card('Exceptions', 'Exceptions mentioned', 'Ads whose age wording includes an exception or flexibility clause, provinces with at least 500 ads.', top2(big2, (r) => sh(r.with_exception, r.ads), 5).map((r) => ({ name: en2[r.province] || 'Province', v: sh(r.with_exception, r.ads), label: pc(sh(r.with_exception, r.ads)) })), `${fmtN(real.withException)} ads mention one`),
       ];
     }
     if (!cards) {  // no real aggregate on this server: the simulated set, as before

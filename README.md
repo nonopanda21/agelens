@@ -32,7 +32,7 @@ A Northwestern University SEPOL 425 course project (Group Delta).
 
 | | |
 |---|---|
-| **Read the evidence ad by ad.** The map compares regions and occupations across 10 million real ads; the explorer lets you open a reproducible set of simulated ads. Each age line is quoted as written, labelled (hard cap · cap with exception · preference · range · unclear), and linked to the original ad. | ![Regional map](docs/screenshots/readme/map.png) |
+| **Read the evidence ad by ad.** The map compares regions and occupations across 10 million real ads; Job Seeker answers open ads from a reproducible set of simulated ads. Each age line is quoted as written, labelled (hard cap · cap with exception · preference · range · unclear), and linked to the original ad. | ![Regional map](docs/screenshots/readme/map.png) |
 | **Get an answer under five headings.** What the ad explicitly says · what exceptions exist · how this relates to your question · what cannot be determined yet · what you could ask next. Every statement is tagged **Ad text**, **You said** or **Rules**. | ![Answer](docs/screenshots/readme/answer.png) |
 | **Quick check.** Paste one line of age wording and see how the rules read it. Nothing is stored. | ![Quick check](docs/screenshots/readme/quick_check.png) |
 | **Full report (Pro).** A Word report of about 4–8 pages: every ad's wording quoted, region and occupation comparisons, the questions to send, and a draft message. The preview is free; the report needs a Pro code. This is stage 1: no payment is taken. | ![Report preview](docs/screenshots/readme/report_preview.png) |

@@ -52,7 +52,7 @@ with sync_playwright() as p:
     out("pause_motion", {"running_when_paused": paused, "running_after_play": resumed})
     if paused or not resumed: fails.append("pause/play motion did not stop/restart the nebula")
     # leaving the page releases WebGL contexts
-    before = pg.evaluate("window.__ctx"); pg.goto(BASE + "/#/explore"); pg.wait_for_timeout(1500)
+    before = pg.evaluate("window.__ctx"); pg.goto(BASE + "/#/about"); pg.wait_for_timeout(1500)
     after = pg.evaluate("window.__ctx"); out("route_change", {"before": before, "after": after, "canvases_left": pg.evaluate("document.querySelectorAll('canvas').length")})
     if after["lost"] < after["made"] and pg.evaluate("document.querySelectorAll('main canvas').length") == 0 and after["made"] - after["lost"] > 0:
         fails.append(f"WebGL contexts not released on route change: made {after['made']} lost {after['lost']}")

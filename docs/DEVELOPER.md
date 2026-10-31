@@ -62,7 +62,7 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 | `a11y_check.py`, `palette_check.py` | scripted accessibility checks; text contrast in map, heatmap and charts | read-only |
 | `theme_check.py`, `labels_check.py`, `lit_check.py` (port number) | inner-page theme, English labels, literature/About | read-only |
 | `map_real.py` | home map Real/Simulated switch, labels, captions, a server without real data | own |
-| `map_v2.py`, `map_explore.py`, `perf.py` | regional map 3D/2D, Explore, render loops (software WebGL, not a GPU) | read-only |
+| `map_v2.py`, `map_explore.py`, `perf.py` | regional map 3D/2D, old Explore links redirect to the map, render loops (software WebGL, not a GPU) | read-only |
 | `demo_cases.py`, `seeker_flow.py` | "Try a demo case", "Paste an ad to check", the Job Seeker form, CV drop, errors | **writes: use a copy** |
 | `study_flow.py`, `study_timeout.py` | study tools in simulation mode (`STUDY_TOKEN`, `STUDY_OUT` env) | **simulation copy** |
 | `final_shots.py` | delivery screenshots into `docs/screenshots/final/` | read-only |
@@ -81,7 +81,7 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 
   The three pages share one composer (`pages/home.js`): each section registers with `page` (`home` by default, `why`, `findings`, or `*` for the footer) and a `rail` label. They share the home look through `body[data-layout="home"]`, which the router sets from `page.layout`. On wide screens, a section rail in the left margin lists the current page's sections (shown when there are at least three).
 - **Quick check:** a tab on the right edge on desktop, or an item in the Menu on phones. Paste one line of age wording and see how the rules read it. It is rules only, nothing is stored, and it is hidden on the study pages.
-- **Explore data `#/explore`:** filters, charts and the ad list. Each ad links to `#/evidence/<id>`, the original text with the age wording highlighted.
+- **`#/explore` (removed 2026-10-30):** the old simulated-ad explorer. Old links now land on the Overview's data map. Ads are opened from Job Seeker answers (`#/evidence/<id>`).
 - **Job Seeker `#/seeker`:**
   - Your question, then your background. A CV can be dropped in (PDF/DOCX/TXT); the fields are editable and must be confirmed, and the file is never stored.
   - The answer comes under five headings, each statement tagged Ad text, You said or Rules.

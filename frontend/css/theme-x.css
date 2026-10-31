@@ -1,4 +1,4 @@
-/* theme-x.css: inner pages (seeker, evidence, explore, requests, reviewer, study, score, about, notfound) in the sketchbook style.
+/* theme-x.css: inner pages (seeker, evidence, requests, reviewer, study, score, about, notfound) in the sketchbook style.
    Scoped to body:not([data-layout="home"]) so home-x.css stays the single source for the home page.
    Paper background, brown ink outlines with hard offset shadows, pastel fills (never pastel text), Patrick Hand headings,
    pixel numerals for headline counts. Two centred columns (1120 data pages, 860 content pages). */
@@ -130,61 +130,6 @@ body:not([data-layout="home"]) fieldset.share{border:2px dashed rgba(74,55,40,.3
 .ops>div{padding:var(--s2) 0 0}.ops p{margin:0 0 var(--s2)}
 .ops code{font-size:12px;background:var(--yellow-soft);border:1px dashed rgba(74,55,40,.35);border-radius:6px;padding:1px 6px;overflow-wrap:anywhere}
 
-/* ---------- Explore: controls row like the reference's explorer bar ---------- */
-body[data-route="explore"] .ex-filters{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--s4);padding:var(--s5);align-items:start;background:var(--surface);border:var(--border);box-shadow:var(--shadow);border-radius:var(--r-lg)}
-body[data-route="explore"] .ex-f label{white-space:nowrap;font-size:.85rem}
-body[data-route="explore"] .ex-f .hint{display:block;font-size:12px;margin-top:4px;min-height:1.2em}
-body[data-route="explore"] .ex-btns{grid-column:auto;align-self:start;flex-wrap:nowrap}
-@media (min-width:641px){body[data-route="explore"] .ex-btns{padding-top:calc(.85rem * 1.65 + 6px)}}
-body[data-route="explore"] .ex-btns .btn{flex:1;min-height:44px;padding:8px 16px}
-body[data-route="explore"] .ex-dates .ex-pair{gap:var(--s2)}
-body[data-route="explore"] .ex-chip{font-family:var(--font);font-weight:700;font-size:.85rem;background:var(--lav-soft);color:var(--lav-ink);border:2px solid var(--brown);border-radius:8px;box-shadow:var(--shadow-sm);transition:transform var(--t-fast) var(--ease-pop)}
-body[data-route="explore"] .ex-chip:hover{background:var(--pink-soft);color:var(--pink-ink);transform:rotate(-1deg)}
-body[data-route="explore"] .ex-scope{font-family:var(--font-sketch);font-weight:400;font-size:1.2rem;color:var(--brown);margin-top:var(--s5)}
-body[data-route="explore"] .ex-kpi{color:var(--text)}
-body[data-route="explore"] .ex-kpi .pix{font-size:15px}
-/* chart cards */
-body[data-route="explore"] .ex-charts{gap:var(--s5)}
-body[data-route="explore"] .ex-card{padding:var(--s5) var(--s5) var(--s4)}
-body[data-route="explore"] .ex-card:nth-child(odd){transform:rotate(-.25deg)}
-body[data-route="explore"] .ex-card:nth-child(even){transform:rotate(.25deg)}
-body[data-route="explore"] .ex-card h3{font-size:1.35rem}
-body[data-route="explore"] .ch-bars{gap:4px}
-body[data-route="explore"] .ch-bar{border:2px solid transparent;border-radius:10px;padding:6px 8px}
-body[data-route="explore"] .ch-bar:hover{background:var(--pink-soft)}
-body[data-route="explore"] .ch-bar.selected{background:var(--yellow-soft);border:2px dashed var(--brown);box-shadow:none}
-body[data-route="explore"] .ch-name{font-weight:700;color:var(--brown)}
-body[data-route="explore"] .ch-val{font-weight:800;color:var(--brown)}
-body[data-route="explore"] .ch-track{height:16px;border-radius:8px;background:rgba(74,55,40,.06)}
-/* hatched ink bars, as in the reference's "Top 20" chart */
-body[data-route="explore"] .ch-fill{border-radius:8px;background:repeating-linear-gradient(-35deg,var(--brown) 0 2px,transparent 2px 5px)}
-body[data-route="explore"] .ch-fill.sel{background:repeating-linear-gradient(-35deg,var(--pink-ink) 0 2.5px,var(--pink) 2.5px 5px)}
-body[data-route="explore"] .ch-col:focus-visible .ch-rect{stroke:var(--pink-ink);stroke-width:3}
-/* evidence list: article cards like the reference */
-body[data-route="explore"] .ex-listhead{margin-top:var(--s7)}
-body[data-route="explore"] .ex-lh{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
-body[data-route="explore"] .ex-listhead h2{font-size:clamp(1.7rem,2.8vw,2.1rem);padding-bottom:10px;background:var(--t-dash) no-repeat left bottom/120px 3px}
-body[data-route="explore"] .ex-sort{display:flex;align-items:center;gap:var(--s2)}
-body[data-route="explore"] .ex-sort label{margin:0;font-weight:600}
-body[data-route="explore"] .ex-ads{gap:14px}
-body[data-route="explore"] .ex-ads .ex-ad{position:relative;padding:20px 24px;border:2px solid var(--brown);box-shadow:var(--shadow-sm);border-radius:var(--r-sm);transition:transform .25s var(--ease-pop),box-shadow .25s var(--ease)}
-body[data-route="explore"] .ex-ads .ex-ad::before{content:"✦";position:absolute;top:-12px;left:22px;font-size:1rem;color:#E8C84A;opacity:0;transform:scale(.4);transition:opacity .25s,transform .3s var(--ease-pop)}
-body[data-route="explore"] .ex-ads .ex-ad:hover{transform:translate(-1px,-3px);box-shadow:3px 3px 0 var(--pink),-1.5px -1px 0 rgba(255,182,193,.35)}
-body[data-route="explore"] .ex-ads .ex-ad:hover::before{opacity:1;transform:none}
-body[data-route="explore"] .ex-ad-h{justify-content:space-between;align-items:flex-start;flex-wrap:nowrap}
-body[data-route="explore"] .ex-ad-t{text-decoration:none;font-family:var(--font);font-weight:700;font-size:1.1rem;color:var(--brown)}
-body[data-route="explore"] .ex-ad-t::after{content:"";position:absolute;inset:0;border-radius:inherit}
-body[data-route="explore"] .ex-ad:hover .ex-ad-t{color:var(--pink-ink)}
-.ex-stat{flex:none;display:inline-block;font-size:.75rem;font-weight:800;padding:3px 10px;border-radius:6px;white-space:nowrap;background:transparent;color:var(--text-light);border:1.5px dashed var(--brown)}
-.ex-stat.st-exp{background:var(--pink-soft);color:var(--pink-ink);border:1.5px solid transparent}
-.ex-stat.st-unc{background:var(--lav-soft);color:var(--lav-ink);border:1.5px solid transparent}
-body[data-route="explore"] .ex-meta{margin:6px 0 0;color:var(--text-light)}
-body[data-route="explore"] .ex-snip{margin:var(--s3) 0;color:var(--text)}
-.ex-more{display:inline-block;margin-top:2px;font-family:var(--font-sketch);font-size:1.02rem;color:var(--brown);padding:3px 12px;border:2px solid var(--brown);border-radius:10px;box-shadow:var(--shadow-sm);background:var(--surface);transition:background var(--t-fast),transform var(--t-fast) var(--ease-pop)}
-body[data-route="explore"] .ex-ad:hover .ex-more{background:var(--pink);transform:rotate(-1.5deg)}
-body[data-route="explore"] .ex-pager .hint{font-family:var(--font-sketch);font-size:1.05rem;color:var(--text-light)}
-@media (max-width:640px){body[data-route="explore"] .ex-ads .ex-ad{padding:18px}body[data-route="explore"] .ex-filters{padding:var(--s4)}body[data-route="explore"] .ex-ad-h{flex-wrap:wrap}body[data-route="explore"] .ex-card{transform:none!important}}
-
 /* ---------- footer on inner pages ---------- */
 body:not([data-layout="home"]) .foot{margin-top:var(--s7)}
 
@@ -195,8 +140,8 @@ body[data-route="evidence"] .kv dt{color:var(--text-light);font-weight:700}
 @media (max-width:640px){
   body:not([data-layout="home"]) main>.wrap.section{padding-top:40px}
 }
-@media (prefers-reduced-motion:reduce){body:not([data-layout="home"]) main>.wrap{animation:none}body:not([data-layout="home"]) .rq-item:hover,body:not([data-layout="home"]) .rv-item:hover,body[data-route="explore"] .ex-ads .ex-ad:hover{transform:none}}
-html[data-motion="reduced"] body[data-route="explore"] .ex-ads .ex-ad:hover,html[data-motion="reduced"] body:not([data-layout="home"]) .rq-item:hover{transform:none}
+@media (prefers-reduced-motion:reduce){body:not([data-layout="home"]) main>.wrap{animation:none}body:not([data-layout="home"]) .rq-item:hover,body:not([data-layout="home"]) .rv-item:hover{transform:none}}
+html[data-motion="reduced"] body:not([data-layout="home"]) .rq-item:hover{transform:none}
 /* centred pages: the dotted underline sits under the centre of the title */
 .rq-center h1,.nf h1{background-position:center bottom!important;transform-origin:center}
 /* secondary text on pastel fills uses the body ink so it stays >= 4.5:1 */

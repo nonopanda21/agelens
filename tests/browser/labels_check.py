@@ -89,25 +89,6 @@ with sync_playwright() as pw:
     measure(page, '#/ (map 2D + table)')
     page.evaluate("try{localStorage.removeItem('al_map_view')}catch(e){}")
 
-    # ---- explore: province + occupation filters, then a chart bar
-    page.goto(BASE + '/#/explore', wait_until='networkidle'); page.wait_for_selector('.ex-ads li'); page.wait_for_timeout(800)
-    measure(page, '#/explore')
-    page.select_option('#ex-prov', value='广东'); page.wait_for_timeout(1200)
-    occ = page.locator('#ex-occ')
-    if occ.evaluate('e => e.tagName') == 'SELECT':
-        page.select_option('#ex-occ', value='销售')
-    else:
-        occ.fill('销售')
-    page.wait_for_timeout(1500); page.wait_for_selector('.ex-ads li, .ex-list .card')
-    report['explore_url_after_filters'] = page.evaluate('location.hash')
-    measure(page, '#/explore')
-    shot(page, 'explore_filtered')
-    page.click('.ex-chip >> nth=0'); page.click('.ex-chip >> nth=0'); page.wait_for_timeout(1200)
-    page.locator('.ex-chart.ex-scroll .ch-bar').nth(1).click(); page.wait_for_timeout(1500)
-    report['explore_url_after_bar'] = page.evaluate('location.hash')
-    measure(page, '#/explore')
-    shot(page, 'explore_bar')
-
     # ---- evidence page
     page.goto(BASE + '/#/evidence/' + ads[0]['id'], wait_until='networkidle'); page.wait_for_selector('.ev-sec'); page.wait_for_timeout(400)
     measure(page, '#/evidence/<id>'); shot(page, 'evidence')
