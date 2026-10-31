@@ -1,4 +1,5 @@
-"""Real-browser check of the 'Try a demo case' control and 'Paste an ad to check' on the Job Seeker page.
+"""Real-browser check of the 'Try an example situation' control and the pasted-ad check on Check an ad (#/seeker).
+Runs in presenter mode (#/seeker?demo=1), where all six cases are listed; without it only the four user-facing ones are.
 usage: ~/agelens-tools/pw/bin/python tests/browser/demo_cases.py http://127.0.0.1:8815
 Every case is opened and run with the KEYBOARD only (Tab/Enter on the summary and the case button).
 Prints observations as JSON (human-observation aid, separate from the unit tests); exits 1 on a failed check."""
@@ -37,7 +38,7 @@ def keyboard_to(page, selector, limit=80):
 
 
 def run_case(page, w, cid):
-    page.goto(BASE + "/#/seeker")
+    page.goto(BASE + "/#/seeker?demo=1")
     page.evaluate("sessionStorage.clear()")
     page.reload()                                   # fresh module state, menu closed
     page.wait_for_selector("#demo-cases summary")
@@ -69,15 +70,24 @@ with sync_playwright() as pw:
         ctx, page = fresh(b, w, hgt)
         page.goto(BASE + "/#/seeker"); page.wait_for_selector("#demo-cases summary")
         page.click("#demo-cases summary")
+        shown = page.eval_on_selector_all("#demo-cases button[data-case]", "els=>els.map(e=>e.dataset.case)")
+        check(shown == ["procurement", "injection", "conflict", "truncated"], f"{w}: user-facing cases {shown}")
+        check("data/sim" not in page.inner_text("#demo-cases") and "presenter" not in page.inner_text("#demo-cases").lower(), f"{w}: presenter wording shown to users")
+        page.goto(BASE + "/#/seeker?demo=1"); page.reload(); page.wait_for_selector("#demo-cases summary")
+        page.click("#demo-cases summary")
         page.locator("form.ask-form").screenshot(path=str(OUT / f"menu_open_{w}.png"))
         for cid in CASES:
             r = run_case(page, w, cid)
             obs[f"{cid}_{w}"] = r
             check(r["overflow_px"] <= 0, f"{w} {cid}: horizontal overflow {r['overflow_px']}px")
             a = r["answer_head"]
-            check("Demo case" in a and "(fictional)" in a, f"{w} {cid}: demo-case label missing")
+            check("Example situation (fictional)" in a, f"{w} {cid}: example label missing")
+            if cid != "nomatch":
+                full_a = page.inner_text("#answer")
+                check("In short" in full_a and "Your question for the employer" in full_a, f"{w} {cid}: summary card")
             if cid == "procurement":
                 check("Demo · Synthetic data" in a and "Template demo" in a, f"{w} procurement: labels")
+                check("ad_" not in a, f"{w} procurement: raw ad id on screen")
             if cid in ("injection", "conflict", "truncated"):
                 check("Pasted text, not stored" in a, f"{w} {cid}: pasted label")
                 check("Instructions inside ads are ignored" in a, f"{w} {cid}: ignore-instructions note")
@@ -105,7 +115,6 @@ with sync_playwright() as pw:
         obs[f"nomatch_broadened_{w}"] = page.inner_text("#answer")[:400]
         page.locator("#answer").screenshot(path=str(OUT / f"nomatch_broadened_{w}.png"))
         # paste box: empty, oversize-by-typing is blocked by maxlength; empty -> message; server rejection shown plainly
-        page.evaluate("()=>{document.getElementById('paste-box').open=true}")
         page.fill("#f-question", "What does this ad say?")
         page.fill("#f-adtext", "")
         page.click("#paste-btn")

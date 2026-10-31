@@ -1,5 +1,5 @@
 """No-CJK crawler (docs/ENGLISH_UI.md): visits every route at 1280 and 390 px, opens one evidence page and one request,
-runs a Job Seeker search, every demo case and the Quick check, and counts CJK characters in document.body.innerText and in
+runs a Job Seeker search, every demo case, the "Check one line" tab and the Overview's line-check box, and counts CJK characters in document.body.innerText and in
 title / aria-label / placeholder / alt attributes (any element, visible or not). Input / textarea VALUES are user input and
 are not counted. Also reports AgeLens.scrubLog: strings the DOM builder's safety net had to clean (a missing English field).
 usage: ~/agelens-tools/pw/bin/python tests/browser/no_cjk_crawl.py http://127.0.0.1:8862   (env AGELENS_REVIEWER_TOKEN = server's)
@@ -71,9 +71,10 @@ with sync_playwright() as pw:
         # Job Seeker: example search, then every demo case, then the review panel with a selected ad
         page.goto(BASE + "/#/seeker"); page.wait_for_selector("#f-question")
         page.click("button:has-text('Use an example')"); page.click("#go-btn")
-        page.wait_for_selector("#ads .card", timeout=45000)
+        page.wait_for_selector("#ads-more", timeout=45000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector("#ads .card", timeout=45000)
         page.check("#ads .card input[type=checkbox]"); page.wait_for_timeout(300)
         rec(page, f"seeker answer @{w}")
+        page.goto(BASE + "/#/seeker?demo=1"); page.wait_for_selector("#demo-cases summary")
         page.click("#demo-cases summary")
         for cid in ["procurement", "injection", "conflict", "truncated", "nomatch", "nomodel"]:
             page.click(f'button[data-case="{cid}"]')
@@ -89,6 +90,11 @@ with sync_playwright() as pw:
         for i in range(3):
             page.click(f'.sk-chip[data-ex="{i}"]'); page.wait_for_selector(".sk-res", timeout=10000); page.wait_for_timeout(200)
             rec(page, f"quickcheck ex{i} @{w}")
+        # the Overview hero's "Check one line" box, same example chips
+        page.keyboard.press("Escape"); page.goto(BASE + "/#/"); page.wait_for_selector(".xh-check .sk-chip", timeout=15000)
+        for i in range(3):
+            page.click(f'.xh-check .sk-chip[data-ex="{i}"]', force=True); page.wait_for_selector(".xh-check .sk-res", timeout=10000); page.wait_for_timeout(200)
+            rec(page, f"hero check ex{i} @{w}")
         ctx.close()
     br.close()
 

@@ -123,6 +123,8 @@ details:not(.xfaq-i):not(.faq-item)>summary:hover{color:var(--pink-ink)}
   body.nav-open .nav-menu-ico i:nth-child(1){transform:translateY(5px) rotate(45deg)}body.nav-open .nav-menu-ico i:nth-child(2){opacity:0}body.nav-open .nav-menu-ico i:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
   .nav nav{display:none;width:100%;flex-direction:column;align-items:stretch;gap:2px;padding:8px 0 6px;margin-top:8px;border-top:1.5px dashed rgba(74,55,40,.25)}
   body.nav-open .nav nav{display:flex}
+  /* the open menu is opaque and ends in a clear edge, so page content never shows through under the last item */
+  body.nav-open .nav{background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:2px solid var(--brown);box-shadow:0 6px 0 rgba(74,55,40,.08)}
   .nav nav a,.nav .nav-qc{display:block;padding:12px 14px;font-size:1.02rem;border-radius:12px;text-align:left}
   .nav .nav-qc:not([hidden]){display:block;font:inherit;font-size:1.02rem;color:var(--brown);background:var(--yellow-soft);border:0;cursor:pointer;margin-top:4px}
   .nav nav a.nav-access{margin:6px 0 0;max-width:none;text-align:left}

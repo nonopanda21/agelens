@@ -21,6 +21,15 @@ def overflow(page):
     return page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
 
 
+def tab_to(page, el_id, limit=30):
+    """Press Tab until the element has focus (the keyboard path), then return True."""
+    for _ in range(limit):
+        if page.evaluate("document.activeElement && document.activeElement.id") == el_id:
+            return True
+        page.keyboard.press("Tab")
+    return False
+
+
 def fresh(browser, w, h):
     ctx = browser.new_context(viewport={"width": w, "height": h}, accept_downloads=True)
     page = ctx.new_page()
@@ -41,7 +50,7 @@ with sync_playwright() as pw:
     # keyboard-only completion
     page.focus("#f-question")
     page.keyboard.type("I am 38 with eight years in operations. Ads say normally under 35, exceptions possible. What should I clarify?")
-    page.keyboard.press("Tab"); page.keyboard.press("Tab"); page.keyboard.type("Operations manager")   # first Tab = 'Use an example' button
+    obs["keyboard_reaches_occupation"] = tab_to(page, "f-occupation"); page.keyboard.type("Operations manager")
     page.keyboard.press("Tab"); page.keyboard.type("38")
     page.keyboard.press("Tab"); page.keyboard.type("8")
     page.keyboard.press("Tab"); page.keyboard.press("ArrowDown")   # select: choose first region with the keyboard
@@ -49,6 +58,9 @@ with sync_playwright() as pw:
     page.focus("#go-btn"); page.keyboard.press("Enter")
     page.wait_for_selector(".answer-sec", timeout=20000)
     obs["answer_headings"] = page.eval_on_selector_all(".answer-sec h3", "els=>els.map(e=>e.textContent)")
+    obs["summary_card"] = page.inner_text(".sum-card")[:400]
+    obs["answer_page_height_1280"] = page.evaluate("document.documentElement.scrollHeight")
+    obs["raw_ids_on_screen"] = len(re.findall(r"ad_[0-9a-f]{8,}", page.inner_text("#answer")))
     obs["focus_after_answer"] = page.evaluate("document.activeElement.tagName+':'+document.activeElement.textContent.slice(0,20)")
     obs["tags_seen"] = sorted(set(page.eval_on_selector_all(".tag", "els=>els.map(e=>e.textContent)")))
     obs["badges"] = page.eval_on_selector_all(".answer-head .badge", "els=>els.map(e=>e.textContent)")
@@ -58,7 +70,7 @@ with sync_playwright() as pw:
     with page.expect_download() as dl:
         page.click("text=Download brief (Markdown)")
     p = Path(dl.value.path()); md = p.read_text(encoding="utf-8")
-    obs["md_labels"] = [s for s in ("Demo · Synthetic data", "Template demo", "What does the ad explicitly say?", "[Ad text]", "[Rules]", "[You said]") if s in md]
+    obs["md_labels"] = [s for s in ("Demo · Synthetic data", "Template demo", "## In short", "Your question for the employer", "What does the ad explicitly say?", "[Ad wording (translated)]", "[AgeLens rules]", "[You said]") if s in md]
     obs["md_has_data_version"] = "data version" in md
     obs["md_cjk_chars"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", md))   # English-only brief (backend)
     obs["answer_cjk"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", page.evaluate("document.body.innerText")))
@@ -67,7 +79,7 @@ with sync_playwright() as pw:
     shot(page, "03_print_view_1280.png"); obs["print_hidden_nav"] = page.evaluate("getComputedStyle(document.querySelector('.nav')).display")
     page.evaluate("document.body.classList.remove('print-brief')"); page.emulate_media(media="screen")
     # evidence page via link
-    page.click(".stmts a[href^='#/evidence/']"); page.wait_for_selector(".ev-sec")
+    page.click(".answer-sec > .stmts a[href^='#/evidence/']"); page.wait_for_selector(".ev-sec")
     obs["evidence_cjk"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", page.evaluate("document.body.innerText")))
     shot(page, "04_evidence_1280.png"); page.go_back(); page.wait_for_selector(".answer-sec")
     obs["state_kept_after_evidence"] = page.input_value("#f-question")[:20]
@@ -134,7 +146,7 @@ with sync_playwright() as pw:
     page.unroute("**/api/ads?**")
 
     # ---------- duplicate submit with idempotency key ----------
-    page.click("#go-btn"); page.wait_for_selector(".cards .card", timeout=20000)
+    page.click("#go-btn"); page.wait_for_selector("#ads-more", timeout=20000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector(".cards .card", timeout=20000)
     page.locator(".cards .card input[type=checkbox]").first.check()
     posts = []
     def on_req(route):
@@ -149,12 +161,13 @@ with sync_playwright() as pw:
     except Exception: pass
     obs["submit_disabled_in_flight"] = page.evaluate("document.getElementById('submit-btn') ? document.getElementById('submit-btn').disabled : 'replaced'")
     page.wait_for_selector("text=Request submitted", timeout=20000)
+    obs["after_submit"] = page.inner_text("#review")[:300]
     obs["post_count"] = len(posts); obs["idempotency_key_sent"] = bool(posts and posts[0] and len(posts[0]) >= 16)
     shot(page, "10_submitted_1280.png")
     page.unroute("**/api/requests")
     # 409 path (mock): existing request number shown
     page.reload(); page.wait_for_selector("#f-question")
-    page.fill("#f-question", "dup test"); page.click("#go-btn"); page.wait_for_selector(".cards .card", timeout=20000)
+    page.fill("#f-question", "dup test"); page.click("#go-btn"); page.wait_for_selector("#ads-more", timeout=20000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector(".cards .card", timeout=20000)
     page.locator(".cards .card input[type=checkbox]").first.check()
     page.route("**/api/requests", lambda r: r.fulfill(status=409, content_type="application/json", body='{"error":"Already submitted as AL-2026-0042","code":"AL-2026-0042"}'))
     page.click("#submit-btn"); page.wait_for_selector("text=AL-2026-0042")
@@ -168,6 +181,7 @@ with sync_playwright() as pw:
     obs["overflow_360_form"] = overflow(page)
     page.fill("#f-question", "I am 38 and the ad says under 35. What do I ask?"); page.fill("#f-occupation", "运营"); page.select_option("#f-region", label="Shanghai")
     page.click("#go-btn"); page.wait_for_selector(".answer-sec", timeout=20000)
+    obs["answer_page_height_360"] = page.evaluate("document.documentElement.scrollHeight")
     shot(page, "21_answer_360.png"); page.locator("#answer").scroll_into_view_if_needed(); page.evaluate("window.scrollBy(0,380)"); shot(page, "21b_answer_viewport_360.png", full=False); obs["overflow_360_answer"] = overflow(page)
     page.set_input_files("#cv-file", {"name": "cv.txt", "mimeType": "text/plain", "buffer": CV}); page.wait_for_selector("#cv-review")
     shot(page, "22_cv_review_360.png"); obs["overflow_360_cv"] = overflow(page)

@@ -1,6 +1,7 @@
-/* Home hero (order 10), sketchbook style after the reference site: left-aligned hand-lettered title with a pink second line, an
-   elliptical badge, sketch buttons, pixel-font stats from the live API, and a doodle (job ad with the age line circled, magnifier,
-   star, heart, cloud, sparkles) on the right. Behind it the particle field (js/nebula.js) is recoloured as brown-ink and pastel
+/* Home hero (order 10), sketchbook style after the reference site: the positioning line as an eyebrow, a left-aligned hand-lettered
+   question as the title (pink second line), sketch buttons, pixel-font stats from the live API, the one-line limits; on the right a
+   doodle (job ad with the age line circled, magnifier, star, heart, cloud, sparkles) over a "Check one line" card that reads a pasted
+   line with the same rules as the edge tab (AgeLens.lineCheck, js/sidekit.js). Behind it the particle field (js/nebula.js) is recoloured as brown-ink and pastel
    speckles on paper, animated by default; a paper scrim under the copy keeps text contrast. Static paper + copy if WebGL is unavailable. */
 (function () {
   const AL = window.AgeLens, h = AL.h;
@@ -42,10 +43,30 @@
   AL.home.sections.push({ id: 'hero', order: 10, rail: 'Top', async render(el) {
     const canvas = h('canvas.xh-canvas', { 'aria-hidden': 'true' });
     const glow = h('div.xh-glow', { 'aria-hidden': 'true' });
-    const toHow = () => { const n = document.getElementById('how'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };
+    const toExample = () => { const n = document.getElementById('example'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };
     const stat = (n, label) => h('div.xh-stat', {}, h('p.xh-stat-n', {}, n), h('p.xh-stat-l', {}, label));
     const stats = h('div.xh-stats', { 'aria-label': 'Dataset size' }, stat('–', 'Job ads'), stat('–', 'Regions'), stat('–', 'Occupations'));
     const badge = h('p.xh-badge', {}, 'An evidence-grounded clarification assistant for mid-career jobseekers');
+    // "Check one line": paste the age line, the rules read it in place (no navigation, nothing stored)
+    const lc = AL.lineCheck;
+    const lineIn = h('input#xh-line', { type: 'text', maxlength: 300, autocomplete: 'off', spellcheck: 'false', placeholder: 'Paste the line here' });
+    const lineOut = h('div.sk-out.xh-check-out', { 'aria-live': 'polite' });
+    const lineForm = h('form.xh-check-form', { novalidate: '' },
+      h('label', { for: 'xh-line' }, 'Paste the age line from the ad'),
+      h('div.xh-check-row', {}, lineIn, h('button.xbtn.xh-check-go', { type: 'submit' }, 'Check this wording')),
+      lc ? h('div.sk-ex', {}, h('span', {}, 'Try an example:'), lc.examples.map((label, i) => h('button.sk-chip', { type: 'button', 'data-ex': String(i) }, label))) : null);
+    lineForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = lineIn.value.trim();
+      if (!text) { lineOut.replaceChildren(h('p.sk-err', {}, 'Paste a line of age wording first.')); lineIn.focus(); return; }
+      if (lc) lc.read(lineOut, text);
+    });
+    lineForm.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c && lc) { lineIn.value = ''; lc.readExample(lineOut, +c.dataset.ex); } });
+    const check = h('section.xh-check', { 'aria-labelledby': 'xh-check-h' },
+      h('h2#xh-check-h', {}, 'Check one line'),
+      h('p.xh-check-note', {}, 'Fixed rules read the wording. Nothing you paste is stored.'),
+      lineForm, lineOut,
+      h('a.xh-check-more', { href: '#/seeker' }, 'Ask about your situation', h('span.xarrow', { 'aria-hidden': 'true' }, ' →')));
     const art = h('div.xh-art'); art.innerHTML = DOODLE;
     // ink every outlined shape stroke by stroke, then colour it in (css/intro.css); the dashed ground line keeps its dashes
     let k = 0;
@@ -60,13 +81,13 @@
       h('div.wrap.xh-grid', {},
         h('div.xh-inner', {},
           badge,
-          h('h1.xh-title', { 'aria-label': 'Make sense of the age requirement' }, h('span.xh-l1', { 'aria-hidden': 'true' }, letters('Make sense of', 0)), h('span.xh-l2', { 'aria-hidden': 'true' }, letters('the age requirement', 14))),
-          h('p.xh-sub', {}, 'Changing jobs or returning to work? Bring your background and one job ad. AgeLens lists the age conditions and exceptions the ad states, what is still unclear, and a question you can send to a person.'),
-          h('div.xh-actions', {}, h('a.xbtn.xbtn-lg', { href: '#/seeker' }, 'Ask about my situation'), h('button.xbtn.xbtn-2.xbtn-lg', { type: 'button', onclick: toHow }, 'See how it works')),
+          h('h1.xh-title', { 'aria-label': 'Does “under 35” in a job ad rule you out?' }, h('span.xh-l1', { 'aria-hidden': 'true' }, letters('Does “under 35” in a job ad', 0)), h('span.xh-l2', { 'aria-hidden': 'true' }, letters('rule you out?', 28))),
+          h('p.xh-sub', {}, 'Paste the ad you are looking at. AgeLens quotes its age wording, says what is clear and what is not, and drafts one neutral question to ask the employer. Nothing is decided for you.'),
+          h('div.xh-actions', {}, h('a.xbtn.xbtn-lg', { href: '#/seeker' }, 'Check an ad'), h('button.xbtn.xbtn-2.xbtn-lg', { type: 'button', onclick: toExample }, 'See an example')),
           stats,
-          h('p.xh-fine', {}, 'Not legal advice. AgeLens never decides whether you qualify.'),
+          h('p.xh-fine', {}, 'AgeLens quotes and explains wording. It cannot tell you whether you will be hired, and it is not legal advice.'),
           h('p.xh-paused', { hidden: true, role: 'status' }, 'Animation is paused in this browser. ', h('button.xh-play', { type: 'button', onclick: () => AL.motion.set(false) }, 'Play animation'))),
-        art));
+        h('div.xh-side', {}, art, check)));
     if (introPlayed || AL.reducedMotion()) hero.classList.add('no-intro'); introPlayed = true;
     const pausedNote = hero.querySelector('.xh-paused');
     const syncPaused = () => { pausedNote.hidden = !AL.motion.reduced(); pausedNote.firstChild.textContent = AL.motion.userPaused() ? 'Animation is paused in this browser. ' : 'Your system asks for reduced motion, so the animation is still. '; };

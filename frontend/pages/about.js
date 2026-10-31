@@ -13,7 +13,7 @@ AgeLens.pages.about = {
     ];
     el.append(h('div.wrap.section.ab', {},
       h('h1', {}, 'Method and ', h('span.ink-pink', {}, 'sources')),
-      h('p.ab-lead', {}, 'AgeLens is an evidence-grounded clarification assistant for mid-career jobseekers: people changing jobs or returning to work. Given your background and one job ad, it lists the age conditions and exceptions the ad states, says what is still unclear, and prepares a question a person can answer. This page says what does the work, what the data is, and what it cannot do.'),
+      h('p.ab-lead', {}, 'AgeLens is an evidence-grounded clarification assistant for mid-career jobseekers: people changing jobs or returning to work. Given your background and the ad you are looking at, it quotes the ad’s age wording, says what is clear and what is not, shows how similar ads word age, and drafts one neutral question for the employer. This page says what does the work, what the data is, and what it cannot do.'),
       sec('Who does what',
         h('dl.ab-dl', {},
           h('dt', {}, 'Rules and the database'), h('dd', {}, 'Find ads, pull out the exact age wording, count and compare. These steps are fixed and repeatable.'),

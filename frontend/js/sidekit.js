@@ -1,8 +1,9 @@
 /* Margin widgets (css/sidekit.css).
    1. Section rail (home-layout pages, wide screens): a thin list of the page's sections in the left margin; the current one is
       marked as you scroll and a click jumps to it.
-   2. Quick check (right edge, every route except the study and scoring pages): paste one line of age wording from an ad and see how the
-      AgeLens rules read it (/api/age/check: rules only, no model, nothing stored). It never says whether someone qualifies.
+   2. "Check one line" (right edge, every route except the study and scoring pages): paste one line of age wording from an ad and see how
+      the AgeLens rules read it (/api/age/check: rules only, no model, nothing stored). It never says whether someone qualifies.
+      The reader is shared as AgeLens.lineCheck, which the Overview hero box (pages/home_hero.js) also uses.
    Loaded after app.js; uses AgeLens.h and AgeLens.api. */
 (function () {
   const AL = window.AgeLens, h = AL.h;
@@ -46,7 +47,7 @@
   setTimeout(spy, 800);
   document.addEventListener('agelens:composed', buildRail);
 
-  /* ---- 2. quick check ---- */
+  /* ---- 2. check one line ---- */
   const LABEL = {
     hard_cap: ['Hard cap', 'The line states an age limit with no exception.'],
     cap_with_exception: ['Cap with an exception', 'The line states an age limit and also says it can be relaxed. Who decides, and on what basis, is usually not said.'],
@@ -63,45 +64,9 @@
     ['Under 35 preferred', '35\u5c81\u4ee5\u4e0b\u4f18\u5148'],
     ['Age 25 to 40', '\u5e74\u9f8425-40\u5c81'],
   ];
-  const tab = h('button.sk-tab', { type: 'button', 'aria-expanded': 'false', 'aria-controls': 'sk-panel' }, h('span', {}, 'Quick check'));
-  const input = h('textarea#sk-in', { rows: 3, maxlength: 300, placeholder: 'Paste one line from the ad, for example the age requirement', spellcheck: 'false' });
-  const out = h('div.sk-out', { 'aria-live': 'polite' });
-  const form = h('form.sk-form', {},
-    h('label', { for: 'sk-in' }, 'One line of age wording'), input,
-    h('div.sk-ex', {}, h('span', {}, 'Try an example:'), EXAMPLES.map(([label], i) => h('button.sk-chip', { type: 'button', 'data-ex': String(i) }, label))),
-    h('p.sk-hint', {}, 'Each example checks a real-style line from a Chinese ad. The reading is shown in English.'),
-    h('button.btn.sk-go', { type: 'submit' }, 'Read this line'));
-  const panel = h('section#sk-panel.sk-panel', { 'aria-label': 'Quick check', hidden: '' },
-    h('div.sk-head', {}, h('h2', {}, 'Quick check'), h('button.sk-x', { type: 'button', 'aria-label': 'Close quick check' }, '×')),
-    h('p.sk-note', {}, 'Rules only, no AI. Nothing you paste is stored. This reads the wording; it does not say whether you qualify.'),
-    form, out,
-    h('a.sk-more', { href: '#/seeker' }, 'Check a whole ad and ask a reviewer', h('span.xarrow', { 'aria-hidden': 'true' }, '›')));
-  document.body.append(tab, panel);
-
-  let opener = tab;  // where focus returns on close: the edge tab, or the phone menu's "Quick check" item
-  const setOpen = (open, from) => {
-    if (open) opener = from || tab;
-    panel.hidden = !open; tab.setAttribute('aria-expanded', String(open)); document.body.classList.toggle('sk-open', open);
-    if (open) input.focus();
-    else if (opener && opener.offsetParent) opener.focus();
-    else { const m = document.getElementById('main'); if (m) m.focus({ preventScroll: true }); }
-  };
-  AgeLens.quickCheck = { open: (from) => setOpen(true, from), available: () => !tab.hidden };
-  tab.addEventListener('click', () => setOpen(panel.hidden));
-  panel.querySelector('.sk-x').addEventListener('click', () => setOpen(false));
-  panel.querySelector('.sk-more').addEventListener('click', () => setOpen(false));
-  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) setOpen(false); });
-  form.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c) { const ex = EXAMPLES[+c.dataset.ex]; if (ex) { input.value = ''; check(ex[1], ex[0]); } } });
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
-
   const years = (t) => t.kind === 'range' ? `${t.min_age}–${t.max_age}` : t.max_age != null ? `up to ${t.max_age}` : t.min_age != null ? `${t.min_age} or older` : null;
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) { out.replaceChildren(h('p.sk-err', {}, 'Paste a line of age wording first.')); input.focus(); return; }
-    check(text, null);
-  });
-  async function check(text, exampleLabel) {
+  // reads one line with the rules and fills `out` with the result (shared with the Overview hero box)
+  async function read(out, text, exampleLabel) {
     out.replaceChildren(h('p.hint', {}, 'Reading…'));
     let r;
     try { r = await AL.api('/api/age/check', { method: 'POST', json: { text } }); }
@@ -116,6 +81,49 @@
         AL.labels.en(t.exception_en) ? h('span.sk-age', {}, 'Exception: ' + AL.labels.en(t.exception_en)) : null))) : null,
       h('p.sk-ver', {}, 'Rule set ' + r.rule_version + ' · not stored')));
   }
+  AgeLens.lineCheck = {
+    examples: EXAMPLES.map(([label]) => label),
+    read: (out, text) => read(out, text, null),
+    readExample: (out, i) => (EXAMPLES[i] ? read(out, EXAMPLES[i][1], EXAMPLES[i][0]) : null),
+  };
+
+  const tab = h('button.sk-tab', { type: 'button', 'aria-expanded': 'false', 'aria-controls': 'sk-panel' }, h('span', {}, 'Check one line'));
+  const input = h('textarea#sk-in', { rows: 3, maxlength: 300, placeholder: 'Paste one line from the ad, for example the age requirement', spellcheck: 'false' });
+  const out = h('div.sk-out', { 'aria-live': 'polite' });
+  const form = h('form.sk-form', {},
+    h('label', { for: 'sk-in' }, 'One line of age wording'), input,
+    h('div.sk-ex', {}, h('span', {}, 'Try an example:'), EXAMPLES.map(([label], i) => h('button.sk-chip', { type: 'button', 'data-ex': String(i) }, label))),
+    h('p.sk-hint', {}, 'Each example checks a real-style line from a Chinese ad. The reading is shown in English.'),
+    h('button.btn.sk-go', { type: 'submit' }, 'Read this line'));
+  const panel = h('section#sk-panel.sk-panel', { 'aria-label': 'Check one line', hidden: '' },
+    h('div.sk-head', {}, h('h2', {}, 'Check one line'), h('button.sk-x', { type: 'button', 'aria-label': 'Close the one-line check' }, '×')),
+    h('p.sk-note', {}, 'Rules only, no AI. Nothing you paste is stored. This reads the wording; it does not say whether you qualify.'),
+    form, out,
+    h('a.sk-more', { href: '#/seeker' }, 'Check a whole ad', h('span.xarrow', { 'aria-hidden': 'true' }, '›')));
+  document.body.append(tab, panel);
+
+  let opener = tab;  // where focus returns on close: the edge tab, or the phone menu's "Check one line" item
+  const setOpen = (open, from) => {
+    if (open) opener = from || tab;
+    panel.hidden = !open; tab.setAttribute('aria-expanded', String(open)); document.body.classList.toggle('sk-open', open);
+    if (open) input.focus();
+    else if (opener && opener.offsetParent) opener.focus();
+    else { const m = document.getElementById('main'); if (m) m.focus({ preventScroll: true }); }
+  };
+  AgeLens.quickCheck = { open: (from) => setOpen(true, from), available: () => !tab.hidden };
+  tab.addEventListener('click', () => setOpen(panel.hidden));
+  panel.querySelector('.sk-x').addEventListener('click', () => setOpen(false));
+  panel.querySelector('.sk-more').addEventListener('click', () => setOpen(false));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) setOpen(false); });
+  form.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c && EXAMPLES[+c.dataset.ex]) { input.value = ''; AgeLens.lineCheck.readExample(out, +c.dataset.ex); } });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) { out.replaceChildren(h('p.sk-err', {}, 'Paste a line of age wording first.')); input.focus(); return; }
+    read(out, text, null);
+  });
 
   // the study must not be influenced by an extra reading aid; elsewhere the tab is always there
   const route = () => {

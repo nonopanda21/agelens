@@ -3,7 +3,7 @@ usage: ~/agelens-tools/pw/bin/python tests/browser/e2e_loop.py
 Starts its OWN server (temp copy of data/agelens.db via AGELENS_DB, a free port in 8822-8829, AGELENS_REVIEWER_TOKEN),
 and stops only that server. Screenshots: docs/screenshots/e2e/. Exit code 1 on any failed check.
 Steps: seeker asks (example question) -> evidence + answer -> download brief -> select evidence -> submit for human review;
-reviewer (separate browser context) signs in with the token -> asks for more information; seeker answers in My requests;
+reviewer (separate browser context) signs in with the token -> asks for more information; seeker answers in Human review;
 reviewer saves a draft (seeker must NOT see it) -> publishes facts vs to-verify; seeker sees ONLY the published reply;
 reviewer closes; seeker sees Closed."""
 import os, shutil, socket, subprocess, sys, tempfile, time, urllib.request
@@ -78,6 +78,7 @@ try:
         shot(sp, "01_seeker_form.png")
         sp.click("#go-btn")
         sp.wait_for_selector("#answer .answer-title", timeout=45000)
+        sp.evaluate("document.getElementById('ads-more').open=true")   # the ad cards are folded under the answer
         sp.wait_for_selector("#ads .card")
         ans = sp.inner_text("#answer")
         check("answer shows the five answer-first headings",
@@ -94,7 +95,7 @@ try:
         boxes = sp.locator("#ads .card input[type=checkbox]")
         boxes.nth(0).check(); boxes.nth(1).check()
         sp.wait_for_selector("#submit-btn")
-        check("selected evidence panel shows 2 of 10", "Selected evidence (2 of 10)" in sp.inner_text("#review"))
+        check("selected ads panel shows 2 of 10", "Selected ads (2 of 10)" in sp.inner_text("#review"))
         sp.fill("#clar", "I am 38 with eight years in operations. The ads say normally under 35 with exceptions. Would my experience count as an exception?")
         shot(sp, "03_seeker_select.png")
         sp.click("#submit-btn")
@@ -116,7 +117,7 @@ try:
         rp.wait_for_function("document.querySelector('.rv-body')?.innerText.includes('Reviewer asked for more information')")
         check("status -> Needs information", "Needs information" in rp.inner_text(".rv-body header"))
 
-        # ---------- 4. seeker answers in My requests
+        # ---------- 4. seeker answers in Human review
         sp.goto(BASE + "/#/requests"); sp.wait_for_selector(f".rq-item:has-text('{code}')")
         sp.click(f".rq-item:has-text('{code}')"); sp.wait_for_selector("#ans")
         check("seeker sees the reviewer's question", "certificates" in sp.inner_text(".rq").lower())

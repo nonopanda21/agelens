@@ -1,4 +1,4 @@
-/* My requests (#/requests, #/requests/<code>). Also exports shared UI helpers as AgeLens.reqUi (used by reviewer.js). */
+/* Human review (#/requests, #/requests/<code>): the seeker's requests to a human reviewer and the replies. Also exports shared UI helpers as AgeLens.reqUi (used by reviewer.js). */
 (function () {
   const h = AgeLens.h;
   const LABELS = { pending: 'Pending review', needs_info: 'Needs your information', replied: 'Replied', closed: 'Closed' };
@@ -149,11 +149,11 @@
   function noTokenPanel(code) {
     return h('div.card.rq-recover', {}, h('h2', {}, 'This browser cannot open ' + code),
       h('p', {}, 'Your private access key for a request is created when you submit it and is kept only in the browser where you submitted it. This browser does not have the key for ' + code + '.'),
-      h('ul', {}, h('li', {}, 'Open My requests in the browser (and browser profile) you used to submit. The request will be listed there.'),
+      h('ul', {}, h('li', {}, 'Open Human review in the browser (and browser profile) you used to submit. The request will be listed there.'),
         h('li', {}, 'If site data was cleared or you used a private window, the key is gone and cannot be recovered, because the server only stores a one-way hash of it.'),
         AgeLens.access.invite ? h('li', {}, 'On the public demo, requests sent with a personal invite code open in any browser where you enter that code.') : null,
         h('li', {}, 'You can ask your question again with a new request. Nothing here is visible to anyone who lacks the key.')),
-      h('div.rv-actions', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Start a new request'), h('a.btn.btn-quiet', { href: '#/requests' }, 'My requests')));
+      h('div.rv-actions', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad'), h('a.btn.btn-quiet', { href: '#/requests' }, 'Human review')));
   }
 
   async function detail(el, code) {
@@ -163,7 +163,7 @@
     const auth = tok ? { 'X-Owner-Token': tok } : {};
     const wrap = h('div.wrap.section.rq');
     el.replaceChildren(wrap);
-    wrap.append(h('p', {}, h('a', { href: '#/requests' }, '← All my requests')));
+    wrap.append(h('p', {}, h('a', { href: '#/requests' }, '← All my review requests')));
     if (!tok && !AgeLens.session.info().personal) { wrap.append(noTokenPanel(code)); return; }
     const body = h('div', {}, h('p.hint', { role: 'status' }, 'Loading…'));
     wrap.append(body);
@@ -199,27 +199,28 @@
     body.append(h('section', {}, h('h2', {}, 'Conversation'), convo(r.messages)),
       h('section', {}, h('h2', {}, 'History'), h('div.card', {}, timeline(r.events, 'seeker'))),
       h('section', {}, h('h2', {}, 'Background you shared'), h('div.card', {}, consentBlock(r.consent, 'seeker'), profileList(r.profile))),
-      h('section', {}, h('h2', {}, 'Evidence you submitted (' + r.evidence.length + ')'), h('p.hint', {}, 'A snapshot taken at submission time; it does not change if the dataset changes later.'),
+      h('section', {}, h('h2', {}, 'Ads you sent (' + r.evidence.length + ')'), h('p.hint', {}, 'A copy taken when you sent them; it does not change if the example ads change later.'),
         h('div.rq-evs', {}, r.evidence.map((e, i) => evidenceCard(e, true, i === 0)))));
-    if (r.scope) body.append(h('details.rq-scope-box', {}, h('summary', {}, 'Search scope snapshot'), h('pre.rq-scope', {}, JSON.stringify(r.scope, null, 2))));
+    if (r.scope) body.append(h('details.rq-scope-box', {}, h('summary', {}, 'Technical details of the search (for the course team)'), h('pre.rq-scope', {}, JSON.stringify(r.scope, null, 2))));
   }
 
   async function list(el) {
     const tokens = AgeLens.ownerTokens.all(), codes = Object.keys(tokens);
     const personal = !!AgeLens.access.invite && AgeLens.session.info().personal;  // public demo, personal invite code
-    const wrap = h('div.wrap.section.rq', {}, h('h1', {}, 'My ', h('span.ink-pink', {}, 'requests')),
+    const wrap = h('div.wrap.section.rq', {}, h('h1', {}, 'Human ', h('span.ink-pink', {}, 'review')),
+      h('p.lead.rq-intro', {}, 'Questions you sent to a person on the course team, and their replies. A reviewer reads the ads and your question, then separates what the ad text supports from what still needs checking.'),
       personal ? h('p.hint.rq-lede', {}, 'Requests you send with your personal invite code are kept on the code, so they open in any browser where you enter it. Requests sent from this browser earlier are listed too.')
-        : h('p.hint.rq-lede', {}, 'Each request has a private access key that stays in this browser only. Another browser, a private window or cleared site data cannot open these requests, and the key cannot be recovered.'));
+        : h('p.hint.rq-lede', {}, 'Requests sent from this browser are listed here. Only this browser can open them: the access key stays here and cannot be recovered.'));
     el.replaceChildren(wrap);
     let onAccount = [];
     if (personal) {
       try { onAccount = (await AgeLens.api('/api/access/requests')).requests; } catch (e) { /* the list below still shows this browser's requests */ }
     }
     if (!codes.length && !onAccount.length) {
-      wrap.append(h('div.card.rq-empty', {}, AgeLens.stateIcon('inbox'), h('h2', {}, 'No requests from this browser yet'),
-        h('p', {}, 'Ask about an ad’s age wording, choose the evidence and background you are happy to share, and a human reviewer will reply. Your request will be listed here.'),
-        h('p.hint', {}, 'Submitted from another browser? Open My requests there; the key is not stored on the server.'),
-        h('a.btn.btn-primary', { href: '#/seeker' }, 'Ask about my situation')));
+      wrap.append(h('div.card.rq-empty', {}, AgeLens.stateIcon('inbox'), h('h2', {}, 'Nothing sent for human review yet'),
+        h('p', {}, 'On Check an ad, get your answer, open the ads behind it and tick “Select for review”, then press “Submit for human review”. You choose what background to share. The reply appears here.'),
+        h('p.hint', {}, 'Sent from another browser? Open Human review there; the key is not stored on the server.'),
+        h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad')));
       return;
     }
     const holder = h('div', {}, h('p.hint', { role: 'status' }, 'Loading…'));
@@ -235,11 +236,11 @@
     const accCodes = new Set(onAccount.map((r) => r.code));
     holder.replaceChildren();
     if (res.unavailable.length) holder.append(h('div.notice', {}, 'Not found on the server for the key stored here: ' + res.unavailable.join(', ') + '. The local database may have been reset.'));
-    if (!res.requests.length) holder.append(h('div.card.rq-empty', {}, AgeLens.stateIcon('search'), h('p', {}, 'None of the keys stored in this browser match a request on this server.'), h('a.btn.btn-primary', { href: '#/seeker' }, 'Start a new request')));
+    if (!res.requests.length) holder.append(h('div.card.rq-empty', {}, AgeLens.stateIcon('search'), h('p', {}, 'None of the keys stored in this browser match a request on this server.'), h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad')));
     holder.append(h('ul.rq-list', {}, res.requests.map((r) => h('li', {}, h('a.rq-item', { href: '#/requests/' + r.code },
       h('span.rq-top', {}, h('span.rq-code', {}, r.code), statusBadge(r.status), r.is_demo ? simBadge() : null, accCodes.has(r.code) ? h('span.badge.rq-acc', {}, 'Kept on your code') : null),
-      h('span.rq-q', {}, r.question), h('span.hint', {}, 'Submitted ' + fmt(r.created_at) + ' · updated ' + fmt(r.updated_at) + ' · ' + r.evidence_count + (r.evidence_count === 1 ? ' evidence item' : ' evidence items')))))));
+      h('span.rq-q', {}, r.question), h('span.hint', {}, 'Submitted ' + fmt(r.created_at) + ' · updated ' + fmt(r.updated_at) + ' · ' + r.evidence_count + (r.evidence_count === 1 ? ' ad' : ' ads')))))));
   }
 
-  AgeLens.pages.requests = { title: 'My requests', render(el, params) { return params.id ? detail(el, params.id) : list(el); } };
+  AgeLens.pages.requests = { title: 'Human review', render(el, params) { return params.id ? detail(el, params.id) : list(el); } };
 })();

@@ -111,6 +111,143 @@ def _quoted(snips):
     return " and ".join("“%s”" % x for x in snips)
 
 
+# job titles that name a person ("as an operations manager"); anything else is a field ("in procurement")
+ROLE_WORDS = ("manager", "engineer", "specialist", "officer", "assistant", "lead", "director", "analyst", "designer", "accountant",
+              "teacher", "driver", "supervisor", "clerk", "consultant", "developer", "representative", "executive", "coordinator",
+              "administrator", "nurse", "technician", "worker", "operator", "agent", "buyer", "planner", "architect", "head",
+              "keeper", "programmer", "scientist", "writer", "editor", "cashier", "chef", "cook", "receptionist", "trainer", "tutor")
+
+
+def _experience_sentence(years, occupation):
+    """'I have 8 years of experience as an operations manager.' Neutral, English only; None without years."""
+    if years is None:
+        return None
+    yrs = "%d year%s of experience" % (years, "" if years == 1 else "s")
+    occ = (occupation or "").strip()
+    if not occ or gloss.has_cjk(occ):
+        return "I have %s in this kind of work." % yrs
+    words = [w if (w.isupper() and len(w) > 1) else w.lower() for w in occ.split()]
+    alpha = [w for w in words if w.strip("()").isalpha()]
+    phrase = " ".join(words)
+    if alpha and alpha[-1].strip("()") in ROLE_WORDS:
+        first = words[0]
+        vowel = first[0] in "AEFHILMNORSX" if (first.isupper() and len(first) > 1) else first[0] in "aeiou"   # "an HR …", "an operations …"
+        return "I have %s as %s %s." % (yrs, "an" if vowel else "a", phrase)
+    return "I have %s in %s." % (yrs, phrase)
+
+
+def _questions(ads, n, with_max, exc_ads, amb, profile):
+    """Neutral questions for the employer. One ad -> 'The ad ...'; several -> 'similar ads ...' (the question goes to one employer)."""
+    one = n == 1
+    qs = []
+    if with_max:
+        qs.append({"text": ("The ad states a maximum age of %d. Is that a firm requirement for this role, or does it vary by candidate?" % _max_age(with_max[0])) if one
+                   else "Several similar ads state a maximum age. For this role, is any stated age a firm requirement, or does it vary by candidate?",
+                   "evidence_ids": _ids(with_max)})
+    if exc_ads:
+        qs.append({"text": "The ad says some requirements may be relaxed. What criteria are used, and who decides?" if one
+                   else "Some similar ads say requirements may be relaxed. For this role, what criteria are used, and who decides?", "evidence_ids": _ids(exc_ads)})
+    conf_ads = [a for a in ads if _conflict_snippets(a)]
+    if conf_ads:
+        t = ("The ad's age wording contradicts itself (%s). Which of these applies to this role?" if one
+             else "One similar ad's age wording contradicts itself (%s). For this role, which applies?") % _quoted(_conflict_snippets(conf_ads[0]))
+        qs.append({"text": t, "evidence_ids": _ids(conf_ads), "text_en": gloss.en_text(t, _terms(conf_ads[0]))})
+    if amb:
+        qs.append({"text": "Some age wording in the ad is unclear. Could you clarify what it means for this role?" if one
+                   else "Some similar ads word age unclearly. For this role, is there an age requirement, and what does it mean?", "evidence_ids": _ids(amb)})
+    qs.append({"text": "At which stage of the process (screening, interview, offer) are age-related requirements applied, if at all?", "evidence_ids": _ids(with_max or ads)})
+    exp = _experience_sentence(profile["years_experience"], profile["occupation"])
+    qs.append({"text": (exp[:-1] + ". Which parts of that experience matter most for this role?") if exp else "Which skills and experience matter most for this role?", "evidence_ids": []})
+    return qs
+
+
+def _employer_question(ads, n, with_max, exc_ads, amb, profile):
+    """The ONE question the answer leads with: the person's experience (never their age) + the most useful neutral ask.
+    It goes to one employer, so with several similar ads it never cites the other ads."""
+    one = n == 1
+    conf = [a for a in ads if _conflict_snippets(a)]
+    cut = [a for a in ads if any(_flagged(t, "truncated") for t in _terms(a))]
+    exp = _experience_sentence(profile["years_experience"], profile["occupation"])
+    consider = "or can experience like mine be considered?" if exp else "or does it vary by candidate?"
+    caps = sorted({t["max_age"] for t in _terms(ads[0]) if t.get("max_age") is not None and t.get("kind") in ("max", "range") and _usable(t)}) if one else []
+    if one and len(caps) > 1 and not conf:
+        core = "The ad states different maximum ages (%s). Which one applies to this role, and is it firm %s" % (", ".join(str(c) for c in caps), consider)
+    elif one and conf:
+        core = "The ad's age wording contradicts itself (%s). Which of these applies to this role?" % _quoted(_conflict_snippets(conf[0]))
+    elif one and cut and not with_max:
+        core = "The age requirement in the ad seems to be cut off. Could you tell me the full requirement for this role?"
+    elif with_max and exc_ads:
+        core = ("The ad states a maximum age of %d and says exceptions are possible. Is the age a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
+            else "For this role, is there an age requirement, and if so, is it firm %s" % consider
+    elif with_max:
+        core = ("The ad states a maximum age of %d. Is that a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
+            else "For this role, is there an age requirement, and if so, is it firm %s" % consider
+    elif exc_ads:
+        core = "The ad says some requirements may be relaxed. What criteria are used for this role, and who decides?" if one \
+            else "Are any requirements for this role relaxed for some candidates? If so, what criteria are used, and who decides?"
+    elif amb:
+        core = "Some age wording in the ad is unclear. Could you clarify whether there is an age requirement for this role?" if one \
+            else "Could you clarify whether there is an age requirement for this role?"
+    else:
+        core = "At which stage of the process (screening, interview, offer) are age-related requirements applied for this role, if at all?"
+    text = (exp + " " + core) if exp else core
+    return {"text": text, "text_en": gloss.en_text(text, _all_terms(conf[:1] or with_max[:1] or exc_ads[:1] or ads[:1]))}
+
+
+def _summary(ads, n, status, with_max, exc_ads, profile):
+    """Three short lines for the top of the answer: what the ad(s) state, how that relates to the person, the question.
+    Never says whether the person qualifies."""
+    one = n == 1
+    age = profile["age"]
+    if n == 0:
+        states = "No similar ads were found, so there is no ad wording to report."
+    elif one:
+        a = ads[0]
+        mx, mn = _max_age(a), _min_age(a)
+        caps = sorted({t["max_age"] for t in _terms(a) if t.get("max_age") is not None and t.get("kind") in ("max", "range") and _usable(t)})
+        if _conflict_snippets(a):
+            states = "The ad's age wording contradicts itself: it contains %s." % _quoted(_conflict_snippets(a))
+        elif len(caps) > 1:
+            states = "The ad states different maximum ages (%s)." % ", ".join(str(c) for c in caps)
+        elif mx is not None or mn is not None:
+            parts = (["a maximum age of %d" % mx] if mx is not None else []) + (["a minimum age of %d" % mn] if mn is not None else [])
+            states = "The ad states %s%s." % (" and ".join(parts), " and adds exception wording" if _exceptions(a) else "")
+        elif any(_flagged(t, "truncated") for t in _terms(a)):
+            states = "The ad's age wording seems to be cut off, so no age limit was read from it."
+        elif any(_flagged(t, "unlimited") for t in _terms(a)):
+            states = "The ad says there is no age limit."
+        elif a.get("age_status") == "uncertain":
+            states = "The ad mentions age, but not as a clear limit."
+        else:
+            states = "No age requirement was found in the ad."
+    else:
+        states = "Of %d similar ads, %d state an age requirement" % (n, status["explicit"])
+        if with_max:
+            counts = Counter(_max_age(a) for a in with_max)
+            top, c = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[0]
+            if len(counts) == 1:
+                states += "; the stated maximum is %d" % top
+            elif c > 1 and list(counts.values()).count(c) == 1:
+                states += "; the most common maximum is %d (%s)" % (top, _ads(c))
+            else:
+                states += "; stated maximums range from %d to %d" % (min(counts), max(counts))
+        states += "; %d mention exceptions." % len(exc_ads) if exc_ads else "."
+    if age is None:
+        relates = "You did not give your age, so the stated limits are not compared with it. Age never hides ads."
+    elif not with_max:
+        relates = "No stated maximum age to compare with the age you entered (%d)." % age
+    elif one:
+        mx = _max_age(with_max[0])
+        relates = "You entered %d; the stated maximum is %d. Only the employer can say how the limit is applied%s." % (
+            age, mx, " and whether the exception wording covers you" if _exceptions(with_max[0]) else "")
+    else:
+        lower = sum(1 for a in with_max if _max_age(a) < age)
+        share = ("all %d ads" % len(with_max)) if lower == len(with_max) and lower > 1 else ("%d of the %d ads" % (lower, len(with_max)))
+        relates = "You entered %d: %s that state a maximum give one below that. Only employers can say how their limits are applied." % (age, share)
+    terms = _all_terms(ads)
+    return {"states": states, "states_en": gloss.en_text(states, terms), "relates": relates, "relates_en": gloss.en_text(relates, terms)}
+
+
 def _max_age(ad):
     vals = [t["max_age"] for t in _terms(ad) if t.get("max_age") is not None and t.get("kind") in ("max", "range") and _usable(t)]
     return min(vals) if vals else None
@@ -296,21 +433,7 @@ def build_brief(body, ev=None, allow_model=True):
 
     # ---- 4. questions (neutral) ----
     with_max_all = [a for a in ads if _max_age(a) is not None]
-    if with_max_all:
-        questions.append({"text": "The ad states a maximum age. Is that a firm requirement for this role, or does it vary by candidate?", "evidence_ids": _ids(with_max_all)})
-    if exc_ads:
-        questions.append({"text": "The ad mentions that some requirements may be relaxed. What criteria are used, and who decides?", "evidence_ids": _ids(exc_ads)})
-    conf_ads = [a for a in ads if _conflict_snippets(a)]
-    if conf_ads:
-        questions.append({"text": "The ad's age wording contradicts itself (%s). Which of these applies to this role?" % _quoted(_conflict_snippets(conf_ads[0])), "evidence_ids": _ids(conf_ads),
-                          "text_en": gloss.en_text("The ad's age wording contradicts itself (%s). Which of these applies to this role?" % _quoted(_conflict_snippets(conf_ads[0])), _terms(conf_ads[0]))})
-    if amb:
-        questions.append({"text": "Some age wording in the ad is ambiguous. Could you clarify what it means for this role?", "evidence_ids": _ids(amb)})
-    questions.append({"text": "At which stage of the process (screening, interview, offer) are age-related requirements applied, if at all?", "evidence_ids": _ids(with_max_all or ads)})
-    if profile["occupation"] and profile["years_experience"] is not None:
-        questions.append({"text": "I have %d years of experience in %s. Which parts of that experience matter most for this role?" % (profile["years_experience"], profile["occupation"]), "evidence_ids": []})
-    else:
-        questions.append({"text": "Which skills and experience matter most for this role?", "evidence_ids": []})
+    questions = _questions(ads, n, with_max_all, exc_ads, amb, profile)
 
     # ---- 5. next steps ----
     steps = ["Open the original ads you care about and read the full Chinese text around the highlighted wording."]
@@ -366,6 +489,8 @@ def build_brief(body, ev=None, allow_model=True):
         "sections": SECTIONS, "insufficient": insufficient, "using_demo": bool(demo),
         "question_background": {"question": question, "profile": profile, "missing_fields": missing,
                                 "question_missing": not question},
+        "summary": _summary(ads, n, status, with_max_all, exc_ads, profile),
+        "employer_question": _employer_question(ads, n, with_max_all, exc_ads, amb, profile) if n else None,
         "findings": findings, "unclear": unclear, "unclear_en": [gloss.en_text(u, _all_terms(exc_ads or ads)) for u in unclear],
         "questions": questions, "next_steps": steps, "scope": scope,
         "limitations": limitations,
@@ -425,11 +550,11 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
 
     # ---- explicit
     if n == 0:
-        add("explicit", "rules", "No ads matched, so there is no ad wording to report.")
+        add("explicit", "rules", "No similar ads were found, so there is no ad wording to report.")
     else:
         if not insufficient:
-            add("explicit", "rules", "Of %d matched ads, %d state an explicit age condition, %d %s age-related wording that needs interpretation, and %d had no explicit age condition detected."
-                % (n, status["explicit"], status["uncertain"], "contains" if status["uncertain"] == 1 else "contain", status["none"]), ads, counts=(status["explicit"], n))
+            add("explicit", "rules", "Of %d similar ads, %d state an age requirement, %d %s age unclearly, and in %d no age requirement was found."
+                % (n, status["explicit"], status["uncertain"], "words" if status["uncertain"] == 1 else "word", status["none"]), ads, counts=(status["explicit"], n))
             if with_max:
                 mx = Counter(_max_age(a) for a in with_max)
                 top = ", ".join("%d (%s)" % (k, _ads(v)) for k, v in sorted(mx.items(), key=lambda kv: (-kv[1], kv[0]))[:5])
@@ -449,9 +574,15 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
             add("explicit", "ad_fact", "This ad's age wording contradicts itself: it contains %s. The rules do not choose between them." % _quoted(_conflict_snippets(a)), [a])
         for a in [x for x in ads if x.get("age_status") == "uncertain" and x not in conf_ads][:3]:
             t = next((t for t in _terms(a) if t.get("snippet")), None)
-            add("explicit", "ad_fact", "This ad has age-related wording that the rules could not turn into a number.", [a], quote=_quote(a, t and t["snippet"]))
+            if any(_flagged(x, "truncated") for x in _terms(a)):
+                line = "This ad's age wording seems to be cut off, so no age limit was read from it."
+            elif any(_flagged(x, "unlimited") for x in _terms(a)):
+                line = "This ad says there is no age limit."
+            else:
+                line = "This ad mentions age, but not as a clear number."
+            add("explicit", "ad_fact", line, [a], quote=_quote(a, t and t["snippet"]))
         if not shown and not status["uncertain"]:
-            add("explicit", "rules", "None of the matched ads states an explicit age condition (rules-based detection; read the original text to be sure).", ads)
+            add("explicit", "rules", "None of the similar ads states an age requirement that the rules could find (read the ads to be sure).", ads)
     # ---- exceptions
     pref = [a for a in ads if a.get("age_class") == "preference" or any(t.get("kind") == "relaxable" and not _flagged(t, "unlimited") for t in _terms(a))]
     if exc_ads and not insufficient:
@@ -465,7 +596,7 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
         t = next((t for t in _terms(a) if t.get("snippet")), None)
         add("exceptions", "ad_fact", "This ad words its age wording as a preference or something that can be relaxed, not as a fixed limit.", [a], quote=_quote(a, t and t["snippet"]))
     if not A["exceptions"]:
-        add("exceptions", "rules", "No exception or relaxation wording was found in the matched ads." if n else "No ads matched, so no exceptions can be reported.", ads)
+        add("exceptions", "rules", ("No exception or relaxation wording was found in the ad." if n == 1 else "No exception or relaxation wording was found in the similar ads.") if n else "No similar ads were found, so no exceptions can be reported.", ads)
     # ---- relates
     if question:
         add("relates", "user_stated", "You asked: “%s”" % (question[:240] + ("…" if len(question) > 240 else "")))
@@ -488,7 +619,7 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
     elif age is None:
         add("relates", "rules", "You did not give an age, so ad age limits are shown but not compared with you.")
     elif n and not conf_ads:
-        add("relates", "rules", "No matched ad states a maximum age, so there is no age limit to compare with the age you entered.", ads)
+        add("relates", "rules", ("The ad does not state a maximum age" if n == 1 else "None of the similar ads states a maximum age") + ", so there is no age limit to compare with the age you entered.", ads)
     if age is not None and conf_ads:
         add("relates", "rules", "%s contradictory age wording, so %s not compared with the age you entered (%d)." % (
             "This ad has" if len(conf_ads) == 1 else "%d ads have" % len(conf_ads), "it is" if len(conf_ads) == 1 else "they are", age), conf_ads)
@@ -525,9 +656,9 @@ def _unclear_from(n, insufficient, exc_ads, amb, status, profile, demo):
     if amb:
         out.append("%s %s wording the rules could not interpret with confidence; read the original text." % (_ads(len(amb)), "contains" if len(amb) == 1 else "contain"))
     if status["none"] and n:
-        out.append("Ads with no explicit age condition detected may still apply requirements that are not written in the ad.")
+        out.append("Where no age requirement was found, the employer may still apply requirements that are not written in the ad.")
     if demo:
-        out.append("These ads are simulated demonstration data, not real postings.")
+        out.append("These example ads are fictional, not real postings.")
     return out
 
 
@@ -540,7 +671,7 @@ def _region_en(region):
     return region
 
 
-TAG = {"ad_fact": "Ad text", "user_stated": "You said", "rules": "Rules", "model_inference": "Model inference"}
+TAG = {"ad_fact": "Ad wording (translated)", "user_stated": "You said", "rules": "AgeLens rules", "model_inference": "Model inference"}
 
 
 def _en(s):
@@ -557,6 +688,12 @@ def to_markdown(b):
         L += ["> " + b["model"]["note"], ""]
     if b["insufficient"]:
         L += ["> **Insufficient evidence** - no pattern claims are made.", ""]
+    sm, eq = b.get("summary"), b.get("employer_question")
+    if sm:
+        L += ["## In short", "", "- " + _en(sm.get("states_en") or sm["states"]), "- " + _en(sm.get("relates_en") or sm["relates"])]
+        if eq:
+            L += ["- Your question for the employer: " + _en(eq.get("text_en") or eq["text"])]
+        L.append("")
     idx = b["evidence_index"]
     for h in b["headings"]:
         L += ["## " + h["title"], ""]
@@ -582,6 +719,6 @@ def to_markdown(b):
           "- Posting dates: %s" % ((s["date_min"] + " to " + s["date_max"]) if s["date_min"] else "not available"),
           "- Generated: %s (%s)%s" % (b["generated_at"], b["generation_mode"], "; prompt " + b["prompt_version"] if b.get("prompt_version") else ""),
           "- Ad wording is shown as an English gloss of what the rules read; the original Chinese text is kept in the ad record.",
-          "- Provenance tags: Ad text = quoted or paraphrased from an ad; You said = from your input; Rules = counts and templates computed by code; Model inference = a model's reading, checked by code but not guaranteed.",
+          "- Tags: Ad wording (translated) = what an ad says, in English; You said = from your input; AgeLens rules = counts and templates computed by fixed rules, not AI; Model inference = a model's reading, checked by code but not guaranteed.",
           "- This brief needs human confirmation against the original ad text before you rely on it.", ""]
     return "\n".join(L)

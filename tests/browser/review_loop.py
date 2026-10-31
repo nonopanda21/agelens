@@ -180,7 +180,7 @@ try:
             c = ctx(tokens=toks); p = page_of(c, label)
             p.goto(BASE + "/#/requests/" + code); p.wait_for_selector(".rq-recover")
             txt = p.inner_text(".rq")
-            check(f"{label}: explains key lives in submitting browser", "only in the browser where you submitted" in txt and "Start a new request" in txt)
+            check(f"{label}: explains key lives in submitting browser", "only in the browser where you submitted" in txt and "Check an ad" in txt)
             check(f"{label}: no request content leaked", "procurement" not in txt.lower())
             if label == "no token":
                 shot(p, "requests_no_token_1280.png")
@@ -188,7 +188,7 @@ try:
             c.close()
         # empty list state
         c = ctx(); p = page_of(c, "empty"); p.goto(BASE + "/#/requests"); p.wait_for_selector(".rq-empty")
-        check("empty list invites action", p.locator("a:has-text('Ask about my situation')").count() == 1)
+        check("empty list invites action", p.locator(".rq-empty a:has-text('Check an ad')").count() == 1)
         shot(p, "requests_empty_1280.png"); c.close()
 
         # ---- server unreachable -> retry

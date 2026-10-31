@@ -8,7 +8,7 @@
     const col = (title, links) => h('div.xf-col', {}, h('p.xf-h', {}, title), h('ul', {}, links.map(([t, href]) => h('li', {}, h('a', { href }, t)))));
     const fstat = (label) => h('div.xf-stat', {}, h('p.xf-stat-n', {}, '–'), h('p.xf-stat-l', {}, label));
     const stats = h('div.wrap.xf-stats', { 'aria-label': 'Dataset size' }, fstat('Job ads'), fstat('Regions with ads'), fstat('Occupation groups'));
-    const note = h('p.xf-note', {}, 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads; the examples and cases are simulated. Not legal advice; no hiring decisions.');
+    const note = h('p.xf-note', {}, 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads; the example ads and cases are fictional. AgeLens cannot tell you whether you will be hired, and it is not legal advice.');
     const barData = h('span', {}, 'Demo · Synthetic data');
     // real Zhaopin statistics when the server has them (the examples and cases stay simulated), otherwise the simulated set
     Promise.all([AL.realSummary(), AL.api('/api/overview').catch(() => null)]).then(([real, ov]) => {
@@ -18,14 +18,14 @@
       stats.querySelectorAll('.xf-stat-n').forEach((n, i) => { n.textContent = typeof v[i] === 'number' ? v[i].toLocaleString('en-US') : '–'; });
       if (real) AL.heteroData().then((hd) => { if (hd) note.textContent = note.textContent.replace('Statistics come from real Zhaopin job ads (' + real.years + ')', 'Statistics come from real Zhaopin job ads (' + real.years + '), including required experience and stated gender requirements'); });
       if (real) {
-        note.textContent = 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads (' + real.years + '); the examples and cases are simulated. Not legal advice; no hiring decisions.';
+        note.textContent = 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads (' + real.years + '); the example ads and cases are fictional. AgeLens cannot tell you whether you will be hired, and it is not legal advice.';
         barData.textContent = 'Real ad statistics · simulated examples';
       }
     }).catch(() => { stats.hidden = true; });
     const foot = h('footer.xf', {}, canvas, stats,
       h('div.wrap.xf-inner', {},
-        h('div.xf-brand', {}, h('p.xf-logo', {}, 'AgeLens'), h('p.xf-tag', {}, 'Age requirements in job ads, read as evidence.')),
-        col('Product', [['Job Seeker', '#/seeker'],['My requests', '#/requests'], ['Reviewer', '#/reviewer']]),
+        h('div.xf-brand', {}, h('p.xf-logo', {}, 'AgeLens'), h('p.xf-tag', {}, 'An evidence-grounded clarification assistant for mid-career jobseekers.')),
+        col('Product', [['Check an ad', '#/seeker'], ['Human review', '#/requests'], ['Full report', '#/pro'], ['Reviewer', '#/reviewer']]),
         col('Project', [['Why it matters', '#/why'], ['Findings', '#/findings'], ['Method and sources', '#/about'], ['Study tools', '#/study'], ['Scoring', '#/study/score']]),
         h('div.xf-col', {}, h('p.xf-h', {}, 'About'), note)),
       h('div.xf-bar', {}, h('div.wrap', {}, h('span', {}, 'AgeLens · course prototype'), AL.motionToggle(), barData)));

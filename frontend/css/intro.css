@@ -46,7 +46,8 @@
 .xh:not(.no-intro) .xch{animation:chHop .55s var(--ease-pop) both;animation-delay:calc(var(--intro-delay,0s) + 60ms + var(--i) * 26ms)}
 .xh:not(.no-intro) .xch:nth-child(odd){--rt:7deg}
 .xh:not(.no-intro) .xh-l2::after{transform-origin:left;animation:lineDraw .6s var(--ease-out) both;animation-delay:calc(var(--intro-delay,0s) + .85s)}
-.xh:not(.no-intro) :is(.xh-badge){animation:xIn .6s var(--ease-pop) both,xWobble 6s ease-in-out infinite;animation-delay:var(--intro-delay,0s),calc(var(--intro-delay,0s) + .6s)}
+.xh:not(.no-intro) :is(.xh-badge){animation:xIn .6s var(--ease-pop) both;animation-delay:var(--intro-delay,0s)}
+.xh:not(.no-intro) .xh-check{animation-delay:calc(var(--intro-delay,0s) + .5s)}
 .xh:not(.no-intro) .xh-sub{animation-delay:calc(var(--intro-delay,0s) + .55s)}
 .xh:not(.no-intro) .xh-actions{animation-delay:calc(var(--intro-delay,0s) + .7s)}
 .xh:not(.no-intro) :is(.xh-stats,.xh-fine){animation-delay:calc(var(--intro-delay,0s) + .85s)}

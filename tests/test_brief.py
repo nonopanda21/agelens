@@ -62,6 +62,26 @@ class BriefTests(unittest.TestCase):
         self.assertIn("exceptions may be possible", s)
         self.assertIn("ask how they are decided", s)
 
+    def test_experience_sentence_reads_as_english(self):
+        e = brief._experience_sentence
+        self.assertEqual(e(8, "Operations manager"), "I have 8 years of experience as an operations manager.")
+        self.assertEqual(e(8, "Procurement"), "I have 8 years of experience in procurement.")
+        self.assertEqual(e(1, "HR specialist"), "I have 1 year of experience as an HR specialist.")
+        self.assertEqual(e(5, "运营"), "I have 5 years of experience in this kind of work.")
+        self.assertEqual(e(5, ""), "I have 5 years of experience in this kind of work.")
+        self.assertIsNone(e(None, "Operations manager"))
+
+    def test_several_ads_are_not_called_the_ad(self):
+        b = brief.build_brief(BODY, FakeEv(MANY))
+        for q in [q["text"] for q in b["questions"]] + [b["employer_question"]["text"]]:
+            self.assertNotIn("The ad states", q)
+        # the question goes to one employer, so it does not cite the other ads
+        self.assertTrue(b["employer_question"]["text"].startswith("I have 8 years of experience in operations. For this role, is there an age requirement"))
+        self.assertNotIn("similar ads", b["employer_question"]["text"].lower())
+        self.assertTrue(b["summary"]["states"].startswith("Of 6 similar ads, 3 state an age requirement; the most common maximum is 35 (2 ads)"))
+        self.assertIn("2 of the 3 ads that state a maximum give one below that", b["summary"]["relates"])
+        self.assertIn("the most common maximum is 35 (2 ads)", b["summary"]["states"])
+
     def test_no_forbidden_claims(self):
         b = brief.build_brief(BODY, FakeEv(MANY))
         text = str(b).lower()

@@ -20,6 +20,7 @@
     el.append(h('div.wrap.xs', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'Read more'), h('p', {}, 'The detail lives on its own pages, also in the menu at the top.')),
       h('div.xc-grid', {}, MORE.map(([href, t, p], i) => h('a.xc.xmore.reveal', { href, style: `--d:${i * 70}ms` },
-        h('h3.xc-title', {}, t), h('p', {}, p), h('span.xmore-go', { 'aria-hidden': 'true' }, 'Open ›'))))));
+        h('h3.xc-title', {}, t), h('p', {}, p), h('span.xmore-go', { 'aria-hidden': 'true' }, 'Open ›')))),
+      h('p.xst-cta.reveal', {}, h('a.xbtn.xbtn-lg', { href: '#/seeker' }, 'Check an ad'))));
   } });
 })();

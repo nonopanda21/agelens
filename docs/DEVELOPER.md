@@ -63,34 +63,34 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 | `theme_check.py`, `labels_check.py`, `lit_check.py` (port number) | inner-page theme, English labels, literature/About | read-only |
 | `map_real.py` | home map Real/Simulated switch, labels, captions, a server without real data | own |
 | `map_v2.py`, `map_explore.py`, `perf.py` | regional map 3D/2D, old Explore links redirect to the map, render loops (software WebGL, not a GPU) | read-only |
-| `demo_cases.py`, `seeker_flow.py` | "Try a demo case", "Paste an ad to check", the Job Seeker form, CV drop, errors | **writes: use a copy** |
+| `demo_cases.py`, `seeker_flow.py` | "Try an example situation" (presenter mode), the pasted-ad check, the Check an ad form, CV drop, errors | **writes: use a copy** |
 | `study_flow.py`, `study_timeout.py` | study tools in simulation mode (`STUDY_TOKEN`, `STUDY_OUT` env) | **simulation copy** |
 | `final_shots.py` | delivery screenshots into `docs/screenshots/final/` | read-only |
 | `legacy/` | `hero_check.py`, `map_shots.py`: stale since the redesigns, kept for the record | — |
 
 ## Page map
 - **Overview `#/`** (kept short since 2026-10-30), sections in order:
-  - hero with the particle field ("Pause animation" is in the footer);
-  - "how it works" cards;
+  - hero with the particle field ("Pause animation" is in the footer): the positioning line as an eyebrow, the question headline, "Check an ad" / "See an example", the one-line limits, and a "Check one line" card that reads a pasted line with the same rules as the edge tab (`AgeLens.lineCheck` in `js/sidekit.js`);
+  - "What you get" (`home_example.js`): one static answer for a fictional case, labelled as such;
+  - "how it works" cards, then the three steps with the "Check an ad" button;
   - the data overview with the regional map (3D province prisms, a 2D fallback, Real/Simulated switch); the spread, top-10 ranking and industry × region heatmap sit under "More views" (closed by default; map tests open it with an init script);
-  - "Read more": link cards to the two detail pages and Method and sources;
-  - steps;
+  - "Read more": link cards to the two detail pages and Method and sources, then "Check an ad";
   - footer.
 - **Why it matters `#/why`:** page head, the motivation (figures and theory of change), the literature, occupation fields, boundaries and FAQ.
 - **Findings `#/findings`:** page head, the headline-number cards (carousel), then patterns by experience, occupation and gender wording (single-sex requirements shown per 10,000 ads).
 
   The three pages share one composer (`pages/home.js`): each section registers with `page` (`home` by default, `why`, `findings`, or `*` for the footer) and a `rail` label. They share the home look through `body[data-layout="home"]`, which the router sets from `page.layout`. On wide screens, a section rail in the left margin lists the current page's sections (shown when there are at least three).
-- **Quick check:** a tab on the right edge on desktop, or an item in the Menu on phones. Paste one line of age wording and see how the rules read it. It is rules only, nothing is stored, and it is hidden on the study pages.
+- **Check one line** (was Quick check): a tab on the right edge on desktop, or an item in the Menu on phones. Paste one line of age wording and see how the rules read it. It is rules only, nothing is stored, and it is hidden on the study pages.
 - **`#/explore` (removed 2026-10-30):** the old simulated-ad explorer. Old links now land on the Overview's data map. Ads are opened from Job Seeker answers (`#/evidence/<id>`).
-- **Job Seeker `#/seeker`:**
-  - Your question, then your background. A CV can be dropped in (PDF/DOCX/TXT); the fields are editable and must be confirmed, and the file is never stored.
-  - The answer comes under five headings, each statement tagged Ad text, You said or Rules.
-  - Downloads: Markdown; "Full report · Pro".
-  - "Submit for human review".
-  - "Try a demo case": six fictional cases.
-  - "Paste an ad to check": checked in memory, not stored.
-- **My requests `#/requests`:** replies and reviewer questions.
-- **Pro `#/pro`:** free vs Pro, the Pro code and the wallet.
+- **Check an ad `#/seeker`** (the Job Seeker page; nav label "Check an ad"):
+  - Order: your question → "The ad you are looking at" (paste; checked in memory, never stored) → about you (+ optional CV: PDF/DOCX/TXT, fields confirmed, file never stored) → **Check this ad** (`#paste-btn`). Secondary: "No ad yet, or want context?" → **See similar ads** (`#go-btn`) searches the fictional example ads. Enter in a field checks the pasted ad if there is one, else searches.
+  - The limits are one line under the lead; the answer repeats them only as two small tags (data label, "Template demo").
+  - The answer leads with "In short" (`brief.summary`: what the ad(s) state, how that relates to the person, never eligibility wording) and "Your question for the employer" (`brief.employer_question`; uses experience, never age) with a Copy button. Then the five headings; with several ads the ad-by-ad lines fold under "Show N ad-by-ad lines", and the ad cards fold under "Show the N ads behind this answer" (`#ads-more`; tests open it). Tags: Ad wording (translated), You said, AgeLens rules. No raw ad ids on screen (they stay in the brief's provenance).
+  - Downloads: Markdown brief (starts with "## In short"); "Full report · Pro".
+  - "Submit for human review": the confirmation links to Human review and offers "Copy request link".
+  - "Try an example situation": four fictional cases; `#/seeker?demo=1` (presenter mode) adds "no matches" and "no AI model" and the presenter "look for" notes.
+- **Human review `#/requests`** (My requests): replies and reviewer questions.
+- **Full report `#/pro`** (Pro): free vs Pro, the Pro code and the wallet.
 - **Invite code `#/access`:** used only when the host sets invite codes.
 - **Reviewer `#/reviewer`:** the queue; ask for information, draft, publish, close. It needs the token or a reviewer invite code.
 - **Study tools `#/study`** (participants) and **Scoring `#/study/score`** (raters and operator): the crossover study (`docs/EVAL_PLAN.md`, design `crossover-ai-v1`; older designs via `AGELENS_STUDY_DESIGN=crossover-rules-v1`). Simulation mode only; formal mode is refused without `data/study/APPROVAL.json` AND a connected AI model.

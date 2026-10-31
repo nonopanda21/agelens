@@ -2,7 +2,7 @@
 server on 127.0.0.1 (never 0.0.0.0) with a fresh temp database (filled from the simulated dataset at start, as on the host),
 fresh test invite codes and random secrets, then checks at 1280 and 360 px:
   gate on every route; wrong code refused; viewer code opens the site, nav shows "label · viewer", Reviewer link hidden;
-  Quick check and Explore work; a personal code keeps a request across browsers; a shared code does not;
+  "Check one line" works; a personal code keeps a request across browsers; a shared code does not;
   a reviewer code opens the reviewer workspace without the shared token; sign out returns to the gate.
 Fails (exit 1) on failed checks, console/page errors (expected 401 lines filtered) or horizontal overflow.
 Usage: ~/agelens-tools/pw/bin/python tests/browser/public_demo.py     Screenshots: docs/screenshots/public/."""
@@ -96,7 +96,7 @@ try:
             pg.wait_for_timeout(800); pg.screenshot(path=str(SHOTS / f"home_{w}.png"))
             pg.goto(BASE + "/#/about"); pg.wait_for_selector("main h1", timeout=15000)
             open_quick_check(pg); pg.click(".sk-chip >> nth=0"); pg.wait_for_selector(".sk-cls")
-            check(f"{tag}: Quick check works behind the gate", pg.inner_text(".sk-cls") == "Cap with an exception")
+            check(f"{tag}: Check one line works behind the gate", pg.inner_text(".sk-cls") == "Cap with an exception")
             pg.keyboard.press("Escape")
             # a request sent with the personal code opens in another browser with the same code
             ad = pg.evaluate("AgeLens.api('/api/ads?page_size=1').then(r=>r.items[0])")

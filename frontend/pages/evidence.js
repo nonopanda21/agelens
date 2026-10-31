@@ -26,9 +26,9 @@
   }
 
   AgeLens.pages.evidence = {
-    title: 'Evidence',
+    title: 'The ad',
     async render(el, params) {
-      const h1 = h('h1', {}, 'Evidence');
+      const h1 = h('h1', {}, 'The ad');
       const wrap = h('div.wrap.section.evidence-page', {}, h('p.no-print', {}, h('a', { href: '#/seeker' }, '← Back to your answer')), h1);
       el.append(wrap);
       wrap.append(h('div', { role: 'status', 'aria-label': 'Loading the original ad' }, h('div.skel', { 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))));
@@ -46,7 +46,7 @@
       const L = AgeLens.labels;
       const terms = ad.age_terms || [];
       h1.textContent = L.adTitle(ad); h1.className = 'ev-title';
-      document.title = 'Evidence ' + ad.id + ' · AgeLens';
+      document.title = L.adTitle(ad) + ' · AgeLens';
 
       const textEn = L.en(ad.description_en);
       const sents = L.sentences(ad);
@@ -64,7 +64,7 @@
         h('div.term-top', {}, h('strong', {}, KIND[t.kind] || t.kind), h('span.badge.' + (t.confidence === 'high' ? 'mint' : 'sim'), {}, t.confidence + ' confidence')),
         kv([['In plain English', L.termGloss(t)], ['Minimum age', t.min_age], ['Maximum age', t.max_age], ['Exception', L.exception(t)],
           ['Rule version', t.rule_version], ['Position in the original text', t.start_offset != null ? 'characters ' + t.start_offset + '–' + t.end_offset : null]]))))
-        : h('p', {}, 'No explicit age condition detected in this ad’s text' + (ad.rule_version ? ' by rule version ' + ad.rule_version : '') + '. This describes the text only; it does not say how the employer decides.');
+        : h('p', {}, 'No age requirement found in this ad’s text by the AgeLens rules. This describes the text only; it does not say how the employer decides.');
 
       const raw = ad.raw_row && typeof ad.raw_row === 'object' ? Object.keys(ad.raw_row) : [];
       const sel = AgeLens.seeker;
@@ -87,7 +87,7 @@
         h('section.card.ev-sec', {}, h('h2', {}, 'Where this came from'),
           kv([['Ad ID', ad.id], ['Data', ad.is_demo ? 'Demo · Synthetic data (fictional ad)' : 'Imported data'], ['Data version', ad.data_version], ['Import batch', ad.batch_id], ['Source file', ad.filename], ['Source row', ad.raw_row && ad.source_row ? ad.source_row : null], ['Rule version', ad.rule_version], ['Duplicates merged', ad.duplicate_count]]),
           raw.length ? h('p.hint', {}, 'The raw source row (' + raw.length + ' fields) is kept on the server in its original language and is not shown in this English interface.') : null),
-        h('p.no-print', {}, h('a', { href: '#/seeker' }, '← Back to your search')));
+        h('p.no-print', {}, h('a', { href: '#/seeker' }, '← Back to your answer')));
     },
   };
 })();

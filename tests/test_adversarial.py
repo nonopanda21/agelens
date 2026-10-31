@@ -110,7 +110,7 @@ class EvidenceShapeTests(unittest.TestCase):
         b = run_brief([], spy)
         self.assertEqual(spy.calls, [])
         self.assertTrue(b["insufficient"])
-        self.assertEqual(b["answer"]["explicit"][0]["text"], "No ads matched, so there is no ad wording to report.")
+        self.assertEqual(b["answer"]["explicit"][0]["text"], "No similar ads were found, so there is no ad wording to report.")
         self.assertTrue(any("No ads matched" in s["text"] for s in b["answer"]["cannot"]))
 
     def test_INS2_one_ad_gives_no_aggregates(self):
@@ -179,7 +179,7 @@ class FailureTests(unittest.TestCase):
     def test_API3_not_configured_says_template_demo(self):
         b = brief.build_brief(BODY, FakeEv(ads_with()))
         self.assertEqual(b["model"]["label"], "Template demo")
-        self.assertEqual(b["ai_note"], "Model not run — Template demo.")
+        self.assertEqual(b["ai_note"], "Model not run: no AI model is connected, so fixed rules wrote this answer (Template demo).")
 
 
 if __name__ == "__main__":

@@ -261,7 +261,7 @@
       const rv = document.querySelector('.nav-reviewer'); if (rv) rv.hidden = !!AgeLens.access.public && i.role !== 'reviewer';  // public: desk not offered to visitors
     };
     if (nav) { nav.append(chip); AgeLens.session.onChange(paint); paint(); }
-    // phones: the links fold into a "Menu" button; Quick check moves into the menu instead of floating over the page
+    // phones: the links fold into a "Menu" button; "Check one line" moves into the menu instead of floating over the page
     const header = document.getElementById('nav');
     if (nav && header) {
       nav.id = 'primary-nav';
@@ -270,7 +270,7 @@
       const setMenu = (open) => { document.body.classList.toggle('nav-open', open); menuBtn.setAttribute('aria-expanded', String(open)); menuBtn.lastChild.textContent = open ? 'Close' : 'Menu'; };
       menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('nav-open')));
       header.insertBefore(menuBtn, nav);
-      const qc = AgeLens.h('button.nav-qc', { type: 'button' }, 'Quick check');
+      const qc = AgeLens.h('button.nav-qc', { type: 'button' }, 'Check one line');
       qc.addEventListener('click', () => { setMenu(false); if (AgeLens.quickCheck) AgeLens.quickCheck.open(menuBtn); });
       nav.append(qc);
       nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });

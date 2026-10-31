@@ -137,7 +137,7 @@ try:
                 ctx.add_init_script(init)
                 p = ctx.new_page(); p.goto(BASE + "/" + h); p.wait_for_load_state("networkidle"); p.wait_for_timeout(900)
                 if name == "seeker_result":
-                    p.click("button:has-text('Use an example')"); p.click("#go-btn"); p.wait_for_selector("#ads .card", timeout=45000)
+                    p.click("button:has-text('Use an example')"); p.click("#go-btn"); p.wait_for_selector("#ads-more", timeout=45000); p.evaluate("document.getElementById('ads-more').open=true"); p.wait_for_selector("#ads .card", timeout=45000)
                     p.check("#ads .card input[type=checkbox]"); p.wait_for_timeout(300)
                 if name == "reviewer":
                     p.wait_for_selector(".rv-item"); p.click(".rv-item"); p.wait_for_selector("#rbody")

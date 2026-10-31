@@ -36,7 +36,7 @@ PROMPT_FILE = "explain_v1.txt"
 TEMPLATE_LABEL = "Template demo"
 SECTIONS = ("explicit", "exceptions", "relates", "cannot", "ask")
 TYPES = ("ad_fact", "user_stated", "model_inference")
-PROVENANCE = {"ad_fact": "Ad text", "user_stated": "You said", "rules": "Rules", "model_inference": "Model inference"}
+PROVENANCE = {"ad_fact": "Ad wording (translated)", "user_stated": "You said", "rules": "AgeLens rules", "model_inference": "Model inference"}
 OUTPUT_LISTS = ("uncertainties", "clarification_questions", "suggested_next_steps", "limitations")  # legacy shape
 MAX_STATEMENTS = 30
 
@@ -467,7 +467,7 @@ def run_explanation(llm_input, provider=None, log=True):
 
 
 def failure_text(reason):
-    return {"not_configured": "Model not run — Template demo.",
+    return {"not_configured": "Model not run: no AI model is connected, so fixed rules wrote this answer (Template demo).",
             "timeout": "Model not run — the model timed out, so this is the rules-based answer.",
             "network": "Model not run — the model could not be reached, so this is the rules-based answer.",
             "bad_json": "Model not run — its reply could not be read, so this is the rules-based answer.",

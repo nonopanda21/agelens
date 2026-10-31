@@ -90,9 +90,9 @@
     const table = h('table.pro-table', {}, h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Feature'), h('th', { scope: 'col' }, 'Free'), h('th', { scope: 'col' }, 'Pro'))),
       h('tbody', {}, [
         ['Overview, findings, regional map, original ad text', '✓', '✓'],
-        ['Quick check of one line of age wording', '✓', '✓'],
-        ['Job Seeker answer on the page, Markdown download', '✓', '✓'],
-        ['Ask a human reviewer', '✓', '✓'],
+        ['Check one line of age wording', '✓', '✓'],
+        ['Your answer on the page, and the brief (Markdown download)', '✓', '✓'],
+        ['Human review of your question', '✓', '✓'],
         ['Full report preview (contents and summary numbers)', '✓', '✓'],
         ['Full Word report: every ad’s age wording in English, comparisons, draft message', '—', '✓ (one credit each)'],
       ].map(([f, a, b]) => h('tr', {}, h('th', { scope: 'row' }, f), h('td', {}, a), h('td', {}, b)))));
@@ -108,15 +108,15 @@
       out.addEventListener('click', async () => { try { await AgeLens.api('/api/pro/signout', { method: 'POST', json: {}, headers: AgeLens.pro.headers() }); } catch (e) {} AgeLens.pro.clear(); paint(); });
       walletBox.replaceChildren(h('h2', {}, h('span.badge.pro-badge', {}, 'Pro'), ' ', w.label || 'Pro code'),
         h('dl.inv-dl', {}, h('dt', {}, 'Report credits'), h('dd', {}, w.credits_left + ' of ' + w.credits_total + ' left'), h('dt', {}, 'Valid until'), h('dd', {}, fmtDate(w.expires))),
-        h('p.hint', {}, 'Credits belong to the code, so every browser that enters it shares them. Make a report from the Job Seeker answer.'),
-        h('div.row', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Go to Job Seeker'), out));
+        h('p.hint', {}, 'Credits belong to the code, so every browser that enters it shares them. Make a report from your answer on the Check an ad page.'),
+        h('div.row', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad'), out));
     };
-    wrap.append(h('h1', {}, 'AgeLens ', h('span.ink-pink', {}, 'Pro')),
-      h('p.hint.rq-lede', {}, 'Reading the data stays free. Pro adds a full Word report you can keep, print or send: every matching ad’s age wording in plain English, what is explicit and what is unclear, how your region and occupation compare, and a draft message to the employer.'),
+    wrap.append(h('h1', {}, 'The full ', h('span.ink-pink', {}, 'report')),
+      h('p.hint.rq-lede', {}, 'Checking an ad, your answer and the brief stay free. With a Pro code you can also make the full report, a Word file you can keep, print or send: every matching ad’s age wording in plain English, what is explicit and what is unclear, how your region and occupation compare, and a draft message to the employer.'),
       table, walletBox,
-      h('p.hint', {}, 'The report is built by fixed rules from the same evidence the free answer uses. It is not legal advice, does not say whether you qualify and does not predict any hiring outcome. All data in this demo is simulated.'));
+      h('p.hint', {}, 'The report is built by fixed rules from the same evidence the free answer uses. It is not legal advice, does not say whether you qualify and does not predict any hiring outcome. The ads in it are fictional examples; the comparisons use counts from 10 million real Zhaopin ads.'));
     paint();
   }
 
-  AgeLens.pages.pro = { title: 'Pro', render };
+  AgeLens.pages.pro = { title: 'Full report', render };
 })();

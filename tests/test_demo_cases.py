@@ -95,7 +95,27 @@ class PasteUnitTests(unittest.TestCase):
         self.assertEqual(b["scope"]["ads_with_stated_max_age"], 0)
         joined = "\n".join(texts(b))
         self.assertNotIn("maximum age of 35", joined)
-        self.assertIn("could not turn into a number", joined)
+        self.assertIn("seems to be cut off, so no age limit was read", joined)
+        self.assertIn("cut off", b["summary"]["states"])
+        self.assertIn("full requirement", b["employer_question"]["text"])
+
+    def test_one_ad_summary_and_question(self):
+        b = self.check(INJ)
+        self.assertEqual(b["summary"]["states"], "The ad states a maximum age of 35 and adds exception wording.")
+        self.assertIn("You entered 38; the stated maximum is 35", b["summary"]["relates"])
+        q = b["employer_question"]["text"]
+        self.assertTrue(q.startswith("I have 8 years of experience in procurement. The ad states a maximum age of 35"), q)
+        self.assertNotIn("38", q)                                           # the person's age is never put in the question
+        for t in (b["summary"]["states"], b["summary"]["relates"], q):
+            for w in BAD:
+                self.assertNotIn(w, t.lower())
+        self.assertIn("## In short", b["markdown"])
+
+    def test_two_caps_and_conflict_in_summary(self):
+        self.assertIn("contradicts itself", self.check(TWO_CAPS)["summary"]["states"])   # two caps are flagged as a conflict by the rules
+        b = self.check(CONFLICT)
+        self.assertIn("contradicts itself", b["summary"]["states"])
+        self.assertIn("Which of these applies", b["employer_question"]["text"])
 
     def test_empty_oversize_binary_and_type(self):
         for bad in ("", "   \n ", None):
