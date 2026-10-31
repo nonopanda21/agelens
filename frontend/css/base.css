@@ -114,8 +114,8 @@ details:not(.xfaq-i):not(.faq-item)>summary:hover{color:var(--pink-ink)}
 @keyframes skel{from{background-position:100% 0}to{background-position:-50% 0}}
 .tnum{font-variant-numeric:tabular-nums}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (max-width:640px){
-  /* phone nav: one row (brand + Menu); the links open as a list under it */
+@media (max-width:640px),(max-width:960px) and (max-height:500px){
+  /* phone nav (also phones held sideways): one row (brand + Menu); the links open as a list under it */
   .nav{padding:8px var(--s4);flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0;min-height:56px}
   .nav a.brand{font-size:1.3rem}.nav .brand-mark{width:30px;height:26px}
   .nav-menu{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 14px;border:2px solid var(--brown);border-radius:999px;background:var(--surface);color:var(--brown);font:400 1.05rem/1 var(--font-sketch);box-shadow:var(--shadow-sm);cursor:pointer}

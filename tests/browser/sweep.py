@@ -97,7 +97,7 @@ try:
                 page.wait_for_load_state("networkidle")
                 page.wait_for_timeout(1200)
                 if name == "seeker":  # also sweep a filled result page (answer, cards, review panel)
-                    page.click("button:has-text('Use an example')"); page.click("#go-btn")
+                    page.click("button:has-text('Fill in an example question')"); page.click("#go-btn")
                     page.wait_for_selector("#ads-more", timeout=45000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector("#ads .card", timeout=45000)
                     page.check("#ads .card input[type=checkbox]"); page.wait_for_timeout(400)
                     if w == 1280:  # the downloaded Markdown brief must be English too

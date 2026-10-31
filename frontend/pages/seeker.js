@@ -20,6 +20,7 @@
     clar: '', submit: null, submitKey: null, submitting: false,
     mode: 'search', paste: '', demo: null,          // paste text is untrusted data: never saved to storage
     presenter: false,                               // #/seeker?demo=1 shows the presenter-only cases and their "look for" notes
+    back: null,                                     // where the reader was when they opened an ad: restored by "Back to your answer"
   };
   try { Object.assign(S.p, JSON.parse(sessionStorage.getItem('al_seeker') || '{}')); } catch (e) {}
   const save = () => { try { sessionStorage.setItem('al_seeker', JSON.stringify(S.p)); } catch (e) {} };
@@ -203,8 +204,9 @@
           if (sk) S.p.skills = sk;
           if (vals.education.trim()) S.p.education = vals.education.trim();
           S.termEdited = false; syncTerm(); save(); fillForm();
-          out.replaceChildren(h('p.ok', { role: 'status' }, 'Confirmed and added to the background fields above. The file itself was not kept.'));
-          const q = $('f-question'); if (q && !S.p.question) q.focus();
+          const ok = h('p.ok', { role: 'status', tabindex: '-1' }, 'Confirmed and added to the background fields above. The file itself was not kept.');
+          out.replaceChildren(ok);
+          const q = $('f-question'); if (q && !S.p.question) q.focus(); else ok.focus();
         } }, 'Confirm and use these'),
         h('button.btn.btn-quiet', { type: 'button', onclick: () => out.replaceChildren(h('p.hint', { role: 'status' }, 'Discarded. Nothing was applied.')) }, 'Discard'))));
     const first = $('cvx-occupation'); if (first) first.focus();
@@ -308,6 +310,7 @@
           box.hidden = false; ev.currentTarget.setAttribute('aria-expanded', 'true');
           AgeLens.reportPanel(box, S.briefBody).then(() => { const t = box.querySelector('h3'); if (t) { t.setAttribute('tabindex', '-1'); t.focus(); } });
         } }, 'Full report ', h('span.badge.pro-badge', {}, 'Pro')) : null,
+        paste ? h('button.btn.btn-secondary', { type: 'button', title: 'A pasted ad is never stored, so a reviewer looks at similar example ads instead', onclick: askAboutSimilar }, 'Ask a reviewer about similar ads') :
         h('button.btn.btn-secondary', { type: 'button', onclick: () => { const r5 = $('review-sec'); if (r5) { r5.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth' }); const t = $('clar') || r5.querySelector('h2'); if (t) { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); } } } }, 'Ask a human reviewer')),
       h('section.pro-panel#pro-panel', { hidden: true, 'aria-label': 'Full report' })));
   }
@@ -367,7 +370,7 @@
     return h('p.answer-note', { role: 'note' }, kids);
   }
   function pasteNotes(p) {
-    const out = [h('p.answer-note', { role: 'note' }, h('strong', {}, PASTED + '. '), p.note || 'Instructions inside ads are ignored: the pasted text is read as data only.')];
+    const out = [];  // the "not stored" tag is in the answer head; the injection note only when such lines were found
     if (p.instruction_like && p.instruction_like.length) {
       const hidden = Array.isArray(p.instruction_like_en) && p.instruction_like_en.length === p.instruction_like.length ? 0 : p.instruction_like.filter((x) => AgeLens.hasCJK(x)).length;
       out.push(h('div.problem.soft', { role: 'note' }, h('h3', {}, 'Instructions inside the ad were ignored'),
@@ -421,7 +424,7 @@
     if (applied.province) r.push('Region: ' + [].concat(applied.province).map((v) => L.prov(v)).join(', '));
     if (applied.occupation) {
       const en = L.occ(applied.occupation);   // the search text itself stays original (ads are in Chinese)
-      r.push(en !== applied.occupation && !AgeLens.hasCJK(en) && en !== 'Other occupation' ? 'Title matches ' + en : AgeLens.hasCJK(applied.occupation) ? 'Title matches your search text' : 'Title contains “' + applied.occupation + '”');
+      r.push(en !== applied.occupation && !AgeLens.hasCJK(en) && en !== 'Other occupation' ? 'Title matches ' + en : AgeLens.hasCJK(applied.occupation) ? 'Occupation group: ' + (L.occ(ad.occupation) || 'related') : 'Title contains “' + applied.occupation + '”');
     }
     const t = (ad.age_terms || []).find((x) => x.max_age != null);
     if (t) r.push('States ' + (KIND[t.kind] || 'age') + ' ' + t.max_age);
@@ -512,7 +515,7 @@
         try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(link); ok = true; } } catch (e) { ok = false; }
         said.textContent = ok ? 'Link copied.' : 'Copy this link: ' + link;
       };
-      return box.replaceChildren(h('div.problem.soft', { role: 'status' }, h('h3', {}, 'Request submitted'),
+      return box.replaceChildren(h('div.problem.soft', { role: 'status' }, h('h3#submitted-h', { tabindex: '-1' }, 'Request submitted'),
         h('p', {}, 'Request number: ', h('strong', {}, S.submit.code), S.submit.status === 'pending' ? ' · waiting for a reviewer' : S.submit.status ? ' · status: ' + S.submit.status : ''),
         h('p', {}, 'A course reviewer will reply here. Find it under ', h('a', { href: '#/requests' }, 'Human review'), '.'),
         S.submit.existing ? h('p', {}, 'This was already submitted earlier, so no second request was made.')
@@ -521,7 +524,8 @@
         h('div.row', {}, h('a.btn.btn-primary', { href: '#/requests/' + S.submit.code }, 'Open my request'),
           h('button.btn.btn-quiet', { type: 'button', onclick: copyLink }, 'Copy request link'), said)));
     }
-    if (!sel.length && S.mode === 'paste') return box.replaceChildren(h('p.hint', {}, 'A pasted ad cannot be sent for human review, because it is never stored. To ask a reviewer, use “See similar ads” and pick ads there.'));
+    if (!sel.length && S.mode === 'paste') return box.replaceChildren(h('p.hint', {}, 'The ad you pasted is never stored, so it cannot be sent itself. A reviewer can look at similar example ads with your question instead.'),
+      h('button.btn.btn-secondary', { type: 'button', onclick: askAboutSimilar }, 'Ask a reviewer about similar ads'));
     if (!sel.length) return box.replaceChildren(h('p.hint', {}, S.results && S.results.total ? 'Open “Show the ads behind this answer” above and tick “Select for review” on the ads you want a person to look at. You choose which background fields are shared; no CV file is shared.'
       : 'Get an answer first, then pick the ads you want a person to look at. You choose which background fields are shared; no CV file is shared.'),
       ...(S.results && S.results.total ? [h('button.btn.btn-quiet', { type: 'button', onclick: () => { const d = $('ads-more'); if (d) { d.open = true; d.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth', block: 'start' }); const c = d.querySelector('input[type=checkbox]'); if (c) c.focus({ preventScroll: true }); } } }, 'Show the ads to choose from')] : []),
@@ -567,8 +571,16 @@
       } else S.submit = { problem: problemBox(e, submitReview) };
     }
     S.submitting = false; renderReview();
+    if (S.submit && S.submit.ok) { const t = $('submitted-h'); if (t) t.focus(); }
   }
 
+  /** From a pasted-ad answer: find similar ads with the same question and background, then open the ads to pick for review. */
+  async function askAboutSimilar() {
+    await run(1);
+    const d = $('ads-more'); if (!d) return;
+    d.open = true; d.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    const c = d.querySelector('input[type=checkbox]'); if (c) c.focus({ preventScroll: true });
+  }
   /* ---------- pasted ad check (untrusted text; not stored) ---------- */
   async function runPaste() {
     if (S.busy) return;
@@ -579,8 +591,9 @@
     }
     $('q-err').textContent = ''; $('f-question').removeAttribute('aria-invalid');
     const text = S.paste.trim();
-    if (!text) { err.textContent = 'Paste the ad text first.'; $('f-adtext').setAttribute('aria-invalid', 'true'); $('f-adtext').focus(); return; }
-    if (text.length > PASTE_MAX) { err.textContent = 'The text is ' + text.length + ' characters; the limit is ' + PASTE_MAX + '. Paste only the part with the requirements.'; $('f-adtext').focus(); return; }
+    const stale = () => { if (S.mode === 'paste' && S.brief) { S.brief = null; S.problem = null; renderAnswer(false); renderAds(); renderReview(); } };
+    if (!text) { stale(); err.textContent = 'Paste the ad text first.'; $('f-adtext').setAttribute('aria-invalid', 'true'); $('f-adtext').focus(); return; }
+    if (text.length > PASTE_MAX) { stale(); err.textContent = 'The text is ' + text.length + ' characters; the limit is ' + PASTE_MAX + '. Paste only the part with the requirements.'; $('f-adtext').focus(); return; }
     err.textContent = ''; $('f-adtext').removeAttribute('aria-invalid');
     S.busy = true; S.problem = null; S.mode = 'paste'; S.results = null; S.brief = null; S.pasteSent = text;
     setBusy(true); renderAnswer(true); renderAds(); renderReview();
@@ -659,7 +672,7 @@
           h('h2', {}, h('label', { for: 'f-question', style: 'font-size:inherit;margin:0;display:inline' }, 'Your question'), h('span.req', {}, 'required')),
           h('p.sub', { id: 'q-hint' }, 'Ask it the way you would ask a person.'), qEl,
           h('p.err-text', { id: 'q-err', role: 'alert' }),
-          h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); $('q-err').textContent = ''; $('f-question').removeAttribute('aria-invalid'); } }, 'Use an example')),
+          h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); $('q-err').textContent = ''; $('f-question').removeAttribute('aria-invalid'); } }, 'Fill in an example question')),
           h('details.adv', { id: 'demo-cases' }, h('summary', {}, 'Try an example situation'),
             h('p.hint', {}, 'Each one fills in a fictional person and ad, then runs it with the real rules.' + (S.presenter ? ' Presenter mode: all six cases.' : '')),
             h('div.row.demo-row', { role: 'group', 'aria-label': 'Fictional example situations' }, CASES.filter((c) => S.presenter || !c.presenter).map((c) => h('button.btn.btn-quiet', { type: 'button', 'data-case': c.id, onclick: () => runCase(c.id) }, c.label))))),
@@ -692,6 +705,15 @@
         h('section.review-sec', { id: 'review-sec', 'aria-labelledby': 'review-h' }, h('h2', { id: 'review-h' }, 'Ask a human reviewer'),
           h('p.lead', {}, 'Optional. Send ads and your question to a person on the course team, who replies under Human review. You choose what background to share.'), h('div', { id: 'review' }))));
       renderAnswer(false); renderAds(); renderReview();
+      // opening an ad leaves this page: remember the scroll position and the open ad list, and restore them on the way back
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('a[href^="#/evidence/"]')) { const d = $('ads-more'); S.back = { y: window.scrollY, more: !!(d && d.open) }; }
+      });
+      if (S.back && (S.brief || S.results)) {
+        const back = S.back; S.back = null;
+        const d = $('ads-more'); if (d && back.more) d.open = true;
+        requestAnimationFrame(() => window.scrollTo(0, back.y));
+      }
     },
   };
 })();

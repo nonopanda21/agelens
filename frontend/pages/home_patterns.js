@@ -107,7 +107,7 @@
     return h('div.wrap.xs.mv.pt', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'How age requirements vary across ads'),
         h('p', {}, 'Age wording is not the same in every ad. It differs with the experience an ad asks for, the occupation, and whether the ad also names a gender. These are patterns in how ads are written. They do not show who gets hired.'),
-        h('p.hint', {}, 'Based on ' + fmt(meta.rows_used || 0) + ' Zhaopin ads, ' + (Array.isArray(meta.years) && meta.years.length ? meta.years[0] + '–' + meta.years[meta.years.length - 1] : '2021–2024') + '. Groups with fewer than ' + fmt(MIN) + ' ads are not drawn.')),
+        h('p.hint', {}, 'Based on ' + fmt(meta.rows_used || 0) + ' Zhaopin ads (including ads whose city could not be placed in a province), ' + (Array.isArray(meta.years) && meta.years.length ? meta.years[0] + '–' + meta.years[meta.years.length - 1] : '2021–2024') + '. Groups with fewer than ' + fmt(MIN) + ' ads are not drawn.')),
       h('h3.mv-h', {}, h('span.xc-n', {}, 'A'), 'By experience'), figA,
       h('h3.mv-h', {}, h('span.xc-n', {}, 'B'), 'By occupation'), figB,
       gSet.length ? h('h3.mv-h', {}, h('span.xc-n', {}, 'C'), 'Gender requirements') : null, ...gSet,

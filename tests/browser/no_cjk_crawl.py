@@ -70,7 +70,7 @@ with sync_playwright() as pw:
             rec(page, f"{name} @{w}")
         # Job Seeker: example search, then every demo case, then the review panel with a selected ad
         page.goto(BASE + "/#/seeker"); page.wait_for_selector("#f-question")
-        page.click("button:has-text('Use an example')"); page.click("#go-btn")
+        page.click("button:has-text('Fill in an example question')"); page.click("#go-btn")
         page.wait_for_selector("#ads-more", timeout=45000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector("#ads .card", timeout=45000)
         page.check("#ads .card input[type=checkbox]"); page.wait_for_timeout(300)
         rec(page, f"seeker answer @{w}")

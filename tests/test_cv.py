@@ -99,6 +99,11 @@ class CVTests(unittest.TestCase):
         self.assertEqual(e.reason, "no_text")
         self.assertIn("scanned", e.message)
 
+    def test_name_in_header_line_never_becomes_the_occupation(self):
+        self.assertEqual(cv.find_occupation(["Zhao Min - Finance Manager", "Budgeting and audit"]), "Finance Manager")
+        self.assertEqual(cv.find_occupation(["Operations manager, 12 years.", "Skills: Excel"]), "Operations manager")
+        self.assertEqual(cv.find_years("Operations manager, 12 years."), 12)
+
     def test_docx_bomb(self):
         import zipfile
         b = io.BytesIO()

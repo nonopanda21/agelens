@@ -10,19 +10,19 @@
   const DECISIONS = [
     ['Keep the whole sentence',
       'The meaning sits in the exact wording. A short summary can silently drop “may be relaxed”, and that clause is what a 38-year-old needs to see.',
-      'Pitch, slide 3: connect original ad excerpts and make evidence and uncertainty explicit.'],
+      'Design principle: connect original ad excerpts and make evidence and uncertainty explicit.'],
     ['Separate explicit, exception and unclear',
       'A hard cap, an exception for strong candidates and a soft preference lead to different next steps. Caps are binding in practice, so it matters which one an ad states.',
-      'Feng et al. (2026), pp. 10–11; pitch, slide 4: conditions, exceptions, unknowns.'],
+      'Feng et al. (2026), pp. 10–11.'],
     ['Start from the person’s question',
-      'The same line reads differently for different people. The pitch’s user asks: “I am 38 with eight years in operations. Does ‘normally under 35; exceptions possible’ rule me out?”',
-      'Pitch, slide 2: background, target role and location.'],
+      'The same line reads differently for different people. A typical user asks: “I am 38 with eight years in operations. Does ‘normally under 35; exceptions possible’ rule me out?”',
+      'Design principle: read the line against background, target role and location.'],
     ['Prepare a question, not a verdict',
       'Only the employer knows how its rule is applied. AgeLens never decides eligibility; it lowers the cost of asking a clear, neutral question.',
-      'Pitch, slide 4: reduce information and preparation costs.'],
+      'Design principle: reduce information and preparation costs.'],
     ['Keep a person in the loop, and claims small',
       'A human reviewer looks at the same evidence. Effects on jobs are untested; a short pilot can only show whether people understand the ad and ask better questions.',
-      'Pitch, slides 2–3 (human review) and 5 (claims limited to task outcomes).'],
+      'Design principle: human review, and claims limited to task outcomes.'],
   ];
 
   /* ---- two intuitive figures, modelled on the design pitch's first two slides ----
@@ -149,7 +149,7 @@
           h('ul', {}, NOT_SHOWN.map((t) => h('li', {}, t))))),
       h('aside.mv-example', { 'aria-labelledby': 'toc-ex' },
         h('h4#toc-ex', {}, 'A worked example'),
-        h('p', {}, 'A 38-year-old applicant sees “normally under 35; exceptions possible”. AgeLens marks the cap at 35 as explicit and the exception as unclear. It then drafts a neutral question: “Does eight years of operations experience qualify for the advertised exception?”'),
+        h('p', {}, 'A 38-year-old applicant sees “normally under 35; exceptions possible”. AgeLens marks the cap at 35 as explicit and the exception as unclear. It then drafts a neutral question: “Would eight years of operations experience be considered for the advertised exception?”'),
         h('p.mv-cite', {}, 'The employer decides what happens next. The question may get no answer, and the answer may be no.')));
   }
 

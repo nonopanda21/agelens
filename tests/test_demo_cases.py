@@ -56,6 +56,26 @@ class PasteUnitTests(unittest.TestCase):
         self.assertIn("NOT followed", b["markdown"])
         self.assertNotIn("Demo · Synthetic data", b["markdown"])
 
+    def test_english_only_text_is_refused_not_read_as_no_limit(self):
+        # the rules read Chinese wording; an English ad must not come back as "no age requirement"
+        with self.assertRaises(api_seeker.HTTPError) as cm:
+            self.check("Operations manager. Applicants must be under 35 years old.")
+        self.assertEqual(cm.exception.status, 422)
+        self.assertIn("Chinese", str(cm.exception))
+
+    def test_conflicting_limits_are_not_called_no_maximum(self):
+        b = self.check("运营经理。年龄35岁以下。……任职要求：年龄40岁以内。")
+        self.assertNotIn("No stated maximum", b["summary"]["relates"])
+        self.assertIn("more than one age limit", b["summary"]["relates"])
+
+    def test_pasted_brief_says_not_stored_and_plain_scope(self):
+        md = self.check(INJ)["markdown"]
+        self.assertIn("Ads read: 1 (the ad you pasted)", md)
+        self.assertIn("not stored", md)
+        self.assertNotIn("kept in the ad record", md)
+        self.assertNotIn("Insufficient evidence", md)
+        self.assertIn("Source: the ad you pasted", md)
+
     def test_all_simulated_adversarial_ads_never_approve(self):
         for case in CASES["adversarial"]:
             b = self.check(case["ad_text"])

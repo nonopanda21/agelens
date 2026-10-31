@@ -178,16 +178,22 @@ SUMMARY_LABEL = re.compile(r"^\s*(?:professional\s+)?(?:summary|profile|about me
 DEGREE = re.compile(r"(bachelor|master|mba|ph\.?d|doctorate|associate|diploma|本科|硕士|博士|大专|专科)[^\n,;，；。]{0,40}", re.I)
 
 
+SEGMENT_SPLIT = re.compile(r"\s+[-–—|·]\s+|\s*[|,，;；]\s*")
+
+
 def find_occupation(lines):
     for ln in lines[:40]:
         m = TITLE_LABEL.match(ln)
         if m and not _has_contact(m.group(1)):
             return redact(m.group(1))[:70]
     for ln in lines[:14]:
-        s = ln.strip(" \t•-*·")
-        if 2 <= len(s) <= 60 and not _has_contact(s) and not HEADING.match(s) and TITLE_WORDS.search(s) \
-                and len(YEAR.findall(s)) == 0 and not s.endswith((".", "。")):
-            return s
+        # a header line like "Zhao Min - Finance Manager" or "Operations manager, 12 years.": keep only the part with a title word,
+        # so a name never becomes the occupation (it would end up in the question for the employer)
+        for part in SEGMENT_SPLIT.split(ln.strip().rstrip(".。")):
+            s = part.strip(" \t•-*·")
+            if 2 <= len(s) <= 60 and not _has_contact(s) and not HEADING.match(s) and TITLE_WORDS.search(s) \
+                    and len(YEAR.findall(s)) == 0 and not re.search(r"\d", s):
+                return s
     return None
 
 

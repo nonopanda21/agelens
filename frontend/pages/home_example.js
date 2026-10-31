@@ -16,7 +16,7 @@
           h('p.xex-who', {}, 'Age 38 · 8 years in operations management · looking at an operations manager ad')),
         h('div.xex-quote', {}, h('span.xex-tag.ad', {}, 'Ad wording'),
           h('blockquote', {}, '“Applicants should normally be under 35. The limit can be relaxed for strong candidates.”'),
-          h('p.xex-src', {}, 'Translated from the Chinese ad; the original sentence is kept with the answer.')),
+          h('p.xex-src', {}, 'Translated from the Chinese ad.')),
         h('div.xex-fs', {},
           finding('Clear', 'ok', 'What the ad states', 'An upper age of 35, and that exceptions are possible.'),
           finding('Unclear', 'open', 'What it leaves open', 'What counts as a “strong candidate”, who decides, and whether experience is weighed.')),
@@ -25,6 +25,6 @@
         h('div.xex-next', {},
           h('a.xex-chip', { href: '#/seeker' }, 'Download the brief'),
           h('a.xex-chip', { href: '#/seeker' }, 'Send for human review'),
-          h('span.xex-note', {}, 'Both are offered with your own answer.')))));
+          h('span.xex-note', {}, 'Both are offered with your own answer. A pasted ad is never stored, so a reviewer looks at similar example ads.')))));
   } });
 })();

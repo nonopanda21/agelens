@@ -232,8 +232,11 @@ def _summary(ads, n, status, with_max, exc_ads, profile):
             else:
                 states += "; stated maximums range from %d to %d" % (min(counts), max(counts))
         states += "; %d mention exceptions." % len(exc_ads) if exc_ads else "."
+    mixed = one and ads and (_conflict_snippets(ads[0]) or len({t["max_age"] for t in _terms(ads[0]) if t.get("max_age") is not None and t.get("kind") in ("max", "range") and _usable(t)}) > 1)
     if age is None:
         relates = "You did not give your age, so the stated limits are not compared with it. Age never hides ads."
+    elif mixed:
+        relates = "You entered %d. The ad gives more than one age limit, so only the employer can say which one applies, if any." % age
     elif not with_max:
         relates = "No stated maximum age to compare with the age you entered (%d)." % age
     elif one:
@@ -485,7 +488,7 @@ def build_brief(body, ev=None, allow_model=True):
         "data_label": DEMO_LABEL if demo else None,
         "needs_human_confirmation": True,
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
-        "headings": [{"key": k, "title": t} for k, t in ANSWER_HEADINGS], "answer": answer, "evidence_index": index,
+        "headings": [{"key": k, "title": t.replace("does the ad", "do the ads") if n > 1 else t} for k, t in ANSWER_HEADINGS], "answer": answer, "evidence_index": index,
         "sections": SECTIONS, "insufficient": insufficient, "using_demo": bool(demo),
         "question_background": {"question": question, "profile": profile, "missing_fields": missing,
                                 "question_missing": not question},
@@ -686,8 +689,9 @@ def to_markdown(b):
     L += ["**" + " · ".join(_en(x) for x in badges) + "**", "", "*" + b["disclaimer"] + "*", ""]
     if b["model"]["note"]:
         L += ["> " + b["model"]["note"], ""]
-    if b["insufficient"]:
-        L += ["> **Insufficient evidence** - no pattern claims are made.", ""]
+    pasted = b.get("scope", {}).get("basis") == "pasted text"
+    if b["insufficient"] and not pasted:
+        L += ["> **Few similar ads** (fewer than %d): no claims about patterns are made." % MIN_ADS, ""]
     sm, eq = b.get("summary"), b.get("employer_question")
     if sm:
         L += ["## In short", "", "- " + _en(sm.get("states_en") or sm["states"]), "- " + _en(sm.get("relates_en") or sm["relates"])]
@@ -703,7 +707,9 @@ def to_markdown(b):
             L.append("- **[%s]** %s%s" % (tag, _en(st.get("text_en") or st["text"]), tail))
             if st.get("quote"):
                 L.append("  > Ad wording, in English: %s" % _en(st.get("quote_en") or gloss.quote_en(st["quote"])).replace("\n", " "))
-            if st["evidence_ids"]:
+            if st["evidence_ids"] == ["PASTED"]:
+                L.append("  - Source: the ad you pasted")
+            elif st["evidence_ids"]:
                 refs = []
                 for i in st["evidence_ids"][:5]:
                     e = idx.get(i, {})
@@ -715,10 +721,10 @@ def to_markdown(b):
     s = b["scope"]
     L += ["## Scope and provenance", "",
           "- Data: %s; data version: %s; rule versions: %s" % (_en(b["data_label"] or "imported data"), _en(s.get("data_version") or "not reported"), ", ".join(s["rule_versions"]) or "n/a"),
-          "- Matched ads: %s; analysed: %s" % (s["matched_total"], s["ads_analysed"]),
+          ("- Ads read: 1 (the ad you pasted)" if pasted else "- Similar ads found: %s; read for this brief: %s" % (s["matched_total"], s["ads_analysed"])),
           "- Posting dates: %s" % ((s["date_min"] + " to " + s["date_max"]) if s["date_min"] else "not available"),
           "- Generated: %s (%s)%s" % (b["generated_at"], b["generation_mode"], "; prompt " + b["prompt_version"] if b.get("prompt_version") else ""),
-          "- Ad wording is shown as an English gloss of what the rules read; the original Chinese text is kept in the ad record.",
-          "- Tags: Ad wording (translated) = what an ad says, in English; You said = from your input; AgeLens rules = counts and templates computed by fixed rules, not AI; Model inference = a model's reading, checked by code but not guaranteed.",
+          "- Ad wording is shown as an English gloss of what the rules read; " + ("the pasted text was read in memory and not stored." if pasted else "the original Chinese text is kept in the ad record."),
+          "- Tags: Ad wording (translated) = what an ad says, in English; You said = from your input; AgeLens rules = counts and templates computed by fixed rules, not AI" + ("; Model inference = a model's reading, checked by code but not guaranteed." if b["model"]["ran"] else "."),
           "- This brief needs human confirmation against the original ad text before you rely on it.", ""]
     return "\n".join(L)

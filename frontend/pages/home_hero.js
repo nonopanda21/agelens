@@ -43,7 +43,11 @@
   AL.home.sections.push({ id: 'hero', order: 10, rail: 'Top', async render(el) {
     const canvas = h('canvas.xh-canvas', { 'aria-hidden': 'true' });
     const glow = h('div.xh-glow', { 'aria-hidden': 'true' });
-    const toExample = () => { const n = document.getElementById('example'); if (n) n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' }); };
+    const toExample = () => {
+      const n = document.getElementById('example'); if (!n) return;
+      n.scrollIntoView({ behavior: AL.reducedMotion() ? 'auto' : 'smooth' });
+      n.setAttribute('tabindex', '-1'); n.focus({ preventScroll: true });  // keyboard users continue from the example
+    };
     const stat = (n, label) => h('div.xh-stat', {}, h('p.xh-stat-n', {}, n), h('p.xh-stat-l', {}, label));
     const stats = h('div.xh-stats', { 'aria-label': 'Dataset size' }, stat('–', 'Job ads'), stat('–', 'Regions'), stat('–', 'Occupations'));
     const badge = h('p.xh-badge', {}, 'An evidence-grounded clarification assistant for mid-career jobseekers');
@@ -64,7 +68,7 @@
     lineForm.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c && lc) { lineIn.value = ''; lc.readExample(lineOut, +c.dataset.ex); } });
     const check = h('section.xh-check', { 'aria-labelledby': 'xh-check-h' },
       h('h2#xh-check-h', {}, 'Check one line'),
-      h('p.xh-check-note', {}, 'Fixed rules read the wording. Nothing you paste is stored.'),
+      h('p.xh-check-note', {}, 'Paste it as the ad writes it, in Chinese. Fixed rules read the wording; nothing you paste is stored.'),
       lineForm, lineOut,
       h('a.xh-check-more', { href: '#/seeker' }, 'Ask about your situation', h('span.xarrow', { 'aria-hidden': 'true' }, ' →')));
     const art = h('div.xh-art'); art.innerHTML = DOODLE;

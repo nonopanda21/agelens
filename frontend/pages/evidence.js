@@ -76,7 +76,7 @@
         kv([['Company', ad.company ? L.company(ad) || (ad.is_demo ? 'Fictional company (name not shown in English)' : 'Name not shown in English') : null], ['Occupation', ad.occupation ? L.occ(ad.occupation) : null],
           ['Location', L.place(ad)],
           ['Posted', ad.posted_date || 'not given'], ['Source', ad.source ? L.source(ad.source) : null],
-          ['Link', ad.url && /^https?:\/\//i.test(ad.url) ? h('a', { href: ad.url, target: '_blank', rel: 'noopener noreferrer' }, ad.url) : ad.url]]),
+          ['Link', ad.is_demo || /\.invalid(\/|$)/i.test(ad.url || '') ? null : ad.url && /^https?:\/\//i.test(ad.url) ? h('a', { href: ad.url, target: '_blank', rel: 'noopener noreferrer' }, ad.url) : ad.url]]),
         pick,
         h('section.card.ev-sec', {}, h('h2', {}, 'The ad in English'),
           textEn ? h('p.hint', {}, 'English version of the ad text' + (ad.is_demo ? ' (a fictional ad written for this demo)' : '') + '. Highlighted: the age wording the rules found.') : null,

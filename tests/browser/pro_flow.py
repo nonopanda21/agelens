@@ -53,7 +53,7 @@ try:
             pg.on("pageerror", lambda e: errs.append(str(e)))
             pg.on("console", lambda m: errs.append(m.text) if m.type == "error" and not any(x in m.text for x in EXPECTED) else None)
             pg.goto(BASE + "/#/seeker"); pg.wait_for_selector("#go-btn")
-            pg.click("button:has-text('Use an example')"); pg.click("#go-btn"); pg.wait_for_selector(".answer-sec", timeout=60000)
+            pg.click("button:has-text('Fill in an example question')"); pg.click("#go-btn"); pg.wait_for_selector(".answer-sec", timeout=60000)
             pg.click("button.pro-open"); pg.wait_for_selector(".pro-toc li")
             check(f"{tag}: free preview lists the 10 sections", pg.locator(".pro-toc li").count() == 10)
             check(f"{tag}: free preview shows summary numbers", "ads" in pg.inner_text(".pro-sum"))

@@ -90,7 +90,8 @@ with sync_playwright() as pw:
                 check("ad_" not in a, f"{w} procurement: raw ad id on screen")
             if cid in ("injection", "conflict", "truncated"):
                 check("Pasted text, not stored" in a, f"{w} {cid}: pasted label")
-                check("Instructions inside ads are ignored" in a, f"{w} {cid}: ignore-instructions note")
+                # the injection note appears only when instruction-like lines were found (not on every pasted ad)
+                check(("Instructions inside the ad were ignored" in a) == (cid == "injection"), f"{w} {cid}: ignore-instructions note")
                 check("Demo · Synthetic data" not in a, f"{w} {cid}: must not claim synthetic data")
                 check("Pasted text, not stored" in r["ads_head"], f"{w} {cid}: pasted text card")
             if cid == "injection":

@@ -103,6 +103,8 @@ def check_pasted(body, allow_model=True):
         raise HTTPError(422, "This does not look like ad text (it contains binary or control characters). Copy the text of the ad itself.")
     if not str(body.get("question") or "").strip():
         raise HTTPError(400, "A question is required to build an Evidence brief.")
+    if not gloss.has_cjk(text):  # the rules read Chinese ad wording; an English text would wrongly come back as "no age requirement"
+        raise HTTPError(422, "AgeLens reads the original Chinese ad text. This text has no Chinese in it, so its age wording cannot be read. Paste the ad as it was posted.")
     terms = ageparse.parse_age(text)
     ad = {"id": PASTE_ID, "title": "Pasted ad text", "company": None, "occupation": None, "province": None, "city": None,
           "posted_date": None, "source": PASTE_LABEL, "is_demo": False, "description": text, "age_terms": terms,

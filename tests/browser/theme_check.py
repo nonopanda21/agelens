@@ -43,7 +43,7 @@ with sync_playwright() as p:
             page.wait_for_load_state("networkidle")
             shoot(page, name, w)
             if name == "seeker":
-                page.get_by_role("button", name="Use an example").first.click()
+                page.get_by_role("button", name="Fill in an example question").first.click()
                 page.wait_for_timeout(300)
                 go = page.locator("#go-btn")
                 go.click()

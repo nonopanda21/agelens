@@ -310,3 +310,4 @@ body[data-layout="home"] .home-sec>.xs.xex-wrap{padding-block:calc(var(--xpad) *
   .xex-fs{grid-template-columns:minmax(0,1fr);gap:10px}
   .xex-points{flex-direction:column;align-items:flex-start;max-width:320px}
 }
+#example:focus,.home-sec[tabindex="-1"]:focus{outline:none}

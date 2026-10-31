@@ -71,3 +71,5 @@ html[data-motion="reduced"] :is(.sk-tab,.sk-dot,.sk-rail a){transition:none}
 .sk-hint{margin:4px 0 0;font-size:.78rem;color:var(--text-light)}
 .sk-gloss{display:block;font-weight:600;color:var(--brown)}
 .sk-exl{margin:0 0 4px;font-size:.78rem;font-weight:700;color:var(--text-light)}
+/* phones: example chips and similar small toggles are at least 40px tall to tap */
+@media (max-width:640px){.sk-chip{min-height:40px;padding-inline:12px}}

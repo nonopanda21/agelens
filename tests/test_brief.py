@@ -73,6 +73,7 @@ class BriefTests(unittest.TestCase):
 
     def test_several_ads_are_not_called_the_ad(self):
         b = brief.build_brief(BODY, FakeEv(MANY))
+        self.assertEqual(b["headings"][0]["title"], "What do the ads explicitly say?")
         for q in [q["text"] for q in b["questions"]] + [b["employer_question"]["text"]]:
             self.assertNotIn("The ad states", q)
         # the question goes to one employer, so it does not cite the other ads

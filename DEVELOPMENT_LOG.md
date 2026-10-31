@@ -818,3 +818,19 @@ Requirement: the website shows no Chinese. The rules keep reading the Chinese te
 - Check an ad: the pasted ad comes first and is open; dataset search is secondary ("See similar ads"); the answer leads with "In short" and "Your question for the employer" (Copy button); ad-by-ad lines and ad cards folded; "Ad 1 · title · province" instead of raw ids; tags "Ad wording (translated)" / "AgeLens rules"; one limits line instead of repeated notices; example situations with user-facing titles (presenter cases at `#/seeker?demo=1`); after submitting for review the next step is stated. Answer page 8,557 → ~5,900 px desktop, 12,309 → ~8,250 px phone.
 - brief.py: experience sentence grammar ("as an operations manager"); new `summary` and `employer_question`; the employer question never mentions age and, with several similar ads, does not cite the other ads.
 - Checks: unit 368 OK; sweep 131/131; no_cjk 0; a11y 0 high; map_real 40/40; public_demo 33/33; e2e_loop 22/22; review_loop 37/37; pro_flow 27/27; demo_cases, seeker_flow, theme, palette, labels, map_v2, map_explore, patterns, lit pass.
+
+## 2026-10-30 · Fixes from a four-persona walkthrough
+- Four scripted personas (desktop jobseeker with a Chinese ad; phone user; keyboard-only at 200% zoom with reduced motion; adversarial examiner) walked the site on DB copies. These are automated walkthroughs by agents, not human user testing.
+- Fixed:
+  - English-only text: "Check one line" and the pasted-ad check said "no age requirement" (the rules read Chinese wording). Both now say to paste the original wording; the server answers 422.
+  - Pasted ads offered "Ask a human reviewer" but could not be sent: the button is now "Ask a reviewer about similar ads" and runs the similar-ads search with the same question and background.
+  - Self-contradicting ad: "How it relates to you" said there was no maximum; it now says the ad gives more than one limit.
+  - A CV header line "Name - Title" became the occupation, so the name appeared in the question for the employer; only the title segment is kept now (unit test).
+  - A failed re-check left the previous answer on screen; it is cleared.
+  - "Back to your answer" lost the scroll position and the open ad list; both are restored.
+  - Focus after confirming a CV and after submitting a review no longer drops to the page; Escape on the edge panel returns focus to the tab; "See an example" moves focus to the example.
+  - Brief: "Ads read: 1 (the ad you pasted)", "Source: the ad you pasted", "not stored" instead of "kept in the ad record", no "Insufficient evidence" line for one pasted ad, plural headings with several ads, "Model inference" tag explained only when a model ran.
+  - Copy: no "Pitch, slide N" references on Why it matters; Why example question no longer uses "qualify"; Findings explains its ad count; About single-sex count matches the data (about 2,600 plus 756 contradictory); demo ads show no dead link; the "Title matches your search text" reason now names the occupation group; "Use an example" is "Fill in an example question"; the pasted-ad answer shows the injection note only when instruction-like lines were found.
+  - Phones: the menu layout also applies to phones held sideways; example chips, table toggles and map buttons are at least 40px tall.
+- Not changed: required honesty labels ("Demo · Synthetic data", "Template demo"); the edge tab's place in the tab order; the long Why it matters page on phones.
+- Checks: unit 372 OK; sweep 131/131; no_cjk 0; a11y 0 high; map_real 40/40; public_demo 33/33; e2e_loop 22/22; review_loop 37/37; pro_flow 27/27; demo_cases, seeker_flow, theme, palette, labels, map_v2, map_explore, patterns, lit pass.

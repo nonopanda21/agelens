@@ -73,7 +73,7 @@ try:
 
         # ---------- 1. seeker: example question -> evidence -> brief
         sp.goto(BASE + "/#/seeker"); sp.wait_for_selector("#go-btn")
-        sp.click("button:has-text('Use an example')")
+        sp.click("button:has-text('Fill in an example question')")
         check("example fills the question", "38" in sp.input_value("#f-question"))
         shot(sp, "01_seeker_form.png")
         sp.click("#go-btn")
