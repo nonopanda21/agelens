@@ -95,7 +95,7 @@
 
       // without the real aggregate the tiles use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
       const lead = real
-        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '; no ad text is kept. The ads you can open (Job Seeker answers, the demo cases) are fictional, so each one can be shown in full.'
+        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '; no ad text is kept. The ads you can open (answers on Check an ad, the demo cases) are fictional, so each one can be shown in full.'
         : 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.';
       el.append(h('div.wrap.section.dt', {},
         h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), real ? h('span.badge.mint', {}, real.label) : h('span.badge.sim', {}, 'Demo · Synthetic data')),

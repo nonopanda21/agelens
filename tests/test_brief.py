@@ -83,6 +83,13 @@ class BriefTests(unittest.TestCase):
         self.assertIn("2 of the 3 ads that state a maximum give one below that", b["summary"]["relates"])
         self.assertIn("the most common maximum is 35 (2 ads)", b["summary"]["states"])
 
+    def test_default_question_is_not_called_yours(self):
+        body = dict(BODY, question="What does the age wording mean for me?", question_default=True)
+        first = brief.build_brief(body, FakeEv(MANY))["answer"]["relates"][0]
+        self.assertEqual((first["type"], first["text"]), ("rules", "You did not type a question, so this answers the usual one: “What does the age wording mean for me?”"))
+        typed = brief.build_brief(BODY, FakeEv(MANY))["answer"]["relates"][0]
+        self.assertEqual((typed["type"], typed["text"]), ("user_stated", "You asked: “Which are explicit?”"))
+
     def test_no_forbidden_claims(self):
         b = brief.build_brief(BODY, FakeEv(MANY))
         text = str(b).lower()

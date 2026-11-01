@@ -44,17 +44,17 @@ with sync_playwright() as pw:
     ctx, page = fresh(b, 1280, 900)
     page.goto(BASE + "/#/seeker"); page.wait_for_selector("#f-question")
     shot(page, "01_form_1280.png")
-    obs["order_question_first"] = page.evaluate("(()=>{const q=document.getElementById('f-question'),o=document.getElementById('f-occupation'),d=document.getElementById('cv-drop');return q.compareDocumentPosition(o)&4 && o.compareDocumentPosition(d)&4})()")
-    # empty question -> message, focus stays in question
-    page.click("#go-btn"); obs["empty_question_msg"] = page.inner_text("#q-err"); obs["focus_after_empty"] = page.evaluate("document.activeElement.id")
+    # numbered steps: the ad, then background (CV inside), then the optional question
+    obs["order_ad_background_question"] = page.evaluate("(()=>{const a=document.getElementById('f-adtext'),o=document.getElementById('f-occupation'),d=document.getElementById('cv-drop'),q=document.getElementById('f-question');return !!(a.compareDocumentPosition(o)&4 && o.compareDocumentPosition(d)&4 && d.compareDocumentPosition(q)&4)})()")
+    obs["question_optional"] = not page.evaluate("document.getElementById('f-question').required")
     # keyboard-only completion
-    page.focus("#f-question")
-    page.keyboard.type("I am 38 with eight years in operations. Ads say normally under 35, exceptions possible. What should I clarify?")
+    page.focus("#f-adtext")
     obs["keyboard_reaches_occupation"] = tab_to(page, "f-occupation"); page.keyboard.type("Operations manager")
     page.keyboard.press("Tab"); page.keyboard.type("38")
     page.keyboard.press("Tab"); page.keyboard.type("8")
     page.keyboard.press("Tab"); page.keyboard.press("ArrowDown")   # select: choose first region with the keyboard
     obs["region_via_keyboard"] = page.input_value("#f-region")
+    page.fill("#f-question", "I am 38 with eight years in operations. Ads say normally under 35, exceptions possible. What should I clarify?")
     page.focus("#go-btn"); page.keyboard.press("Enter")
     page.wait_for_selector(".answer-sec", timeout=20000)
     obs["answer_headings"] = page.eval_on_selector_all(".answer-sec h3", "els=>els.map(e=>e.textContent)")

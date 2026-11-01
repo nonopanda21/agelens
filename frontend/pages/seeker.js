@@ -1,5 +1,6 @@
-/* Check an ad (#/seeker): question -> the ad you are looking at (pasted) -> background (+ optional CV) -> answer led by a short
-   summary and one question for the employer -> optional human review. Without an ad, a search of similar example ads gives context.
+/* Check an ad (#/seeker): 1 the ad you are looking at (pasted) -> 2 background (+ optional CV) -> 3 your question (optional; a
+   default question is used when it is blank) -> answer led by a short summary and one question for the employer -> optional human
+   review. Without an ad, a search of similar example ads gives context.
    State lives in module memory (survives a visit to an evidence page). Only the user-confirmed structured profile is
    kept, in sessionStorage; CV files and CV text are never kept, and the full CV is never sent to any model. */
 (function () {
@@ -29,6 +30,10 @@
   const DEMO = 'Demo · Synthetic data';
   const PASTED = 'Pasted text, not stored', PASTE_MAX = 4000;
   const PASTE_PH = 'Paste the text of the ad, for example its requirements section';
+  // the question is optional: a blank one becomes the question most people bring
+  const DEFAULT_Q = { paste: 'What does the age wording in this ad mean for me, and what should I ask the employer?',
+    search: 'How do similar ads word age, and what should I ask the employer?' };
+  const askText = (mode) => S.p.question.trim() || DEFAULT_Q[mode === 'paste' ? 'paste' : 'search'];
   const DEMO_AD_PH = (n) => 'Example ad loaded: a fictional ad in Chinese (' + n + ' characters). This English-only page does not show it. Type or paste here to replace it.';
 
   /* ---------- live-demo cases (all fictional; see docs/DEMO_SCRIPT.md) ---------- */
@@ -218,7 +223,7 @@
     S.results = await call('/api/ads?' + qs(Object.assign({}, searchFilters(), { page: S.page, page_size: PAGE, sort: 'date_desc' })));
   }
   async function buildBrief() {
-    const body = { question: S.p.question, profile: profileOut(), filters: searchFilters() };
+    const body = { question: askText('search'), question_default: !S.p.question.trim(), profile: profileOut(), filters: searchFilters() };
     if (S.basis === 'selected' && S.selected.size) body.evidence_ids = [...S.selected.keys()];
     S.briefBody = body;  // the Pro report is built from exactly this request
     S.brief = await call('/api/brief', { json: body, timeout: 45000 });
@@ -226,11 +231,6 @@
   }
   async function run(page, opts = {}) {
     if (S.busy) return;
-    if (!S.p.question.trim()) {
-      $('q-err').textContent = 'Write your question first. It is the one required field.';
-      $('f-question').setAttribute('aria-invalid', 'true'); $('f-question').focus(); return;
-    }
-    $('q-err').textContent = ''; $('f-question').removeAttribute('aria-invalid');
     S.busy = true; S.problem = null; S.mode = 'search'; if (!opts.keepBroadened) S.broadened = [];
     setBusy(true); renderAnswer(true);
     try {
@@ -530,7 +530,7 @@
       : 'Get an answer first, then pick the ads you want a person to look at. You choose which background fields are shared; no CV file is shared.'),
       ...(S.results && S.results.total ? [h('button.btn.btn-quiet', { type: 'button', onclick: () => { const d = $('ads-more'); if (d) { d.open = true; d.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth', block: 'start' }); const c = d.querySelector('input[type=checkbox]'); if (c) c.focus({ preventScroll: true }); } } }, 'Show the ads to choose from')] : []),
       ...(S.submit && S.submit.error ? [h('div.notice.error', { role: 'alert' }, S.submit.error)] : []));
-    if (!S.clar) S.clar = S.p.question;
+    if (!S.clar) S.clar = askText(S.mode);
     const shared = {}; const pr = profileOut();
     if (S.share.age && pr.age !== undefined) shared.age = pr.age;
     if (S.share.occupation && pr.occupation) shared.occupation = pr.occupation;
@@ -585,11 +585,6 @@
   async function runPaste() {
     if (S.busy) return;
     const err = $('paste-err');
-    if (!S.p.question.trim()) {
-      $('q-err').textContent = 'Write your question first. It is the one required field.';
-      $('f-question').setAttribute('aria-invalid', 'true'); $('f-question').focus(); return;
-    }
-    $('q-err').textContent = ''; $('f-question').removeAttribute('aria-invalid');
     const text = S.paste.trim();
     const stale = () => { if (S.mode === 'paste' && S.brief) { S.brief = null; S.problem = null; renderAnswer(false); renderAds(); renderReview(); } };
     if (!text) { stale(); err.textContent = 'Paste the ad text first.'; $('f-adtext').setAttribute('aria-invalid', 'true'); $('f-adtext').focus(); return; }
@@ -598,7 +593,7 @@
     S.busy = true; S.problem = null; S.mode = 'paste'; S.results = null; S.brief = null; S.pasteSent = text;
     setBusy(true); renderAnswer(true); renderAds(); renderReview();
     try {
-      S.brief = await call('/api/paste/check', { json: { text, question: S.p.question, profile: profileOut() }, timeout: 45000 });
+      S.brief = await call('/api/paste/check', { json: { text, question: askText('paste'), question_default: !S.p.question.trim(), profile: profileOut() }, timeout: 45000 });
       if (!S.brief || !S.brief.answer) throw Object.assign(new Error('parse'), { kind: 'parse' });
     } catch (e) { S.problem = e; S.brief = null; }
     S.busy = false; setBusy(false); renderAnswer(false); renderAds(); renderReview();
@@ -632,12 +627,13 @@
         mk('Posted from', 'date_from', 'date'), mk('Posted to', 'date_to', 'date')));
   }
 
+  const stepNo = (n) => h('span.step-no', { 'aria-hidden': 'true' }, String(n).padStart(2, '0'));
   function pasteBox() {
     const ta = h('textarea', { id: 'f-adtext', maxlength: String(PASTE_MAX), lang: 'zh-CN', spellcheck: 'false', autocomplete: 'off', 'aria-describedby': 'paste-hint paste-count paste-err',
       placeholder: S.demoAd ? DEMO_AD_PH(S.paste.length) : PASTE_PH, oninput: (e) => { S.paste = e.target.value; S.demoAd = false; e.target.placeholder = PASTE_PH; pasteCount(); } });
     ta.value = S.demoAd ? '' : S.paste;
     return h('div.form-block.paste-block', { id: 'paste-box' },
-      h('h2', {}, h('label', { for: 'f-adtext', style: 'font-size:inherit;margin:0;display:inline' }, 'The ad you are looking at')),
+      h('h2', {}, stepNo(1), h('label', { for: 'f-adtext', style: 'font-size:inherit;margin:0;display:inline' }, 'Paste the ad you are looking at')),
       h('p.sub', { id: 'paste-hint' }, 'Paste the ad, or just its requirements. It is checked in memory and never saved. Anything in it that looks like an instruction is ignored.'),
       ta,
       h('div.hint', { id: 'paste-count', 'aria-live': 'polite' }, S.paste.length + ' / ' + PASTE_MAX + ' characters'),
@@ -659,7 +655,7 @@
       const region = h('select', { id: 'f-region', onchange: (e) => { S.p.region = e.target.value; save(); } }, h('option', { value: '' }, 'Any region'),
         S.provinces.slice().sort((a, b) => String(a.en || a.name).localeCompare(String(b.en || b.name))).map((p) => h('option', { value: p.name }, p.en || LB().prov(p.name))));
       region.value = S.p.region;
-      const qEl = h('textarea', { id: 'f-question', required: true, 'aria-required': 'true', 'aria-describedby': 'q-err q-hint', placeholder: 'For example: This ad says applicants should normally be under 35 but exceptions are possible. What should I clarify before applying?', oninput: (e) => { S.p.question = e.target.value; S.submitKey = null; save(); } });
+      const qEl = h('textarea', { id: 'f-question', 'aria-describedby': 'q-hint', placeholder: 'For example: This ad says applicants should normally be under 35 but exceptions are possible. Would my experience count?', oninput: (e) => { S.p.question = e.target.value; S.submitKey = null; save(); } });
       qEl.value = S.p.question;
       const skills = h('textarea', { id: 'f-skills', style: 'min-height:84px', oninput: (e) => { S.p.skills = e.target.value; save(); } }); skills.value = S.p.skills;
       // Enter in a field: check the pasted ad if there is one, otherwise search similar ads. The two buttons say which they do.
@@ -668,16 +664,11 @@
         const by = e.submitter && e.submitter.id;
         if (by === 'paste-btn' || (by !== 'go-btn' && S.paste.trim())) runPaste(); else run(1);
       } },
-        h('div.form-block.q-field', {},
-          h('h2', {}, h('label', { for: 'f-question', style: 'font-size:inherit;margin:0;display:inline' }, 'Your question'), h('span.req', {}, 'required')),
-          h('p.sub', { id: 'q-hint' }, 'Ask it the way you would ask a person.'), qEl,
-          h('p.err-text', { id: 'q-err', role: 'alert' }),
-          h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); $('q-err').textContent = ''; $('f-question').removeAttribute('aria-invalid'); } }, 'Fill in an example question')),
-          h('details.adv', { id: 'demo-cases' }, h('summary', {}, 'Try an example situation'),
-            h('p.hint', {}, 'Each one fills in a fictional person and ad, then runs it with the real rules.' + (S.presenter ? ' Presenter mode: all six cases.' : '')),
-            h('div.row.demo-row', { role: 'group', 'aria-label': 'Fictional example situations' }, CASES.filter((c) => S.presenter || !c.presenter).map((c) => h('button.btn.btn-quiet', { type: 'button', 'data-case': c.id, onclick: () => runCase(c.id) }, c.label))))),
+        h('details.adv.demo-cases', { id: 'demo-cases' }, h('summary', {}, 'No ad at hand? Try an example situation'),
+          h('p.hint', {}, 'Each one fills in a fictional person and ad, then runs it with the real rules.' + (S.presenter ? ' Presenter mode: all six cases.' : '')),
+          h('div.row.demo-row', { role: 'group', 'aria-label': 'Fictional example situations' }, CASES.filter((c) => S.presenter || !c.presenter).map((c) => h('button.btn.btn-quiet', { type: 'button', 'data-case': c.id, onclick: () => runCase(c.id) }, c.label)))),
         pasteBox(),
-        h('fieldset.form-block', {}, h('legend', {}, 'About you'), h('p.sub', {}, 'Only the question is required. Age is used only to explain how an ad’s condition compares with it; it never hides jobs.'),
+        h('fieldset.form-block', {}, h('legend', {}, stepNo(2), 'About you'), h('p.sub', {}, 'Optional, but it makes the answer yours. Age is used only to explain how an ad’s condition compares with it; it never hides jobs.'),
           h('div.form-grid', {},
             field('Occupation or target role', 'occupation', { type: 'text', placeholder: 'e.g. operations manager', autocomplete: 'off' }),
             field('Age', 'age', { type: 'number', min: '14', max: '80', inputmode: 'numeric' }),
@@ -685,9 +676,13 @@
             h('div.fld', {}, h('label', { for: 'f-region' }, 'Region'), region),
             field('Education', 'education', { type: 'text', placeholder: 'e.g. Bachelor, business', autocomplete: 'off' }, null, true)),
           h('div.fld', { style: 'margin-top:var(--s4)' }, h('label', { for: 'f-skills' }, 'Main experience or skills', h('span.hint', {}, ' (optional)')), skills)),
-        h('div.form-block', {}, h('h2', {}, 'Have a CV?'), h('p.sub', {}, 'Optional. We pull out a few fields for you to check; you stay in control of what is used.'), cvZone()),
+        h('div.form-block.cv-block', {}, h('h3', {}, 'Have a CV?'), h('p.sub', {}, 'Optional. We pull out a few fields for you to check; you stay in control of what is used.'), cvZone()),
+        h('div.form-block.q-field', {},
+          h('h2', {}, stepNo(3), h('label', { for: 'f-question', style: 'font-size:inherit;margin:0;display:inline' }, 'Your question'), h('span.req.opt', {}, 'optional')),
+          h('p.sub', { id: 'q-hint' }, 'Ask it the way you would ask a person. Left blank, AgeLens answers the usual one: what the age wording means for you, and what to ask the employer.'), qEl,
+          h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); } }, 'Fill in an example question'))),
         h('div.submit-row', {}, h('button.btn.btn-primary.btn-lg', { type: 'submit', id: 'paste-btn' }, 'Check this ad'),
-          h('span.hint', {}, 'Reads the age wording in the ad you pasted, with your question and background.')),
+          h('span.hint', {}, 'Reads the age wording in the ad you pasted. Nothing is stored.')),
         h('div.form-block.alt-search', {},
           h('h2', {}, 'No ad yet, or want context?'),
           h('p.sub', {}, 'See how similar ads word age. AgeLens searches a set of fictional example ads for your occupation and region.'),

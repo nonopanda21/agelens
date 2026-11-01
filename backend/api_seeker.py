@@ -109,7 +109,7 @@ def check_pasted(body, allow_model=True):
     ad = {"id": PASTE_ID, "title": "Pasted ad text", "company": None, "occupation": None, "province": None, "city": None,
           "posted_date": None, "source": PASTE_LABEL, "is_demo": False, "description": text, "age_terms": terms,
           "age_status": ageparse.age_status(terms), "age_class": ageparse.ad_class(terms), "snippet_highlight": ""}
-    b = brief.build_brief({"question": body.get("question"), "profile": body.get("profile"), "evidence_ids": [PASTE_ID]},
+    b = brief.build_brief({"question": body.get("question"), "question_default": body.get("question_default"), "profile": body.get("profile"), "evidence_ids": [PASTE_ID]},
                           _PastedEvidence(ad), allow_model=allow_model)
     b["data_label"] = PASTE_LABEL
     b["using_demo"] = False

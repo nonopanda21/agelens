@@ -314,6 +314,7 @@ def build_brief(body, ev=None, allow_model=True):
     if ev is None:
         from . import evidence as ev  # lazy: agent A's module may land after this one
     question = str(body.get("question") or "").strip()[:2000]
+    question_default = body.get("question_default") is True  # the page filled in its standard question; the person typed none
     profile = clean_profile(body.get("profile"))
     filters = body.get("filters")
     filters = dict(filters) if isinstance(filters, dict) else {}
@@ -461,7 +462,8 @@ def build_brief(body, ev=None, allow_model=True):
     for q in questions:
         q.setdefault("text_en", gloss.en_text(q["text"], _all_terms(ads)))
     llm_input = llm.build_input(question, profile, model_ads, scope, max_chars=MODEL_CHARS)
-    answer, index = _answer(ads, llm_input, profile, question, n, insufficient, status, with_max_all, exc_ads, amb, questions, demo)
+    answer, index = _answer(ads, llm_input, profile, question, n, insufficient, status, with_max_all, exc_ads, amb, questions, demo,
+                            question_default)
     scope["data_version"] = _data_version(ev)
     mstat = llm.status()
     res = llm.run_explanation(llm_input) if allow_model and mstat["connected"] and n else {"ran": False, "ok": False, "reason": "not_configured" if not (allow_model and mstat["connected"]) else "no_evidence"}
@@ -533,7 +535,7 @@ def _quote(ad, snippet):
     return snippet if snippet and snippet in (ad.get("description") or "") else None
 
 
-def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max, exc_ads, amb, questions, demo):
+def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max, exc_ads, amb, questions, demo, question_default=False):
     A = {k: [] for k, _ in ANSWER_HEADINGS}
     counter = {k: 0 for k in A}
 
@@ -601,7 +603,9 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
     if not A["exceptions"]:
         add("exceptions", "rules", ("No exception or relaxation wording was found in the ad." if n == 1 else "No exception or relaxation wording was found in the similar ads.") if n else "No similar ads were found, so no exceptions can be reported.", ads)
     # ---- relates
-    if question:
+    if question and question_default:
+        add("relates", "rules", "You did not type a question, so this answers the usual one: “%s”" % question[:240])
+    elif question:
         add("relates", "user_stated", "You asked: “%s”" % (question[:240] + ("…" if len(question) > 240 else "")))
     bits = [("age %d" % profile["age"]) if profile["age"] is not None else None, profile["education"] or None,
             ("%d years of experience" % profile["years_experience"]) if profile["years_experience"] is not None else None,

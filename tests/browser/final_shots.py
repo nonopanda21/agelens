@@ -11,7 +11,7 @@ with sync_playwright() as p:
         pg = b.new_page(viewport=vp, device_scale_factor=2, is_mobile=mob, has_touch=mob)
         pg.on("pageerror", lambda x: errs.append(str(x)[:140])); pg.on("console", lambda m: errs.append(m.text[:140]) if m.type == "error" else None)
         pg.goto(BASE + "/#/"); pg.wait_for_timeout(5000); pg.screenshot(path=f"{OUT}/{tag}_01_home_hero.png")
-        for sec in ("how", "marquee", "data", "literature", "steps", "footer"):
+        for sec in ("example", "how", "fit", "data", "more", "footer"):
             pg.evaluate(f"document.getElementById('{sec}').scrollIntoView({{block:'start'}})"); pg.wait_for_timeout(1800)
             pg.screenshot(path=f"{OUT}/{tag}_02_home_{sec}.png")
         pg.goto(BASE + "/#/seeker"); pg.wait_for_timeout(1200); pg.screenshot(path=f"{OUT}/{tag}_03_seeker.png", full_page=True)

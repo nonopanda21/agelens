@@ -834,3 +834,13 @@ Requirement: the website shows no Chinese. The rules keep reading the Chinese te
   - Phones: the menu layout also applies to phones held sideways; example chips, table toggles and map buttons are at least 40px tall.
 - Not changed: required honesty labels ("Demo · Synthetic data", "Template demo"); the edge tab's place in the tab order; the long Why it matters page on phones.
 - Checks: unit 372 OK; sweep 131/131; no_cjk 0; a11y 0 high; map_real 40/40; public_demo 33/33; e2e_loop 22/22; review_loop 37/37; pro_flow 27/27; demo_cases, seeker_flow, theme, palette, labels, map_v2, map_explore, patterns, lit pass.
+
+## 2026-10-31 · Sharper positioning on the Overview, ad-first Check an ad
+- Overview: the two overlapping three-card sections ("From an age line…" and "How to use AgeLens") are now one "How it works" (`home_how.js`; `home_steps.js` removed). New "Where AgeLens fits" (`home_fit.js`): job sites show the ad, legal advice covers rights, AgeLens is the step in between; then what it does and does not do. On the Overview the "Check one line" edge tab is hidden, since the hero holds the same card.
+- Nav: "Check an ad" is a button at the end of the nav (first item in the phone menu); "Reviewer" is set apart as the course team's link.
+- Check an ad: numbered steps 01 paste the ad, 02 about you (CV inside), 03 your question. The question is optional: left blank, the page asks the usual question and sends `question_default`, and the answer says "You did not type a question, so this answers the usual one" (tag "AgeLens rules") instead of "You asked". Example situations sit above step 1. This departs from docs/SPEC2.md ("Question first in the form"): the product is now led by the pasted ad.
+- Hero on phones: the three stats stay on one row; the reduced-motion note is a quiet line, not a boxed panel.
+- Copy: leftover "Job Seeker" page names on About, Overview data and Reviewer; Human review empty state describes the current review path.
+- index.html: description and link-preview tags, theme colour, SVG favicon (the nav's book mark).
+- Below 1000px the nav is one row (brand, "Check an ad", Menu); it used to wrap onto two rows between 641 and 1000px.
+- Checks: unit 373 OK; sweep 131/131; no_cjk 0; a11y 0 high (the quieter Reviewer link first failed contrast at 4.39 and was fixed); map_real 40/40; public_demo 33/33; e2e_loop 22/22; review_loop 37/37; pro_flow 27/27; demo_cases, seeker_flow, theme, palette, labels, map_v2, map_explore, patterns, lit pass; check_before_push passes.

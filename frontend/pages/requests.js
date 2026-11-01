@@ -218,7 +218,7 @@
     }
     if (!codes.length && !onAccount.length) {
       wrap.append(h('div.card.rq-empty', {}, AgeLens.stateIcon('inbox'), h('h2', {}, 'Nothing sent for human review yet'),
-        h('p', {}, 'On Check an ad, get your answer, open the ads behind it and tick “Select for review”, then press “Submit for human review”. You choose what background to share. The reply appears here.'),
+        h('p', {}, 'Check an ad first. Under your answer, choose “Ask a reviewer about similar ads” (or tick “Select for review” on the ads you want a person to look at), then send it. You choose what background to share. The reply appears here.'),
         h('p.hint', {}, 'Sent from another browser? Open Human review there; the key is not stored on the server.'),
         h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad')));
       return;

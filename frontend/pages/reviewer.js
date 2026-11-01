@@ -51,7 +51,7 @@
 
   function emptyQueue(tab, total) {
     const { h, REV_LABELS } = U();
-    if (!total) return h('div.card.rv-empty', {}, AgeLens.stateIcon('inbox'), h('h3', {}, 'No requests yet'), h('p', {}, 'Requests appear here when a job seeker submits one from the Job Seeker page. You can try the whole loop yourself: ask a question there, then come back.'), h('a.btn.btn-primary', { href: '#/seeker' }, 'Open the Job Seeker page'));
+    if (!total) return h('div.card.rv-empty', {}, AgeLens.stateIcon('inbox'), h('h3', {}, 'No requests yet'), h('p', {}, 'Requests appear here when a jobseeker sends one from Check an ad. You can try the whole loop yourself: check an ad there, ask a reviewer, then come back.'), h('a.btn.btn-primary', { href: '#/seeker' }, 'Open Check an ad'));
     const msg = { pending: 'Nothing is waiting for review. Check Needs information for requests where the seeker is still answering.', needs_info: 'No request is waiting on a seeker answer.', replied: 'No published replies yet.', closed: 'No closed requests yet.' };
     return h('div.rv-empty.quiet', {}, h('p', {}, msg[tab] || 'No requests with status "' + REV_LABELS[tab] + '".'));
   }

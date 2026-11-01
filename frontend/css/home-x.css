@@ -60,9 +60,9 @@ html[data-motion="reduced"] body[data-layout="home"] .reveal{opacity:1;scale:1;t
 .xh-stat-n{font-family:var(--font-pix);font-size:1.35rem;line-height:1.3;color:var(--lav-ink);margin:0}
 .xh-stat-l{font-size:.88rem;color:var(--text-light);margin:4px 0 0}
 .xh-fine{font-size:.88rem;font-style:italic;color:var(--text-light);margin:0}
-.xh-paused{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 0;padding:5px 6px 5px 14px;border-radius:var(--r-sm);background:#fff;border:2px dashed var(--brown);font-size:var(--fs-cap);color:var(--brown);max-width:none}
+.xh-paused{display:flex;align-items:center;gap:4px 8px;flex-wrap:wrap;margin:12px 0 0;font-size:.82rem;color:var(--text-light);max-width:none}
 .xh-paused[hidden]{display:none}
-.xh-play{font:inherit;font-family:var(--font-sketch);font-size:1rem;color:var(--brown);background:var(--pink);border:2px solid var(--brown);border-radius:var(--r-sm);padding:2px 12px;cursor:pointer;box-shadow:var(--shadow-sm)}
+.xh-play{font:inherit;font-weight:700;color:var(--pink-ink);background:none;border:0;padding:6px 2px;min-height:32px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .xh-side{display:grid;gap:18px;justify-items:center;min-width:0}
 .xh-art{position:relative;width:100%;max-width:300px;justify-self:center}
 /* "Check one line" card beside the copy (same rules as the edge tab; result styles from css/sidekit.css) */
@@ -253,6 +253,7 @@ body:not([data-layout="home"]) .x-progress{display:none}
   .xh{min-height:0}
   .xh-title{font-size:clamp(2.5rem,11vw,3rem)}
   .xh-actions{gap:14px}.xh-actions .xbtn{flex:1 1 100%}
+  .xh-stats{display:grid;grid-template-columns:auto auto auto;justify-content:start;gap:16px}.xh-stat-n{font-size:1.02rem}.xh-stat-l{font-size:.78rem}
   .xc{padding:24px 20px 20px}
   .xf-inner{grid-template-columns:1fr;gap:26px}.xf-bar .wrap{flex-direction:column;gap:4px}
   .xs-head{margin-bottom:26px}
@@ -311,3 +312,30 @@ body[data-layout="home"] .home-sec>.xs.xex-wrap{padding-block:calc(var(--xpad) *
   .xex-points{flex-direction:column;align-items:flex-start;max-width:320px}
 }
 #example:focus,.home-sec[tabindex="-1"]:focus{outline:none}
+
+/* "Where AgeLens fits" (pages/home_fit.js): three lanes (job sites / AgeLens / legal advice) joined by a dashed path, AgeLens raised
+   and filled; then two lists, what it does and does not do. Ink text on pastel fills only. */
+.xfit-lanes{list-style:none;margin:0 auto 40px;padding:0;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:22px;align-items:center;max-width:1000px;position:relative}
+.xfit-lanes::before{content:"";position:absolute;left:8%;right:8%;top:50%;height:3px;background:repeating-linear-gradient(90deg,var(--brown) 0 8px,transparent 8px 15px);opacity:.35;z-index:0}
+.xfit-lane{position:relative;z-index:1;background:#fff;border:2px dashed rgba(74,55,40,.45);border-radius:var(--r-sm);padding:18px 18px 16px;text-align:center}
+.xfit-lane.me{border:var(--border);background:var(--pink-soft);box-shadow:4px 4px 0 var(--brown);padding:26px 22px 22px;rotate:-.6deg}
+.xfit-name{margin:0;font:400 1.35rem/1.1 var(--font-sketch);color:var(--brown)}
+.xfit-lane.me .xfit-name{font-size:1.9rem}
+.xfit-verb{margin:4px 0 8px;font-weight:700;color:var(--brown);font-size:.98rem}
+.xfit-lane.me .xfit-verb{color:var(--pink-ink)}
+.xfit-note{margin:0 auto;font-size:.88rem;line-height:1.55;color:var(--text-light);max-width:32ch}
+.xfit-lane.me .xfit-note{color:var(--text)}
+.xfit-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1000px;margin:0 auto}
+.xfit-col{background:#fff;border:var(--border);border-radius:var(--r-sm);box-shadow:var(--shadow);padding:22px 24px 18px}
+.xfit-col h3{margin:0 0 12px;font:400 1.45rem/1.1 var(--font-sketch);color:var(--brown)}
+.xfit-col ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.xfit-col li{position:relative;padding-left:32px;color:var(--text);font-size:.97rem;line-height:1.55}
+.xfit-col li::before{position:absolute;left:0;top:.05em;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:2px solid var(--brown);font-size:.75rem;font-weight:800;line-height:1;color:var(--brown)}
+.xfit-col.yes li::before{content:"✓";background:var(--mint)}
+.xfit-col.no li::before{content:"✕";background:var(--yellow)}
+.xfit-col.no{background:var(--paper)}
+@media (max-width:900px){
+  .xfit-lanes{grid-template-columns:minmax(0,1fr);gap:14px;max-width:560px}
+  .xfit-lanes::before{left:50%;right:auto;top:6%;bottom:6%;width:3px;height:auto;background:repeating-linear-gradient(180deg,var(--brown) 0 8px,transparent 8px 15px)}
+  .xfit-cols{grid-template-columns:minmax(0,1fr);max-width:560px}
+}

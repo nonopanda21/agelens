@@ -61,6 +61,8 @@ body.sk-open .sk-tab{background:var(--pink)}
 .sk-err{margin:0;color:var(--pink-ink);font-weight:700;font-size:.9rem}
 .sk-more{display:inline-flex;align-items:center;gap:4px;margin-top:14px;font-weight:700;font-size:.9rem;color:var(--pink-ink)}
 
+/* the Overview hero already holds the same "Check one line" card, so the edge tab would only cover it */
+body[data-route="home"] .sk-tab{display:none}
 @media (max-width:640px){
   /* on phones Quick check lives in the Menu (app.js), so nothing floats over the text */
   .sk-tab{display:none!important}

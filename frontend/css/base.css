@@ -36,6 +36,13 @@ body.nav-scrolled .nav{box-shadow:0 1px 0 rgba(74,55,40,.08)}
 .nav nav a{font-family:var(--font);font-size:.95rem;color:var(--text-light);text-decoration:none;padding:6px 12px;border-radius:12px;transition:background var(--t-fast),color var(--t-fast)}
 .nav nav a:hover{color:var(--brown);background:rgba(255,182,193,.18);animation:wobble .4s ease}
 .nav nav a[aria-current="page"]{color:var(--brown);background:rgba(255,182,193,.22);text-decoration:underline wavy var(--pink-ink);text-decoration-thickness:1.5px;text-underline-offset:6px}
+/* the product's one action, always in reach: a sketch button at the end of the nav */
+.nav nav a.nav-cta{margin-left:10px;padding:6px 16px;font-family:var(--font-sketch);font-size:1.12rem;line-height:1.3;color:var(--brown);background:var(--pink);border:2px solid var(--brown);border-radius:var(--r-sm);box-shadow:var(--shadow-sm);text-decoration:none}
+.nav nav a.nav-cta:hover{background:var(--btn-hover);color:var(--brown)}
+.nav nav a.nav-cta[aria-current="page"]{background:var(--pink);text-decoration:none;box-shadow:inset 0 0 0 2px #fff,var(--shadow-sm)}
+/* the course team's desk: present, but quieter than the jobseeker's pages */
+.nav nav a.nav-reviewer{font-size:.86rem;position:relative;margin-left:8px}
+.nav nav a.nav-reviewer::before{content:"";position:absolute;left:-5px;top:25%;bottom:25%;width:1.5px;background:rgba(74,55,40,.25)}
 /* "Pause animation" toggle: a quiet text link in the footers */
 .motion-toggle{font:inherit;font-size:.85rem;color:var(--text-light);background:none;border:0;padding:2px 4px;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
 .motion-toggle:hover{color:var(--brown)}
@@ -101,7 +108,7 @@ mark.age{background:linear-gradient(transparent 52%,var(--pink) 52%);color:var(-
 
 /* floating round button (back to top) */
 /* the menu button only exists on phones (see the 640px block) */
-.nav-menu,.nav-qc{display:none}
+.nav-menu,.nav-qc,.nav-cta-bar{display:none}
 
 /* ---------- disclosure kit: one sketch chevron for every <summary> ---------- */
 details:not(.xfaq-i):not(.faq-item)>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:var(--s2);font-weight:700;color:var(--brown)}summary::-webkit-details-marker{display:none}
@@ -114,8 +121,8 @@ details:not(.xfaq-i):not(.faq-item)>summary:hover{color:var(--pink-ink)}
 @keyframes skel{from{background-position:100% 0}to{background-position:-50% 0}}
 .tnum{font-variant-numeric:tabular-nums}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (max-width:640px),(max-width:960px) and (max-height:500px){
-  /* phone nav (also phones held sideways): one row (brand + Menu); the links open as a list under it */
+@media (max-width:999px){
+  /* narrow nav (phones, phones held sideways, tablets): one row (brand + Check an ad + Menu); the links open as a list under it */
   .nav{padding:8px var(--s4);flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0;min-height:56px}
   .nav a.brand{font-size:1.3rem}.nav .brand-mark{width:30px;height:26px}
   .nav-menu{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 14px;border:2px solid var(--brown);border-radius:999px;background:var(--surface);color:var(--brown);font:400 1.05rem/1 var(--font-sketch);box-shadow:var(--shadow-sm);cursor:pointer}
@@ -126,10 +133,18 @@ details:not(.xfaq-i):not(.faq-item)>summary:hover{color:var(--pink-ink)}
   /* the open menu is opaque and ends in a clear edge, so page content never shows through under the last item */
   body.nav-open .nav{background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:2px solid var(--brown);box-shadow:0 6px 0 rgba(74,55,40,.08)}
   .nav nav a,.nav .nav-qc{display:block;padding:12px 14px;font-size:1.02rem;border-radius:12px;text-align:left}
+  .nav nav a.nav-cta{order:-1;margin:0 0 6px;text-align:center;font-size:1.2rem}
+  .nav nav a.nav-reviewer{margin-left:0;font-size:.95rem}.nav nav a.nav-reviewer::before{display:none}
   .nav .nav-qc:not([hidden]){display:block;font:inherit;font-size:1.02rem;color:var(--brown);background:var(--yellow-soft);border:0;cursor:pointer;margin-top:4px}
   .nav nav a.nav-access{margin:6px 0 0;max-width:none;text-align:left}
+  /* the product's action stays one tap away beside Menu, so the list does not repeat it */
+  .nav .nav-cta-bar{display:inline-flex;align-items:center;min-height:44px;margin-left:auto;margin-right:10px;padding:4px 14px;font:400 1.08rem/1 var(--font-sketch);color:var(--brown);background:var(--pink);border:2px solid var(--brown);border-radius:var(--r-sm);box-shadow:var(--shadow-sm);text-decoration:none;white-space:nowrap}
+  .nav nav a.nav-cta{display:none}
+}
+@media (max-width:640px),(max-width:960px) and (max-height:500px){
   .wrap{padding:0 var(--s4)}.section{padding-block:var(--s7)}.foot>*{width:calc(100% - 2*var(--s4))}
 }
+@media (max-width:360px){.nav .nav-cta-bar{padding:4px 10px;font-size:1rem;margin-right:6px}.nav a.brand span{font-size:1.15rem}}
 html[data-motion="reduced"] *,html[data-motion="reduced"] *::before,html[data-motion="reduced"] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 html[data-motion="reduced"] .reveal{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}

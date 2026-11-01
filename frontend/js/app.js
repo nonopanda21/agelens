@@ -270,6 +270,7 @@
       const setMenu = (open) => { document.body.classList.toggle('nav-open', open); menuBtn.setAttribute('aria-expanded', String(open)); menuBtn.lastChild.textContent = open ? 'Close' : 'Menu'; };
       menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('nav-open')));
       header.insertBefore(menuBtn, nav);
+      header.insertBefore(AgeLens.h('a.nav-cta-bar', { href: '#/seeker' }, 'Check an ad'), menuBtn);
       const qc = AgeLens.h('button.nav-qc', { type: 'button' }, 'Check one line');
       qc.addEventListener('click', () => { setMenu(false); if (AgeLens.quickCheck) AgeLens.quickCheck.open(menuBtn); });
       nav.append(qc);

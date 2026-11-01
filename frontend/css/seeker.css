@@ -25,6 +25,17 @@
 .fld{margin:0}
 .fld .hint{margin-top:var(--s1)}
 .req{color:var(--ink-soft);font-weight:500;font-size:.8rem;margin-left:var(--s2);letter-spacing:0}
+/* numbered steps: 01 the ad, 02 about you, 03 your question (pixel numerals in a pastel disc, like the Overview steps) */
+.step-no{display:inline-grid;place-items:center;width:38px;height:38px;flex:none;margin-right:12px;vertical-align:middle;border-radius:50%;border:2px solid var(--brown);background:var(--pink);
+  font-family:var(--font-pix);font-size:.7rem;line-height:1;letter-spacing:0;color:var(--brown);box-shadow:1.5px 1.5px 0 var(--brown)}
+fieldset.form-block:nth-of-type(1) .step-no{background:var(--blue)}
+.q-field .step-no{background:var(--mint)}
+/* the CV is part of step 2: a smaller heading and no extra gap above it */
+.cv-block{margin-top:calc(var(--s6) * -.5)}
+.cv-block>h3{font-size:1.1rem;margin:0 0 var(--s1)}
+/* example situations sit above step 1, for anyone without an ad at hand */
+details.demo-cases{border-top:0!important;padding:var(--s2) var(--s4);border-radius:var(--r);background:var(--yellow-soft);border:2px dashed rgba(74,55,40,.3)!important}
+details.demo-cases .demo-row{margin-top:var(--s2)}
 .err-text{color:var(--err);min-height:1.3em;margin:6px 0 0;font-size:var(--fs-cap);display:flex;gap:6px;align-items:flex-start}
 .err-text:not(:empty)::before{content:"!";flex:none;display:inline-grid;place-items:center;width:16px;height:16px;margin-top:1px;border-radius:50%;background:var(--err);color:#fff;font-size:11px;font-weight:600}
 .row{display:flex;gap:var(--s3);flex-wrap:wrap;align-items:center;margin-top:var(--s4)}
