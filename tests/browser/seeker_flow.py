@@ -56,7 +56,7 @@ with sync_playwright() as pw:
     obs["region_via_keyboard"] = page.input_value("#f-region")
     page.fill("#f-question", "I am 38 with eight years in operations. Ads say normally under 35, exceptions possible. What should I clarify?")
     page.focus("#go-btn"); page.keyboard.press("Enter")
-    page.wait_for_selector(".answer-sec", timeout=20000)
+    page.wait_for_selector(".answer-sec", timeout=60000)
     obs["answer_headings"] = page.eval_on_selector_all(".answer-sec h3", "els=>els.map(e=>e.textContent)")
     obs["summary_card"] = page.inner_text(".sum-card")[:400]
     obs["answer_page_height_1280"] = page.evaluate("document.documentElement.scrollHeight")
@@ -81,7 +81,7 @@ with sync_playwright() as pw:
     # evidence page via link
     page.click(".answer-sec > .stmts a[href^='#/evidence/']"); page.wait_for_selector(".ev-sec")
     obs["evidence_cjk"] = len(re.findall(r"[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]", page.evaluate("document.body.innerText")))
-    shot(page, "04_evidence_1280.png"); page.go_back(); page.wait_for_selector(".answer-sec")
+    shot(page, "04_evidence_1280.png"); page.go_back(); page.wait_for_selector(".answer-sec", timeout=60000)
     obs["state_kept_after_evidence"] = page.input_value("#f-question")[:20]
 
     # ---------- CV upload: file chooser + drag/drop + failures ----------
@@ -121,7 +121,7 @@ with sync_playwright() as pw:
     page.fill("#f-question", "Is there anything for a baker in Tibet?"); page.fill("#f-occupation", "baker"); page.select_option("#f-region", index=1)
     page.click("#adv summary"); page.fill("#f-term", "zzzz-no-such-title"); page.click("#go-btn"); page.wait_for_selector("#answer .problem.soft")
     obs["empty_state"] = page.inner_text("#answer .problem.soft")[:200]; shot(page, "08_empty_1280.png")
-    page.click("text=Drop the occupation text"); page.wait_for_selector(".answer-sec, #answer .problem.soft", timeout=20000)
+    page.click("text=Drop the occupation text"); page.wait_for_selector(".answer-sec, #answer .problem.soft", timeout=60000)
     obs["after_broaden"] = page.eval_on_selector_all(".answer-note", "els=>els.map(e=>e.textContent.slice(0,80))")[:2]
 
     # ---------- forced server error + retry ----------
@@ -131,7 +131,7 @@ with sync_playwright() as pw:
     page.click("#go-btn"); page.wait_for_selector("#answer .problem")
     obs["server_error"] = page.inner_text("#answer .problem")[:200]; shot(page, "09_server_error_1280.png")
     page.unroute("**/api/brief"); page.click("#answer .problem button:has-text(\"Try again\")")
-    try: page.wait_for_selector(".answer-sec", timeout=15000)
+    try: page.wait_for_selector(".answer-sec", timeout=60000)
     except Exception:
         shot(page, "zz_debug.png"); print("DEBUG", page.inner_text("#answer")[:600]); raise
     obs["retry_recovered"] = True
@@ -146,7 +146,7 @@ with sync_playwright() as pw:
     page.unroute("**/api/ads?**")
 
     # ---------- duplicate submit with idempotency key ----------
-    page.click("#go-btn"); page.wait_for_selector("#ads-more", timeout=20000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector(".cards .card", timeout=20000)
+    page.click("#go-btn"); page.wait_for_selector("#ads-more", timeout=60000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector(".cards .card", timeout=60000)
     page.locator(".cards .card input[type=checkbox]").first.check()
     posts = []
     def on_req(route):
@@ -160,14 +160,14 @@ with sync_playwright() as pw:
     try: page.click("#submit-btn", timeout=500)
     except Exception: pass
     obs["submit_disabled_in_flight"] = page.evaluate("document.getElementById('submit-btn') ? document.getElementById('submit-btn').disabled : 'replaced'")
-    page.wait_for_selector("text=Request submitted", timeout=20000)
+    page.wait_for_selector("text=Request submitted", timeout=60000)
     obs["after_submit"] = page.inner_text("#review")[:300]
     obs["post_count"] = len(posts); obs["idempotency_key_sent"] = bool(posts and posts[0] and len(posts[0]) >= 16)
     shot(page, "10_submitted_1280.png")
     page.unroute("**/api/requests")
     # 409 path (mock): existing request number shown
     page.reload(); page.wait_for_selector("#f-question")
-    page.fill("#f-question", "dup test"); page.click("#go-btn"); page.wait_for_selector("#ads-more", timeout=20000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector(".cards .card", timeout=20000)
+    page.fill("#f-question", "dup test"); page.click("#go-btn"); page.wait_for_selector("#ads-more", timeout=60000); page.evaluate("document.getElementById('ads-more').open=true"); page.wait_for_selector(".cards .card", timeout=60000)
     page.locator(".cards .card input[type=checkbox]").first.check()
     page.route("**/api/requests", lambda r: r.fulfill(status=409, content_type="application/json", body='{"error":"Already submitted as AL-2026-0042","code":"AL-2026-0042"}'))
     page.click("#submit-btn"); page.wait_for_selector("text=AL-2026-0042")
@@ -180,7 +180,7 @@ with sync_playwright() as pw:
     page.goto(BASE + "/#/seeker"); page.wait_for_selector("#f-question"); shot(page, "20_form_360.png")
     obs["overflow_360_form"] = overflow(page)
     page.fill("#f-question", "I am 38 and the ad says under 35. What do I ask?"); page.fill("#f-occupation", "运营"); page.select_option("#f-region", label="Shanghai")
-    page.click("#go-btn"); page.wait_for_selector(".answer-sec", timeout=20000)
+    page.click("#go-btn"); page.wait_for_selector(".answer-sec", timeout=60000)
     obs["answer_page_height_360"] = page.evaluate("document.documentElement.scrollHeight")
     shot(page, "21_answer_360.png"); page.locator("#answer").scroll_into_view_if_needed(); page.evaluate("window.scrollBy(0,380)"); shot(page, "21b_answer_viewport_360.png", full=False); obs["overflow_360_answer"] = overflow(page)
     page.set_input_files("#cv-file", {"name": "cv.txt", "mimeType": "text/plain", "buffer": CV}); page.wait_for_selector("#cv-review")

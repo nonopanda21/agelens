@@ -162,6 +162,7 @@ AI_DESIGN_ID = "crossover-ai-v1"
 TEMPLATE_AI_VERSION = "template-ai-v1"
 AI_ARM_VERSION = "ai-contextual-v1"
 SIM_NOTICE = "SIMULATED: No AI model was used; text drafted by a script for the rehearsal."
+SIM_NOTICE_MODEL = "SIMULATED rehearsal: a real AI model wrote the AI tool's text, but the sessions are not study data."
 SIM_PROVIDER = "SIMULATED-script"
 CHECKLIST = ["Is the wording a fixed requirement or a preference?",
              "Is there an exception, and who decides it?",
@@ -170,6 +171,11 @@ CHECKLIST = ["Is the wording a fixed requirement or a preference?",
 # Output the AI arm must never contain (the prompt forbids it; this is a second, code-level check).
 _FORBIDDEN = re.compile(r"\b(you|i)\s+(definitely\s+|certainly\s+|will\s+|do\s+|would\s+)?(qualify|are eligible|am eligible|will be (hired|rejected))\b"
                         r"|\b(is|are)\s+(illegal|unlawful|discriminatory)\b", re.I)
+def sim_notice(model_used=None):
+    """The rehearsal notice has to say what actually wrote the text."""
+    return SIM_NOTICE_MODEL if (model_status()["connected"] if model_used is None else model_used) else SIM_NOTICE
+
+
 def violates(text):
     """True if any non-question sentence of `text` promises eligibility/outcome or makes a legal accusation (questions such as 'Do I qualify?' are fine)."""
     for sent in re.split(r"(?<=[.!?])\s+", text or ""):
@@ -179,7 +185,7 @@ def violates(text):
 
 
 _AGE_LINE = re.compile(r"(\bage\b|\bunder\s+\d+|\d+\s+or\s+under)", re.I)
-_TYPE_WORDS = {"hard_cap": "a fixed age limit", "preference": "an age preference", "ambiguous": "age wording the rules could not read in full"}
+_TYPE_WORDS = {"cap_with_exception": "an age limit with an exception", "hard_cap": "a fixed age limit", "preference": "an age preference", "ambiguous": "age wording the rules could not read in full"}
 
 
 def _role(task):
@@ -222,7 +228,7 @@ def template_tool(task, ev):
     """Arm 'template': identical structure for every task; only the slots are filled, from the evidence package alone.
     It does not use the job seeker's profile and does no reasoning about context."""
     role, w = _role(task), ev["wording"] or "(no age wording found)"
-    kind = _TYPE_WORDS.get(ev["age_class"], "age wording of an unclear type")
+    kind = _TYPE_WORDS.get("cap_with_exception" if ev["exception"] else ev["age_class"], "age wording of an unclear type")
     exc = 'the exception ("%s")' % ev["exception_quote"] if ev["exception_quote"] else ("the exception named in the ad" if ev["exception"] else "any exception")
     reading = 'The ad says: "%s". The rules read this as %s.' % (w, kind)
     question = ('Hello, I am writing about the %s (ad %s). The ad says: "%s". Does %s apply to the %s? '
@@ -272,7 +278,7 @@ def _ai_from_statements(statements):
     for s in statements:
         by.setdefault(s["section"], []).append(s["text"].strip())
     explicit = by.get("explicit", []) + by.get("exceptions", [])
-    reading = " ".join(explicit + by.get("relates", [])).strip()
+    reading = " ".join(explicit + by.get("relates", []) + by.get("cannot", [])).strip()
     ask = by.get("ask", [])
     if not reading or not ask:
         raise ValueError("model output has no reading or no question after the evidence check")

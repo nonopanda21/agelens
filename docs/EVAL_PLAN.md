@@ -1,6 +1,6 @@
 # AgeLens evaluation plan (crossover-ai-v1)
 
-> **STATUS: DRAFT for teacher approval. Decided by the team on 2026-10-29. Not filed, not approved. No AI model is connected. No participant is recruited. There are no results.** The only data is a SIMULATED dry run of the tools (section 11), written by scripts. It says nothing about AI.
+> **STATUS: DRAFT for teacher approval. Decided by the team on 2026-10-29. Not filed, not approved. No model is switched on by default. No participant is recruited. There are no results.** The only data are SIMULATED dry runs of the tools (section 11 and `data/study/dryrun_2026-11-03_luna/`). They had no participants and do not show whether AI help works.
 
 ## One-page summary
 
@@ -11,7 +11,7 @@
 - **Analysis.** Paired differences (AI minus template) per participant, exact sign-flip test, 95% bootstrap CI. One confirmatory test. Target N = 24 (minimum 16).
 - **Claim size (verbatim).** *Improved decision support only. No claim about interviews, hiring, employment or GDP. Any employment benefit would depend on employers responding and considering applicants; the tool cannot remove a binding age restriction.*
 - **What exists today.** The study tooling, a rubric, a calibration set, a simulated rehearsal. **What does not:** a connected model, approval, participants, results.
-- **While no model is connected,** the AI arm cannot run for real. The server refuses formal mode. Only a clearly labelled SIMULATED rehearsal is possible, in which a script writes the AI-arm text.
+- **While no model is configured on the server,** the AI arm cannot run for real. The server refuses formal mode. Only a clearly labelled SIMULATED rehearsal is possible, in which a script writes the AI-arm text.
 
 ## 1. Where this comes from (policy cycle)
 
@@ -37,7 +37,7 @@ The team's wording to the teacher: "We will compare contextual AI assistance wit
 
 Both tools only draft. The participant writes the final reading and question, and may start from the draft (recorded as `aid_inserted`).
 
-**The AI never says the user qualifies.** The prompt (`backend/prompts/explain_v1.txt`, rule 5) forbids it, ads and CVs are passed as data inside `BEGIN_DATA_JSON`, and code re-checks the output.
+**The AI never says the user qualifies.** The prompt (`backend/prompts/explain_v2.txt`, rule 5) forbids it, ads and CVs are passed as data inside `BEGIN_DATA_JSON`, and code re-checks the output.
 
 **Third arm ("ad text only").** Not in the primary design. With 4 tasks a third arm cannot be balanced within a person, and each arm would get a third fewer observations (power drops, section 8). The old comparison "ad only versus AgeLens rules aid" stays in the code as the separate design `crossover-rules-v1` (`docs/EVAL_PLAN_v1_rules_vs_ad.md`) and can be run later as a secondary baseline on its own. Arm id `ad_only` exists in `study_arms.tool_aid(..., "none")` for that purpose.
 
@@ -137,7 +137,7 @@ Two independent raters (R1, R2) score every non-empty item; a third (R3) scores 
 
 ## 12. NOT yet done
 
-1. **No model is connected** (no provider, key or model id; no spend). The AI arm has never produced a real output. The prompt and adapter are tested only with test doubles.
+1. **The AI arm has run only in scripted sessions** (2026-11-03, local, `gpt-6-luna`, prompt `explain_v2`): 16 of 16 drafts produced. It has never been used by a person, and no model is switched on by default.
 2. **No participants** recruited; no pilot with humans.
 3. **No approval**, no preregistration filed, no `APPROVAL.json`; `tasks.json` not frozen (its sha256 changed on 2026-10-29).
 4. **No results.** Rubric and key facts are untested by humans; kappa is unknown.

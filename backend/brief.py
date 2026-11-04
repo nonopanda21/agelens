@@ -302,6 +302,7 @@ def _load(ev, body, filters):
 DETAIL_N = 60        # ads whose full text is loaded (quotes need it); search summaries carry no description
 MODEL_ADS = 12       # at most this many ads (those with age conditions first) are sent to a model
 MODEL_CHARS = 1500   # characters of each ad's text sent to a model
+PASTE_MODEL_CHARS = 4000  # one ad: all of it, so age wording late in the ad is not reported as cut off
 
 
 def _with_details(ev, ads):
@@ -477,7 +478,7 @@ def build_brief(body, ev=None, allow_model=True):
     model_ads = sorted(ads, key=lambda a: (not _terms(a), 0 if a.get("description") else 1))[:MODEL_ADS]
     for q in questions:
         q.setdefault("text_en", gloss.en_text(q["text"], _all_terms(ads)))
-    llm_input = llm.build_input(question, profile, model_ads, scope, max_chars=MODEL_CHARS)
+    llm_input = llm.build_input(question, profile, model_ads, scope, max_chars=MODEL_CHARS if len(model_ads) > 1 else PASTE_MODEL_CHARS)
     answer, index = _answer(ads, llm_input, profile, question, n, insufficient, status, with_max_all, exc_ads, amb, questions, demo,
                             question_default)
     scope["data_version"] = _data_version(ev)
@@ -485,7 +486,7 @@ def build_brief(body, ev=None, allow_model=True):
     res = llm.run_explanation(llm_input) if allow_model and mstat["connected"] and n else {"ran": False, "ok": False, "reason": "not_configured" if not (allow_model and mstat["connected"]) else "no_evidence"}
     ai_status, note, report = "template", llm.failure_text("not_configured"), None
     if res["ran"] and res["ok"]:
-        ai_status, note, report = "used", "Model-written statements below are labelled “Model inference” or “Ad text” and were checked by code against the ad texts. The check is not a guarantee; confirm against the original wording.", res["report"]
+        ai_status, note, report = "used", "Model-written statements below are labelled “Model inference” or “Ad text” and were checked by code against the ad texts. The check is not a guarantee; confirm against the original wording. To write them, the ad text, your question and the background you confirmed were sent to the AI provider.", res["report"]
         for st in res["statements"]:
             m = dict(st, id="M%d" % (len(answer[st["section"]]) + 1), source="model")
             tt = _all_terms([a for a in ads if a["id"] in (st.get("evidence_ids") or [])])

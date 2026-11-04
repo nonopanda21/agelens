@@ -35,7 +35,7 @@ def start_view(c, p, task, run, remaining, total, payload):
             "reading": (run["reading"] or "") if done else "", "question": (run["question_text"] or "") if done else "",
             "evidence": {"rule_version": ev["rule_version"], "wording_line": ev["wording_line"], "items": ev["items"]},
             "aid": {"kind": "tool", "label": "Tool A" if run["position"] <= total // 2 else "Tool B", "failed": bool(run["model_failure"]), "tool": tool,
-                    "sim_notice": study_arms.SIM_NOTICE if p["simulated"] else None}}
+                    "sim_notice": study_arms.sim_notice() if p["simulated"] else None}}
 
 
 def reveal(d, p):
@@ -43,7 +43,7 @@ def reveal(d, p):
     def txt(cond):
         if d["conditions"][cond]["kind"] == "template":
             return "a fixed question template, filled in mechanically from the evidence."
-        return ("contextual AI assistance. In this rehearsal it was SIMULATED: no AI model was used and a script wrote the text." if p["simulated"]
+        return ("contextual AI assistance. In this rehearsal it was SIMULATED: no AI model was used and a script wrote the text." if p["simulated"] and not study_arms.model_status()["connected"]
                 else "contextual AI assistance: a model read your background and the same evidence.")
     return {"A": txt(p["arm"][0]), "B": txt(p["arm"][1])}
 
@@ -292,7 +292,8 @@ def build_export(S, c, scope):
     dsg = S.design(doc)
     kinds = {t["id"]: t["kind"] for t in doc["tasks"]}
     nfacts = {t["id"]: fact_ids(t) for t in doc["tasks"]}
-    plist = c.execute("SELECT * FROM study_participants WHERE simulated=? ORDER BY enrolled_at, code", (sim,)).fetchall()
+    # older rehearsals of the retired parallel design have arms like 'template' and do not belong in this design's export
+    plist = c.execute("SELECT * FROM study_participants WHERE simulated=? AND arm LIKE '%-%' ORDER BY enrolled_at, code", (sim,)).fetchall()
     t_now = S.now_ms()
     task_rows, part_rows = [], []
     label = "SIMULATED" if sim else "FORMAL"
@@ -346,8 +347,9 @@ def build_export(S, c, scope):
         part_rows.append(dict({"participant_code": p["code"], "sequence": p["arm"], "first_condition": p["arm"][0], "simulated": sim, "data_label": label, "block_no": p["block_no"],
                                "tasks_attempted": attempted, "tasks_submitted": submitted, "tasks_missing": sum(1 for r in mine if r["missing"])},
                               **study_stats.person_columns(mine), model_failures=fails, participant_status=p["status"], dropout=dropout))
-    meta = {"schema": EXPORT_FIELDS["version"], "scope": scope, "design": S.design_id(doc), "simulated": sim == 1, "banner": S.BANNER if sim else None,
-            "simulated_notice": study_arms.SIM_NOTICE if sim else None, "generated_at": S.iso(), "tasks_version": doc["version"], "tasks_sha256": S.tasks_sha256(),
+    model_used = bool(c.execute("SELECT 1 FROM study_task_runs r JOIN study_participants p USING(code) WHERE p.simulated=? AND r.aid_provider LIKE 'model%' LIMIT 1", (sim,)).fetchone())
+    meta = {"schema": EXPORT_FIELDS["version"], "ai_model_used": model_used, "scope": scope, "design": S.design_id(doc), "simulated": sim == 1, "banner": S.BANNER if sim else None,
+            "simulated_notice": study_arms.sim_notice(model_used) if sim else None, "generated_at": S.iso(), "tasks_version": doc["version"], "tasks_sha256": S.tasks_sha256(),
             "rubric_version": doc["rubric_ai"]["version"], "decision_rules": dsg.get("decision_rules"), "claim": dsg.get("claim"),
             "allocation": "permuted blocks of %d, seeded (%s)" % (S.BLOCK_SIZE, "SIM seed %d" % S.SIM_SEED if sim else "seed from APPROVAL.json"),
             "model": study_arms.model_status(), "n_participants": len(plist)}

@@ -44,6 +44,12 @@ try:
 except Exception as e:
     sys.exit("DOWN: %s did not answer: %s. Use the local fallback in docs/LIVE_DEMO.md." % (BASE, e))
 print("Site answered in %.1fs" % (time.time() - t0))
+try:
+    with urllib.request.urlopen(BASE + "/api/ai/status", timeout=30) as r:
+        ai = json.load(r)
+    print("Model: " + ("connected (%s): answers take about 5-13 s, up to 30 s" % ai.get("provider") if ai.get("connected") else "not connected (Template demo)"))
+except (OSError, ValueError):
+    print("Model: status could not be read")
 bad = 0
 for name, text, status, cls in CASES:
     got, j = post(text)

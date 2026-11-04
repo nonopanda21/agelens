@@ -4,7 +4,7 @@
   const CARDS = [
     ['Not legal advice', 'Highlighted wording is observed text to interpret. It is not a finding about any employer and not a legal conclusion.'],
     ['No hiring decisions', 'AgeLens never says whether you qualify or predicts whether you would be rejected. Your age is used only to explain a stated condition.'],
-    ['Honest about what runs', 'The statistics come from real Zhaopin ads (counts only); the ads you can open and the demo cases are simulated. Answers come from fixed rules (“Template demo”); no AI model is connected. The planned evaluation has not been run.'],
+    ['Honest about what runs', ['The statistics come from real Zhaopin ads (counts only); the ads you can open and the demo cases are simulated. ', AgeLens.byModel('Answers come from fixed rules (“Template demo”); no AI model is connected.', 'Answers come from fixed rules, and an AI model adds labelled statements that code checks.'), ' The planned evaluation has not been run.']],
   ];
   const FAQ = [
     ['Where does the data come from?', 'Two sources, always labelled. The statistics and the map summarise about 10 million real job ads posted on Zhaopin in 2021–2024 (counts only; no ad text, company or contact is published). The ads you can open, the answers on the Check an ad page and the demo cases use a fictional, reproducible set, marked “Demo · Synthetic data”, so every example can be shown in full.'],

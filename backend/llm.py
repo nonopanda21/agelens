@@ -7,8 +7,8 @@ only catches the failures it is written for (unknown ids, quotes that are not in
 numbers not in the cited ad, omitted exceptions, preference stated as a cap, legal/probability
 claims). Output is always flagged as needing human confirmation.
 
-Providers: 'template' (default, never calls anything), 'anthropic' (urllib, Messages API, only when
-configured on the SERVER via environment), FakeProvider (tests only; not selectable by config).
+Providers: 'template' (default, never calls anything), 'anthropic' (urllib, Messages API) and 'openai'
+(urllib, Chat Completions), each only when configured on the SERVER via environment, FakeProvider (tests only; not selectable by config).
 Ads and CVs are DATA: they reach a provider only as JSON string fields inside a delimited data block
 (never concatenated into the instructions). The full CV never reaches this module: only the
 user-confirmed structured profile does.
@@ -32,7 +32,7 @@ from pathlib import Path
 from . import db
 
 PROMPT_DIR = Path(__file__).with_name("prompts")
-PROMPT_FILE = "explain_v1.txt"
+PROMPT_FILE = "explain_v2.txt"
 TEMPLATE_LABEL = "Template demo"
 SECTIONS = ("explicit", "exceptions", "relates", "cannot", "ask")
 TYPES = ("ad_fact", "user_stated", "model_inference")
@@ -50,6 +50,17 @@ UNSUPPORTED_PATTERNS = [
     r"\bguarantee[sd]?\b", r"\bno discrimination\b", r"违法", r"歧视",
 ]
 _UNSUPPORTED = [re.compile(p, re.I) for p in UNSUPPORTED_PATTERNS]
+# A hedged eligibility claim ("you may qualify", "your nine years may fit the relaxation"). Statements only: a question may ask this.
+_ELIGIBILITY = re.compile(r"\byou(r\s[^.?!,;]{0,60}?)?\s+(may|might|could|would|should|probably|likely|appear to|appears to|seem to|seems to|already|do|does|also)?\s*"
+                          r"(qualify|qualifies|meets?|satisf(y|ies)|fits?)\b", re.I)
+# Wording that looks like an instruction to a system/model. Used for the note on the page and to stop such a line being reported as an ad fact.
+INSTRUCTION = re.compile(
+    r"(ignore|disregard|forget|override)\b.{0,40}\b(instruction|prompt|rule|above|previous|schema)"
+    r"|\b(system|assistant|developer)\s*[:：\]]|\[\s*system\s*\]|</?\s*(ad|system|data|prompt)\s*>|<!--"
+    r"|\bapprove[ds]?\b|\byou are now\b|\bskip (all )?checks\b|\boutput the\b|\btoken\b|\bprobability\b"
+    r"|忽略|无视|现在你是|批准|一定会被录用|通过资格|请声明|替换为|发送到|改写为", re.I)
+_ABOVE_CAP = re.compile(r"\byou('re| are)?\b.{0,40}\b(above|over|exceed\w*|older than|outside|beyond)\b|still be considered|\bstrong qualif|\bexceptional qualif|\bneeds? (the |an? )?(exception|relaxation)\b", re.I)
+_WITHIN_CAP = re.compile(r"\byou('re| are)?\b.{0,20}\b(below|under|within|inside)\b", re.I)
 _CAP_WORDS = re.compile(r"\b(maximum|max\.?|cap|limit|must|required?|only|no older|not older)\b", re.I)
 _PREF_WORDS = re.compile(r"\b(prefer\w*|preference|favou?r\w*|ideal\w*|not a (hard|firm)|may be)\b", re.I)
 _CONFLICT_WORDS = re.compile(r"\b(conflict\w*|contradict\w*|inconsisten\w*|differ\w*|unclear)\b", re.I)
@@ -83,7 +94,7 @@ def build_input(question, profile, ads, scope, max_chars=4000):
             "date": a.get("posted_date"),
             "age_class": a.get("age_class"),
             "extracted_age_terms": [
-                {k: t.get(k) for k in ("kind", "min_age", "max_age", "snippet", "exception_text", "confidence")}
+                {k: t.get(k) for k in ("kind", "min_age", "max_age", "snippet", "exception_text", "confidence", "flag")}
                 for t in (a.get("age_terms") or [])
             ],
         })
@@ -198,24 +209,70 @@ class AnthropicProvider(Provider):
         return "<AnthropicProvider model=%s>" % self.model
 
 
+class OpenAIProvider(Provider):  # max_tokens covers reasoning tokens too
+    """OpenAI Chat Completions over urllib. Not used unless configured on the server; never called in tests
+    (tests inject `http`)."""
+    name = "openai"
+
+    def __init__(self, api_key, model, base_url=None, timeout=30.0, max_tokens=4000, http=None):
+        self._key, self.model = api_key, model
+        self.base_url = base_url or "https://api.openai.com/v1/chat/completions"
+        self.timeout, self.max_tokens, self._http = timeout, max_tokens, http or _urllib_http
+
+    def generate(self, llm_input):
+        _, system = load_prompt()
+        payload = {"model": self.model, "max_completion_tokens": self.max_tokens, "response_format": {"type": "json_object"},
+                   "messages": [{"role": "system", "content": system}, {"role": "user", "content": render_user_message(llm_input)}]}
+        if self.model.startswith(("gpt-3", "gpt-4")):  # newer models accept only their default temperature
+            payload["temperature"] = 0
+        headers = {"content-type": "application/json", "authorization": "Bearer " + self._key}
+        status, raw = self._http(self.base_url, headers, json.dumps(payload).encode("utf-8"), self.timeout)
+        if status != 200:
+            raise ProviderError("http_%d" % status)
+        try:
+            data = json.loads(raw.decode("utf-8"))
+            text = data["choices"][0]["message"].get("content") or ""
+            usage = data.get("usage") or {}
+        except (ValueError, AttributeError, KeyError, IndexError, TypeError):
+            raise ProviderError("bad_json")
+        self.last_meta = {"input_tokens": usage.get("prompt_tokens") if isinstance(usage.get("prompt_tokens"), int) else None,
+                          "output_tokens": usage.get("completion_tokens") if isinstance(usage.get("completion_tokens"), int) else None}
+        try:
+            return json.loads(text)
+        except ValueError:
+            raise ProviderError("bad_json")
+
+    def __repr__(self):  # never show the key
+        return "<OpenAIProvider model=%s>" % self.model
+
+
+PROVIDERS = {"anthropic": AnthropicProvider, "openai": OpenAIProvider}
+_KEY_VARS = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY"}
+
+
 def _config():
     env = os.environ
     kind = (env.get("AGELENS_LLM_PROVIDER") or "").strip().lower()
-    key = (env.get("AGELENS_LLM_API_KEY") or env.get("ANTHROPIC_API_KEY") or "").strip()
-    model = (env.get("AGELENS_LLM_MODEL") or "").strip()
+    shared = (env.get("AGELENS_LLM_API_KEY") or "").strip()
     if not kind:
-        kind = "anthropic" if key else "template"
+        kind = "template"
+        if shared or (env.get("ANTHROPIC_API_KEY") or "").strip():
+            kind = "anthropic"
+        elif (env.get("OPENAI_API_KEY") or "").strip():
+            kind = "openai"
+    key = shared or (env.get(_KEY_VARS.get(kind, "")) or "").strip()
+    model = (env.get("AGELENS_LLM_MODEL") or "").strip()
     return kind, key, model
 
 
 def get_provider():
     kind, key, model = _config()
-    if kind == "anthropic" and key and model:
+    if kind in PROVIDERS and key and model:
         try:
             timeout = float(os.environ.get("AGELENS_LLM_TIMEOUT") or 30)
         except ValueError:
             timeout = 30.0
-        return AnthropicProvider(key, model, os.environ.get("AGELENS_LLM_BASE_URL") or None, timeout)
+        return PROVIDERS[kind](key, model, os.environ.get("AGELENS_LLM_BASE_URL") or None, timeout)
     return TemplateProvider()
 
 
@@ -224,14 +281,14 @@ def status():
     kind, key, model = _config()
     version, _ = load_prompt()
     base = {"prompt_version": version, "self_check": "Code checks citations; it is not a correctness guarantee."}
-    if kind == "anthropic" and key and model:
-        return dict(base, connected=True, label="Model connected · output checked by code", provider="anthropic",
+    if kind in PROVIDERS and key and model:
+        return dict(base, connected=True, label="Model connected · output checked by code", provider=kind,
                     enabled=True, mode="model", reason="A model is configured on the server.")
-    if kind not in ("template", "anthropic"):
+    if kind != "template" and kind not in PROVIDERS:
         why = "Unknown provider setting; no model is used."
-    elif kind == "anthropic" and not key:
-        why = "Anthropic provider selected but no API key is set on the server; no model is used."
-    elif kind == "anthropic":
+    elif kind in PROVIDERS and not key:
+        why = "%s provider selected but no API key is set on the server; no model is used." % {"anthropic": "Anthropic", "openai": "OpenAI"}[kind]
+    elif kind in PROVIDERS:
         why = "An API key is set but AGELENS_LLM_MODEL is not; no model is used."
     else:
         why = "No model is connected; summaries are produced by fixed rules and templates."
@@ -281,6 +338,8 @@ def ad_conflicts(ev):
     """Evidence-item level contradictions in the extracted terms (rules). -> list of short descriptions."""
     out = []
     terms = ev.get("extracted_age_terms") or []
+    if any("conflict" in (t.get("flag") or "") for t in terms):
+        out.append("has age wording that contradicts itself")
     maxes = sorted({t["max_age"] for t in terms if t.get("max_age") is not None and t.get("kind") in ("max", "range")})
     mins = sorted({t["min_age"] for t in terms if t.get("min_age") is not None and t.get("kind") in ("min", "range")})
     if len(maxes) > 1:
@@ -293,9 +352,40 @@ def ad_conflicts(ev):
 
 
 def _is_preference(ev):
+    if any("unlimited" in (t.get("flag") or "") for t in ev.get("extracted_age_terms") or []):
+        return False  # "no age limit" is neither a preference nor a cap
     return ev.get("age_class") == "preference" or (
         any(t.get("kind") == "relaxable" for t in ev.get("extracted_age_terms") or [])
         and not any(t.get("kind") in ("max", "range") for t in ev.get("extracted_age_terms") or []))
+
+
+_AD_PARTS = re.compile(r"[\n。；;！？!?]|\.\s|(?=<!--)")
+
+
+def _instruction_parts(text):
+    """Parts of an ad's text that read like an instruction to a system, not like a description of the job."""
+    return [p for p in _AD_PARTS.split(text or "") if INSTRUCTION.search(p)]
+
+
+def _quotes_instruction(quotes, ev):
+    """True if a quote occurs only inside instruction-like parts of the ad."""
+    parts = _instruction_parts(ev.get("original_text"))
+    if not parts:
+        return False
+    plain = "\n".join(p for p in _AD_PARTS.split(ev.get("original_text") or "") if not INSTRUCTION.search(p))
+    bare = [q.strip("。.；;，, ") for q in quotes]
+    return any(any(q in p for p in parts) and q not in plain for q in bare)
+
+
+def _wrong_age_comparison(text, age, cited):
+    """The rules know the numbers: a statement placing the person on the wrong side of a stated maximum is not passed on."""
+    caps = [t["max_age"] for e in cited for t in e.get("extracted_age_terms") or []
+            if t.get("kind") in ("max", "range") and isinstance(t.get("max_age"), int) and "conflict" not in (t.get("flag") or "")]
+    if not caps or isinstance(age, bool) or not isinstance(age, int):
+        return False
+    if age <= min(caps):
+        return bool(_ABOVE_CAP.search(text))
+    return age > max(caps) and bool(_WITHIN_CAP.search(text)) and not re.search(r"\b(relax|exception|above|over|exceed)", text, re.I)
 
 
 def _exception_quotes(ev):
@@ -335,6 +425,8 @@ def validate_output(output, evidence, profile=None, question=""):
             drop(i, "malformed")
             continue
         text, sec, typ = s["text"].strip(), s.get("section"), s.get("type")
+        if sec == "ask" and typ == "user_stated":  # a drafted question repeats the ad's numbers too, so it is not only what the user said
+            typ = "model_inference"
         if sec not in SECTIONS or typ not in TYPES or len(text) > 700:
             drop(i, "malformed")
             continue
@@ -351,24 +443,30 @@ def validate_output(output, evidence, profile=None, question=""):
         if needs_ids and not ids:
             drop(i, "no evidence cited")
             continue
-        if any(rx.search(text) for rx in _UNSUPPORTED):
+        if any(rx.search(text) for rx in _UNSUPPORTED) or (_ELIGIBILITY.search(text) and not text.endswith("?")):
             drop(i, "unsupported claim (legal/probability/eligibility/accusation)")
             continue
         cited = [by_id[x] for x in dict.fromkeys(ids)]
         cited_text = "\n".join(e.get("original_text") or "" for e in cited)
         quote = s.get("quote") if isinstance(s.get("quote"), str) and s.get("quote").strip() else None
-        quotes = ([quote] if quote else []) + [m.group(1) for m in _QUOTED.finditer(text)]
+        # a drafted question to the employer may carry quotation marks of its own; a "quote" field is always checked
+        quotes = ([quote] if quote else []) + ([] if sec == "ask" else [m.group(1) for m in _QUOTED.finditer(text)])
         if quotes and have_text:
             bad = [q for q in quotes if q not in cited_text]
             if bad:
                 drop(i, "quoted text is not in the cited ad", quote=bad[0][:60])
                 continue
+        if typ == "ad_fact" and quotes and any(_quotes_instruction(quotes, e) for e in cited):
+            drop(i, "quoted an instruction-like line as if it were about the job")
+            continue
         user_nums = _nums(json.dumps(profile or {}, ensure_ascii=False)) | _nums(question)
         if typ == "user_stated" and (profile is not None or question):
             extra = _nums(text) - user_nums
             if extra:
                 drop(i, "number is not something the user said", numbers=sorted(extra)[:5])
                 continue
+        if sec == "ask" and not cited:  # an uncited question is still held to the numbers in the evidence
+            cited = list(by_id.values())
         if typ in ("ad_fact", "model_inference") and have_text and cited:
             # Age-like numbers (14-75) must come from the rules-extracted terms of the cited ads, not from raw ad text:
             # an injected sentence inside an ad can contain "maximum age 30" and must not become a fact.
@@ -387,8 +485,11 @@ def validate_output(output, evidence, profile=None, question=""):
             if extra:
                 drop(i, "number not found in the cited ad" + (" or profile" if typ == "model_inference" else ""), numbers=sorted(extra)[:5])
                 continue
+        if sec == "relates" and _wrong_age_comparison(text, (profile or {}).get("age"), cited):
+            drop(i, "age comparison disagrees with the rules")
+            continue
         conflicted = [e["id"] for e in cited if ad_conflicts(e)]
-        if conflicted and typ == "ad_fact" and not _CONFLICT_WORDS.search(text):
+        if conflicted and (typ == "ad_fact" or sec == "relates") and not _CONFLICT_WORDS.search(text):
             drop(i, "cited ad has conflicting age wording; statement does not say so", ids=conflicted[:5])
             report["conflicts"] += conflicted
             continue
@@ -431,6 +532,22 @@ def validate_output(output, evidence, profile=None, question=""):
 
 # ------------------------------------------------------------------ orchestration
 
+def over_daily_limit():
+    """AGELENS_LLM_MAX_CALLS_PER_DAY (unset = no limit): stops paid calls for the day, the rules answer still works. UTC day."""
+    try:
+        limit = int(os.environ.get("AGELENS_LLM_MAX_CALLS_PER_DAY") or 0)
+    except ValueError:
+        return False
+    if limit <= 0:
+        return False
+    try:
+        with db.connect() as c:
+            ensure_table(c)
+            return c.execute("SELECT COUNT(*) FROM model_calls WHERE ts >= strftime('%Y-%m-%dT00:00:00Z','now')").fetchone()[0] >= limit
+    except Exception:
+        return True  # cannot count: do not spend
+
+
 def run_explanation(llm_input, provider=None, log=True):
     """Call the configured provider (if any) and check its output. Never raises.
     -> {"ran": bool, "ok": bool, "reason": str|None, "statements": [...], "report": {...}, "prompt_version", "provider", "latency_ms"}"""
@@ -440,6 +557,10 @@ def run_explanation(llm_input, provider=None, log=True):
            "provider": provider.name, "latency_ms": None}
     if isinstance(provider, TemplateProvider):
         res["reason"] = "not_configured"
+        return res
+    if over_daily_limit():
+        res["reason"] = "daily_limit"
+        res["ran"] = True
         return res
     res["ran"] = True
     t0 = time.monotonic()
@@ -471,6 +592,7 @@ def failure_text(reason):
             "timeout": "Model not run — the model timed out, so this is the rules-based answer.",
             "network": "Model not run — the model could not be reached, so this is the rules-based answer.",
             "bad_json": "Model not run — its reply could not be read, so this is the rules-based answer.",
+            "daily_limit": "Model not run — today's model limit was reached, so this is the rules-based answer.",
             "bad_output": "Model not run — its reply failed the structure check, so this is the rules-based answer."
             }.get(reason, "Model not run — the model call failed (%s), so this is the rules-based answer." % (reason or "unknown"))
 

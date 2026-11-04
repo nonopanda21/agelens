@@ -80,7 +80,7 @@ The team's decision (2026-10-29): compare **contextual AI assistance with fixed 
 - **Design:** a within-participant crossover. Each participant does 4 fictional tasks: 2 with a fixed template, 2 with contextual AI assistance.
   - Outcomes, scored blind by raters: interpretation accuracy (primary), unsupported claims (key safety), actionable question, completion time.
   - Target: 24 participants.
-- **Status:** the study tools are built and rehearsed with a SIMULATED dry run (a script wrote the "AI" text). **No AI model is connected, no participant is recruited, no approval exists, and no results exist.**
+- **Status:** the study tools are built and rehearsed with SIMULATED dry runs (scripted sessions; in the latest, `gpt-6-luna` wrote the AI text on a local server). **No model is switched on by default, no participant is recruited, no approval exists, and no results exist.**
 
 Full plan, power analysis and dry run: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
 

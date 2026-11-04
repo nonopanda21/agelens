@@ -27,8 +27,9 @@ with sync_playwright() as p:
         pg.wait_for_selector("#f-adtext")
         for text, want in CASES:
             pg.fill("#f-adtext", text)
-            pg.click("#paste-btn")
-            pg.wait_for_timeout(700)
+            with pg.expect_response("**/api/paste/check", timeout=60000):  # a connected model takes seconds
+                pg.click("#paste-btn")
+            pg.wait_for_timeout(300)
             body = pg.inner_text("body")
             if want not in body:
                 fails.append((w, text, "missing " + want))
@@ -43,8 +44,9 @@ with sync_playwright() as p:
         if "Paste" not in pg.inner_text("body"):
             fails.append((w, "empty", "no message"))
         pg.fill("#f-adtext", "Must be under 35.")
-        pg.dblclick("#paste-btn")
-        pg.wait_for_timeout(800)
+        with pg.expect_response("**/api/paste/check", timeout=60000):
+            pg.dblclick("#paste-btn")
+        pg.wait_for_timeout(300)
         if "maximum age of 35" not in pg.inner_text("body"):
             fails.append((w, "double click", "no answer"))
         pg.goto(BASE + "/#/status")

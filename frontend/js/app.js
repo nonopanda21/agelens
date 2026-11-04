@@ -25,6 +25,10 @@
   const SCRUB_ATTR = { title: 1, 'aria-label': 1, placeholder: 1, alt: 1, 'aria-description': 1, 'aria-roledescription': 1 };
 
   /** h('div.card', {onclick}, 'text', child...) — safe DOM builder (text is never parsed as HTML; null/false kids skipped; arrays flattened). */
+  /* Copy that depends on whether the server has a model: both are in the page, CSS shows one (html[data-model]). */
+  AgeLens.byModel = (rules, model) => [AgeLens.h('span.if-rules', {}, rules), AgeLens.h('span.if-model', {}, model)];
+  fetch('/api/ai/status').then((r) => r.json()).then((s) => { if (s && s.connected) document.documentElement.dataset.model = 'on'; }).catch(() => {});
+
   AgeLens.h = function (sel, attrs, ...kids) {
     const idm = sel.match(/#([\w-]+)/);                 // 'p.hint#rvhelp' -> id="rvhelp"
     const [tag, ...cls] = sel.replace(/#[\w-]+/, '').split('.');

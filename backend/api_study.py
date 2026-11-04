@@ -294,7 +294,7 @@ def public_config(c):
             "conditions": ({"first": "Tool A", "second": "Tool B"} if is_ai() else {k: v["label"] for k, v in design(doc)["conditions"].items()}) if design(doc) else None,
             "ai_arm": {"runnable_for_real": bool(ms["connected"]) if is_ai() else None,
                        "note": ("A model is connected." if ms["connected"] else "No AI model is connected. The contextual AI arm runs only as a SIMULATED rehearsal (script-written text); formal mode is refused.") if is_ai() else None},
-            "sim_notice": study_arms.SIM_NOTICE if (mode == "simulation" and is_ai()) else None}
+            "sim_notice": study_arms.sim_notice() if (mode == "simulation" and is_ai()) else None}
 
 
 def time_limit_s(c, doc):

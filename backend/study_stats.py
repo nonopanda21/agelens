@@ -111,9 +111,10 @@ def agreement(tasks):
 def analyse(doc):
     """doc = task-level export (meta, participants, tasks) of design crossover-ai-v1 -> result dict."""
     meta, parts, tasks = doc["meta"], doc["participants"], doc["tasks"]
-    sim = bool(meta.get("simulated"))
-    out = {"design": meta.get("design"), "simulated": sim,
-           "label": ("SIMULATED: software test only. No AI model was used. Not study data, not a result, says nothing about AI." if sim
+    sim, model_used = bool(meta.get("simulated")), bool(meta.get("ai_model_used"))
+    out = {"design": meta.get("design"), "simulated": sim, "ai_model_used": model_used,
+           "label": ("SIMULATED: software test only. A real AI model wrote the AI tool's text, but the sessions were scripted. Not study data, not a result." if sim and model_used
+                     else "SIMULATED: software test only. No AI model was used. Not study data, not a result, says nothing about AI." if sim
                      else "FORMAL export (read docs/EVAL_PLAN.md before interpreting)"),
            "meta": {k: meta.get(k) for k in ("schema", "scope", "generated_at", "tasks_version", "rubric_version")}}
     ok = [p for p in parts if p.get("diff_acc", "") != ""]
@@ -175,7 +176,7 @@ def render(o):
         r = o["outcomes"][k]
         if "error" in r:
             L.append("%s: %s" % (names[k], r["error"])); continue
-        ctx = "contextual (SIMULATED script, not an AI)" if o["simulated"] else "contextual AI"
+        ctx = "contextual (scripted session, real model)" if o["simulated"] and o.get("ai_model_used") else "contextual (SIMULATED script, not an AI)" if o["simulated"] else "contextual AI"
         L.append(("%s\n   template %.3f   " + ctx + " %.3f   mean difference (contextual - template) %+.3f   95%% CI [%.3f, %.3f]   p %.4f (%s)   n=%d")
                  % (names[k], r["mean_template"], r["mean_ai"], r["mean"], r["ci95"][0], r["ci95"][1], r["p"], r["p_method"], r["n"]))
     L += ["", "Decision (primary): " + o["primary_decision"], o["safety_note"], "Secondary p, Holm-adjusted over actionable/unsupported/time: %s" % o["secondary_holm_adjusted_p"]]
@@ -187,5 +188,5 @@ def render(o):
         L.append("  %-18s n=%-4d kappa=%s raw agreement=%s" % (k, ag[k]["n_judgements"], ag[k]["kappa"], ag[k]["raw_agreement"]))
     u = ag["unsupported_count"]; L.append("  unsupported_count  n=%-4s exact agreement=%s mean abs difference=%s" % (u["n_items"], u["exact_agreement"], u["mean_abs_difference"]))
     L += ["", "Scoring status: %s" % o["scoring_status"], "",
-          "This is %s. It makes no claim about interviews, hiring, employment or GDP." % ("a SIMULATED software test; no AI model was used and the numbers are NOT results" if o["simulated"] else "an analysis of the exported data")]
+          "This is %s. It makes no claim about interviews, hiring, employment or GDP." % ("a SIMULATED software test; the sessions were scripted and the numbers are NOT results" if o["simulated"] and o.get("ai_model_used") else "a SIMULATED software test; no AI model was used and the numbers are NOT results" if o["simulated"] else "an analysis of the exported data")]
     return "\n".join(L)

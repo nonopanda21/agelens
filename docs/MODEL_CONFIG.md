@@ -13,20 +13,21 @@ Default: **Template demo** - no model, no network call. `GET /api/ai/status` ret
 ## Server-side configuration (environment only; never in front-end, exports or logs)
 | Variable | Meaning |
 |---|---|
-| `AGELENS_LLM_PROVIDER` | `template` (default) or `anthropic`; if unset, `anthropic` is chosen only when a key is present |
-| `ANTHROPIC_API_KEY` or `AGELENS_LLM_API_KEY` | key (never returned by any endpoint, never in errors or the log table) |
+| `AGELENS_LLM_PROVIDER` | `template` (default), `anthropic` or `openai`; if unset, chosen from whichever key is present (`anthropic` first) |
+| `AGELENS_LLM_API_KEY`, or `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` | key (never returned by any endpoint, never in errors or the log table) |
 | `AGELENS_LLM_MODEL` | model id (required; no default is hard-coded) |
-| `AGELENS_LLM_TIMEOUT` | seconds, default 30 |
-| `AGELENS_LLM_BASE_URL` | override of `https://api.anthropic.com/v1/messages` |
+| `AGELENS_LLM_TIMEOUT` | seconds, default 30 (use 40 for `gpt-6-luna`, which took 5 to 13 s in testing; the page waits 45 s) |
+| `AGELENS_LLM_BASE_URL` | override of the provider's default endpoint |
+| `AGELENS_LLM_MAX_CALLS_PER_DAY` | stops model calls for the UTC day after this many; the rules answer keeps working. Unset = no limit. Set it on any public server |
 | `AGELENS_LLM_PRICE_IN_PER_MTOK`, `AGELENS_LLM_PRICE_OUT_PER_MTOK` | USD per million tokens; cost is stored only if both are set AND the API returned token counts |
 
-Connected only when provider, key and model id are all set. The Anthropic provider uses urllib (Messages API). It is **not exercised against the real API in this build** (no key, no spend); tests inject a mocked HTTP layer.
+Connected only when provider, key and model id are all set. Both providers use urllib; unit tests inject a mocked HTTP layer. The OpenAI provider was run for real on a local server on 2026-11-03 with `gpt-4o-mini`, `gpt-4.1`, `gpt-5.4-mini` and `gpt-6-luna` (chosen). The Anthropic provider has never been run against the real API.
 
 ## Data boundary
 Ads and CVs are DATA. They are sent only as JSON string fields inside a `BEGIN_DATA_JSON ... END_DATA_JSON` block in the user message (`<`/`>` escaped); the instructions live in the system prompt. Only the question, the user-confirmed structured profile (age, occupation, years, skills/summary lines, region, education) and at most 12 ads (first 1500 chars each) are sent. CV files and full CV text never reach the adapter.
 
 ## Prompts
-`backend/prompts/explain_v1.txt`, header `# prompt_version: explain_v1`; recorded with every call. Change = new file (`explain_v2.txt`) + `PROMPT_FILE`.
+`backend/prompts/explain_v2.txt`, header `# prompt_version: explain_v2` (v1 kept for the record); recorded with every call. Change = new file (`explain_v2.txt`) + `PROMPT_FILE`.
 
 ## model_calls table (created if absent, in the app DB)
 `ts, provider, model, prompt_version, latency_ms, status (ok|failed), failure_reason, input_tokens, output_tokens, cost_usd`. Never stores question, CV or ad text. Cost is NULL unless computed from real token usage x configured price.

@@ -11,7 +11,7 @@
   AL.home.sections.push({ id: 'how', order: 20, rail: 'How it works', render(el) {
     el.append(h('div.wrap.xs', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'How it works'),
-        h('p', {}, 'Three steps, a few minutes. Fixed rules read the wording; no AI model is connected yet, and nothing is decided for you.')),
+        h('p', {}, 'Three steps, a few minutes. ', AgeLens.byModel('Fixed rules read the wording; no AI model is connected yet, and nothing is decided for you.', 'Fixed rules read the wording, an AI model adds an explanation that code checks, and nothing is decided for you.'))),
       h('ol.xst', {}, STEPS.map(([t, p], i) => h('li.xst-i.reveal', { style: `--d:${i * 80}ms` }, h('span.xst-n', {}, String(i + 1).padStart(2, '0')), h('h3', {}, t), h('p', {}, p)))),
       h('p.xst-cta.reveal', {}, h('a.xbtn.xbtn-lg', { href: '#/seeker' }, 'Check an ad'))));
   } });

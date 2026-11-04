@@ -152,3 +152,7 @@ html{scroll-padding-top:92px}
 @media (max-width:640px){html{scroll-padding-top:76px}}
 /* phones: footer links and the animation toggle are comfortable to tap (at least 40px tall) */
 @media (max-width:640px){.foot-links a,.foot .motion-toggle,.xf-col a,.xf-bar .motion-toggle{display:inline-block;padding:10px 6px;min-height:40px}}
+
+.if-model{display:none}
+html[data-model=on] .if-model{display:inline}
+html[data-model=on] .if-rules{display:none}

@@ -1,0 +1,157 @@
+{
+ "design": "crossover-ai-v1",
+ "simulated": true,
+ "label": "SIMULATED: software test only. No AI model was used. Not study data, not a result, says nothing about AI.",
+ "meta": {
+  "schema": "export-ai-v1",
+  "scope": "simulated",
+  "generated_at": "2026-11-04T05:00:12Z",
+  "tasks_version": "tasks-v0.2-draft",
+  "rubric_version": "rubric-ai-v0.1-draft"
+ },
+ "n": {
+  "enrolled": 8,
+  "analysed_primary": 8,
+  "withdrawn": 0,
+  "dropouts": 0,
+  "incomplete": 0,
+  "excluded_unscored_or_unresolved": 0,
+  "by_sequence": {
+   "AB-S1": 2,
+   "AB-S2": 2,
+   "BA-S1": 2,
+   "BA-S2": 2
+  }
+ },
+ "outcomes": {
+  "accuracy": {
+   "n": 8,
+   "mean": -0.1666,
+   "sd": 0.0704,
+   "ci95": [
+    -0.2083,
+    -0.1145
+   ],
+   "p": 0.0078,
+   "p_method": "exact (2^8 sign patterns)",
+   "mean_template": 0.375,
+   "mean_ai": 0.2083
+  },
+  "actionable": {
+   "n": 8,
+   "mean": 0.25,
+   "sd": 0.2673,
+   "ci95": [
+    0.0625,
+    0.4375
+   ],
+   "p": 0.125,
+   "p_method": "exact (2^8 sign patterns)",
+   "mean_template": 0.0,
+   "mean_ai": 0.25
+  },
+  "unsupported": {
+   "n": 8,
+   "mean": 0.0,
+   "sd": 0.5345,
+   "ci95": [
+    -0.375,
+    0.375
+   ],
+   "p": 1.0,
+   "p_method": "exact (2^8 sign patterns)",
+   "mean_template": 0.25,
+   "mean_ai": 0.25
+  },
+  "time": {
+   "n": 8,
+   "mean": 0.0,
+   "sd": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "p_method": "exact (2^8 sign patterns)",
+   "mean_template": 0.0,
+   "mean_ai": 0.0
+  }
+ },
+ "primary_decision": "NO EVIDENCE OF BENEFIT (accuracy): needs mean difference >= +0.10 AND CI lower bound > 0 AND p < 0.05; got -0.167, CI [-0.208, -0.115], p 0.0078. This is not evidence that the AI does not help.",
+ "primary_benefit": false,
+ "secondary_holm_adjusted_p": {
+  "actionable": 0.375,
+  "unsupported": 1.0,
+  "time": 1.0
+ },
+ "safety_signal": false,
+ "safety_note": "No safety signal under the pre-specified rule (CI lower bound of the unsupported-claims difference is not above 0); with a small N this is weak reassurance.",
+ "order_check_descriptive": {
+  "mean_diff_template_first": -0.1458,
+  "mean_diff_ai_first": -0.1875,
+  "n": [
+   4,
+   4
+  ],
+  "note": "A large gap suggests a period or carryover effect; descriptive only."
+ },
+ "accuracy_by_task_and_tool_DESCRIPTIVE": {
+  "T1/ai_contextual": {
+   "tasks": 4,
+   "mean": 0.0
+  },
+  "T1/template": {
+   "tasks": 4,
+   "mean": 0.333
+  },
+  "T2/ai_contextual": {
+   "tasks": 4,
+   "mean": 0.25
+  },
+  "T2/template": {
+   "tasks": 4,
+   "mean": 0.5
+  },
+  "T3/ai_contextual": {
+   "tasks": 4,
+   "mean": 0.583
+  },
+  "T3/template": {
+   "tasks": 4,
+   "mean": 0.333
+  },
+  "T4/ai_contextual": {
+   "tasks": 4,
+   "mean": 0.0
+  },
+  "T4/template": {
+   "tasks": 4,
+   "mean": 0.333
+  }
+ },
+ "inter_rater_R1_R2": {
+  "fact_bits": {
+   "n_judgements": 80,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "question_criteria": {
+   "n_judgements": 96,
+   "kappa": 1.0,
+   "raw_agreement": 1.0
+  },
+  "unsupported_count": {
+   "n_items": 24,
+   "exact_agreement": 1.0,
+   "mean_abs_difference": 0.0
+  }
+ },
+ "scoring_status": {
+  "items_disagreement": 0,
+  "unresolved": 0,
+  "adjudicated": 0,
+  "missing_answers": 8,
+  "timed_out": 0,
+  "model_failures": 8
+ }
+}

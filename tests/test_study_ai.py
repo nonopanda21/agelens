@@ -418,6 +418,14 @@ class Flow(Base):
             self.assertEqual(self.c("POST", "/api/study/rater/score", body, self.rater(who))[0], 409)   # no edits
             n += 1
 
+    def test_export_skips_sessions_of_the_retired_parallel_design(self):
+        code, hdr, _ = self.enrol()
+        with S.conn() as c:
+            c.execute("UPDATE study_participants SET arm='template' WHERE code=?", (code,))
+        st, ex = self.c("GET", "/api/study/export", None, ST)
+        self.assertEqual(st, 200, ex)
+        self.assertEqual(ex["participants"], [])
+
     def test_full_scoring_resolution_and_export_numbers(self):
         self.fill(4)
         for w in RATERS:

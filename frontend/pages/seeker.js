@@ -86,7 +86,7 @@
   }
   const PROBLEM = {
     unreachable: ['The server could not be reached', 'Check that AgeLens is still running on this computer, then try again. Your answers are still in the form.'],
-    timeout: ['The server took too long to answer', 'It did not respond within 30 seconds. Nothing was lost; your answers are still in the form. Try again.'],
+    timeout: ['The server took too long to answer', 'It did not respond in time. Nothing was lost; your answers are still in the form. Try again.'],
     server: ['The server hit an error', 'This is a fault on our side, not something you did. Your answers are kept. Try again; if it repeats, tell the people running this demo.'],
     parse: ['The reply could not be read', 'The server answered, but not in a form this page understands. Your answers are kept. Try again.'],
     session: ['Your session or access key is missing or has expired', 'Reload the page and try again. Anything you typed in this tab is kept; a human-review request may need to be submitted again.'],
@@ -282,7 +282,7 @@
   }
   function renderAnswer(loading) {
     const box = $('answer'); if (!box) return;
-    if (loading) return box.replaceChildren(h('div.answer', { 'aria-busy': 'true' }, h('p.hint', { role: 'status' }, S.mode === 'paste' || S.results ? 'Building your answer…' : 'Finding similar ads, then building your answer…'), h('div.skel', { 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))));
+    if (loading) return box.replaceChildren(h('div.answer', { 'aria-busy': 'true' }, h('p.hint', { role: 'status' }, S.mode === 'paste' || S.results ? 'Building your answer…' : 'Finding similar ads, then building your answer…', AgeLens.byModel('', ' With the AI model this usually takes about 10 seconds.')), h('div.skel', { 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))));
     const paste = S.mode === 'paste';
     if (S.problem) return box.replaceChildren(h('div.answer', {}, demoNote(), problemBox(S.problem, paste && S.problem.kind === 'rejected' ? null : () => (paste ? runPaste() : run(S.page, { keepBroadened: true }))), paste ? h('p.hint', {}, 'Nothing was stored. The text you pasted is still in the box above.') : null));
     const r = S.results;
@@ -636,7 +636,7 @@
     ta.value = S.demoAd ? '' : S.paste;
     return h('div.form-block.paste-block', { id: 'paste-box' },
       h('h2', {}, stepNo(1), h('label', { for: 'f-adtext', style: 'font-size:inherit;margin:0;display:inline' }, 'Paste the ad you are looking at')),
-      h('p.sub', { id: 'paste-hint' }, 'Paste the ad, or just its requirements. It is checked in memory and never saved. Anything in it that looks like an instruction is ignored.'),
+      h('p.sub', { id: 'paste-hint' }, 'Paste the ad, or just its requirements. ', AgeLens.byModel('It is checked in memory and never saved.', 'AgeLens checks it in memory and never saves it, but the ad text and your question are sent to the AI provider to write part of the answer. Leave out personal details.'), ' Anything in it that looks like an instruction is ignored.'),
       ta,
       h('div.hint', { id: 'paste-count', 'aria-live': 'polite' }, S.paste.length + ' / ' + PASTE_MAX + ' characters'),
       h('p.err-text', { id: 'paste-err', role: 'alert' }));

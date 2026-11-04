@@ -16,11 +16,7 @@ PASTE_ID = "PASTED"
 PASTE_LABEL = "Pasted text, not stored"
 # Wording that looks like an instruction to a system/model. Used ONLY to show the user a note that such lines are
 # ignored; it is not a security boundary (nothing in the pasted text is ever followed, matched or not).
-_INSTRUCTION = re.compile(
-    r"(ignore|disregard|forget|override)\b.{0,40}\b(instruction|prompt|rule|above|previous|schema)"
-    r"|\b(system|assistant|developer)\s*[:：\]]|\[\s*system\s*\]|</?\s*(ad|system|data|prompt)\s*>|<!--"
-    r"|\bapprove[ds]?\b|\byou are now\b|\bskip (all )?checks\b|\boutput the\b|\btoken\b|\bprobability\b"
-    r"|忽略|无视|现在你是|批准|一定会被录用|通过资格|请声明|替换为|发送到|改写为", re.I)
+_INSTRUCTION = llm.INSTRUCTION
 
 
 def _looks_binary(text):

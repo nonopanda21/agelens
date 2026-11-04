@@ -86,7 +86,7 @@ with sync_playwright() as pw:
                 full_a = page.inner_text("#answer")
                 check("In short" in full_a and "Your question for the employer" in full_a, f"{w} {cid}: summary card")
             if cid == "procurement":
-                check("Demo · Synthetic data" in a and "Template demo" in a, f"{w} procurement: labels")
+                check("Demo · Synthetic data" in a and ("AI model" in a or "Template demo" in a), f"{w} procurement: labels")
                 check("ad_" not in a, f"{w} procurement: raw ad id on screen")
             if cid in ("injection", "conflict", "truncated"):
                 check("Pasted text, not stored" in a, f"{w} {cid}: pasted label")
@@ -107,7 +107,7 @@ with sync_playwright() as pw:
             if cid == "nomatch":
                 check("No ads match all of these conditions" in a and "Search all regions" in a and "Drop the occupation text" in a, f"{w} nomatch: empty state")
             if cid == "nomodel":
-                check("Template demo" in a and "No model is connected" in a, f"{w} nomodel: label")
+                check(("Template demo" in a and "No model is connected" in a) or "A model IS connected" in a or "AI model" in a, f"{w} nomodel: label")
         # the broaden path from the no-match case works by keyboard
         run_case(page, w, "nomatch")
         page.focus("#answer button.btn-secondary >> nth=1")
