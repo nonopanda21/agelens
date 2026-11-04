@@ -208,7 +208,7 @@
     const tokens = AgeLens.ownerTokens.all(), codes = Object.keys(tokens);
     const personal = !!AgeLens.access.invite && AgeLens.session.info().personal;  // public demo, personal invite code
     const wrap = h('div.wrap.section.rq', {}, h('h1', {}, 'Human ', h('span.ink-pink', {}, 'review')),
-      h('p.lead.rq-intro', {}, 'Questions you sent to a person on the course team, and their replies. A reviewer reads the ads and your question, then separates what the ad text supports from what still needs checking.'),
+      h('p.lead.rq-intro', {}, 'Course demo: a reply is not guaranteed, and on the public site a request can be lost when the server restarts. Questions you sent to a person on the course team, and their replies. A reviewer reads the ads and your question, then separates what the ad text supports from what still needs checking.'),
       personal ? h('p.hint.rq-lede', {}, 'Requests you send with your personal invite code are kept on the code, so they open in any browser where you enter it. Requests sent from this browser earlier are listed too.')
         : h('p.hint.rq-lede', {}, 'Requests sent from this browser are listed here. Only this browser can open them: the access key stays here and cannot be recovered.'));
     el.replaceChildren(wrap);

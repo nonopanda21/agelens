@@ -41,8 +41,6 @@ body.nav-scrolled .nav{box-shadow:0 1px 0 rgba(74,55,40,.08)}
 .nav nav a.nav-cta:hover{background:var(--btn-hover);color:var(--brown)}
 .nav nav a.nav-cta[aria-current="page"]{background:var(--pink);text-decoration:none;box-shadow:inset 0 0 0 2px #fff,var(--shadow-sm)}
 /* the course team's desk: present, but quieter than the jobseeker's pages */
-.nav nav a.nav-reviewer{font-size:.86rem;position:relative;margin-left:8px}
-.nav nav a.nav-reviewer::before{content:"";position:absolute;left:-5px;top:25%;bottom:25%;width:1.5px;background:rgba(74,55,40,.25)}
 /* "Pause animation" toggle: a quiet text link in the footers */
 .motion-toggle{font:inherit;font-size:.85rem;color:var(--text-light);background:none;border:0;padding:2px 4px;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
 .motion-toggle:hover{color:var(--brown)}
@@ -134,7 +132,7 @@ details:not(.xfaq-i):not(.faq-item)>summary:hover{color:var(--pink-ink)}
   body.nav-open .nav{background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:2px solid var(--brown);box-shadow:0 6px 0 rgba(74,55,40,.08)}
   .nav nav a,.nav .nav-qc{display:block;padding:12px 14px;font-size:1.02rem;border-radius:12px;text-align:left}
   .nav nav a.nav-cta{order:-1;margin:0 0 6px;text-align:center;font-size:1.2rem}
-  .nav nav a.nav-reviewer{margin-left:0;font-size:.95rem}.nav nav a.nav-reviewer::before{display:none}
+  
   .nav .nav-qc:not([hidden]){display:block;font:inherit;font-size:1.02rem;color:var(--brown);background:var(--yellow-soft);border:0;cursor:pointer;margin-top:4px}
   .nav nav a.nav-access{margin:6px 0 0;max-width:none;text-align:left}
   /* the product's action stays one tap away beside Menu, so the list does not repeat it */

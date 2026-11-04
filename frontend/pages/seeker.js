@@ -310,6 +310,7 @@
           box.hidden = false; ev.currentTarget.setAttribute('aria-expanded', 'true');
           AgeLens.reportPanel(box, S.briefBody).then(() => { const t = box.querySelector('h3'); if (t) { t.setAttribute('tabindex', '-1'); t.focus(); } });
         } }, 'Full report ', h('span.badge.pro-badge', {}, 'Pro')) : null,
+        paste ? h('a.btn.btn-secondary', { href: '#/pro' }, 'Full report ', h('span.badge.pro-badge', {}, 'Pro')) : null,
         paste ? h('button.btn.btn-secondary', { type: 'button', title: 'A pasted ad is never stored, so a reviewer looks at similar example ads instead', onclick: askAboutSimilar }, 'Ask a reviewer about similar ads') :
         h('button.btn.btn-secondary', { type: 'button', onclick: () => { const r5 = $('review-sec'); if (r5) { r5.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth' }); const t = $('clar') || r5.querySelector('h2'); if (t) { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); } } } }, 'Ask a human reviewer')),
       h('section.pro-panel#pro-panel', { hidden: true, 'aria-label': 'Full report' })));
@@ -518,7 +519,7 @@
       };
       return box.replaceChildren(h('div.problem.soft', { role: 'status' }, h('h3#submitted-h', { tabindex: '-1' }, 'Request submitted'),
         h('p', {}, 'Request number: ', h('strong', {}, S.submit.code), S.submit.status === 'pending' ? ' · waiting for a reviewer' : S.submit.status ? ' · status: ' + S.submit.status : ''),
-        h('p', {}, 'A course reviewer will reply here. Find it under ', h('a', { href: '#/requests' }, 'Human review'), '.'),
+        h('p', {}, 'A course reviewer will reply here if one is available. Find it under ', h('a', { href: '#/requests' }, 'Human review'), '. This is a course demo: a reply is not guaranteed, and on the public site a request can be lost when the server restarts.'),
         S.submit.existing ? h('p', {}, 'This was already submitted earlier, so no second request was made.')
           : S.submit.onInvite ? h('p.hint', {}, 'It is kept on your personal invite code, so it opens in any browser where you enter the code.')
           : h('p.hint', {}, 'Only this browser can open it: its access key is saved here, so clearing site data removes access.'),

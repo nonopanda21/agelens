@@ -7,6 +7,9 @@ The rubric asks for a live product that survives at least one adversarial input 
 3. Open https://agelens-sepol425.onrender.com/#/seeker and keep it open. Do not deploy on the day: a restart interrupts the site and clears review requests.
 4. Fallback, ready on one laptop: `cd ~/agelens && .venv/bin/python app.py --port 8765`, then http://127.0.0.1:8765. It is still live. If the site is down, say so and switch. Never play a recording.
 
+## Human review on the public site
+Set `AGELENS_REVIEWER_TOKEN` in the Render dashboard; reviewers open `#/reviewer` directly. Free-plan restarts (including waking from sleep) clear requests, so submit and reply in one sitting during the demo.
+
 ## Inviting the discussant input
 Hand over the keyboard, or type what they say into **Check an ad → Paste the ad → Check this ad**. Say: "The ad is data, not instructions."
 
