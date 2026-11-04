@@ -3,7 +3,7 @@ Never logs bodies, CV text, pasted ad text or questions (the server logger recor
 import re
 import unicodedata
 
-from . import ageparse, ageparse_en, brief, cv, gloss, llm
+from . import ageparse, ageparse_en, brief, cv, gloss, llm, two_reports
 from .server import HTTPError, Response  # noqa: F401  (HTTPError used below)
 
 # ---- pasted ad text (live adversarial exchange: someone hands you an ad) --------------------------------------
@@ -150,6 +150,7 @@ def check_pasted(body, allow_model=True):
         note.append("> Wording that looks like an instruction was found and NOT followed (quoted as text only): "
                     + "; ".join("`%s`" % x.replace("`", "'") for x in b["pasted"]["instruction_like_en"]))
     b["markdown"] = brief.to_markdown(b).replace("\n## ", "\n" + "\n".join(note) + "\n\n## ", 1)
+    b["reports"] = two_reports.build(b)
     return b
 
 

@@ -299,6 +299,7 @@
       S.broadened.length ? h('p.answer-note', { role: 'status' }, 'You broadened this search: ' + S.broadened.join(', ') + '.') : null,
       b.insufficient && !paste ? h('p.answer-note', { role: 'status' }, 'Only ' + b.scope.ads_analysed + (b.scope.ads_analysed === 1 ? ' similar ad was' : ' similar ads were') + ' found, too few to describe a pattern. Below is only what those ads say.') : null,
       summaryCard(b),
+      paste && b.reports ? twoReports(b.reports) : null,
       h('h3.answer-more-h', {}, 'The full answer'),
       b.headings.map((hd) => section(hd, b.answer[hd.key], idx, paste)),
       provenance(b),
@@ -315,6 +316,50 @@
         h('button.btn.btn-secondary', { type: 'button', onclick: () => { const r5 = $('review-sec'); if (r5) { r5.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth' }); const t = $('clar') || r5.querySelector('h2'); if (t) { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); } } } }, 'Ask a human reviewer')),
       h('section.pro-panel#pro-panel', { hidden: true, 'aria-label': 'Full report' })));
   }
+  async function copyText(text) {
+    let ok = false;
+    try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); ok = true; } } catch (e) { ok = false; }
+    if (!ok) {   // fallback: a temporary textarea and execCommand (http on a LAN, older browsers)
+      const t = h('textarea', { 'aria-hidden': 'true', style: 'position:fixed;top:0;left:0;opacity:0' }); t.value = text; document.body.append(t); t.select();
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      t.remove();
+    }
+    return ok;
+  }
+  /** Two reports on the same evidence, one button each. The AI button says why when there is no AI report; nothing stands in for it. */
+  function twoReports(rep) {
+    const panel = h('div.tr-panel#tr-panel', { hidden: true, tabindex: '-1' });
+    const list = (title, items) => (items && items.length ? [h('h4', {}, title), h('ul', {}, items.map((x) => h('li', {}, x)))] : null);
+    const show = (r, btn) => {
+      btns.forEach((x) => x.setAttribute('aria-expanded', String(x === btn)));
+      const said = h('span.hint', { 'aria-live': 'polite' });
+      const copy = async () => { said.textContent = (await copyText(r.question)) ? 'Copied. Edit it before you send it.' : 'Could not copy. Select the text and copy it yourself.'; };
+      panel.replaceChildren(...[
+        h('h3', {}, r.title), h('p.hint', {}, r.written_by),
+        r.reading ? [h('h4', {}, 'Reading'), h('p', {}, r.reading)] : null,
+        list('What the ad states', r.stated), list('How it relates to you', r.related), list('What the ad leaves open', r.unclear), list('Checklist', r.checklist),
+        h('h4', {}, 'Question for the employer'),
+        r.question ? h('p.tr-q', {}, r.question) : h('p', {}, 'No question passed the code check.'),
+        r.removed ? h('p.hint', {}, 'The code check removed ' + r.removed + ' AI statement' + (r.removed === 1 ? '' : 's') + ' from this report.') : null,
+        list('Evidence from the rules (the same in both reports)', rep.evidence.length ? rep.evidence : ['The rules found no age wording.']),
+        h('div.answer-actions.no-print', {},
+          h('button.btn.btn-primary', { type: 'button', onclick: () => saveMd(r.markdown, r.filename) }, 'Download this report (Markdown)'),
+          r.question ? h('button.btn.btn-secondary', { type: 'button', onclick: copy }, 'Copy the question') : null, said),
+      ].flat(Infinity).filter(Boolean));
+      panel.hidden = false; panel.focus({ preventScroll: true });
+    };
+    const choice = (r, blurb) => {
+      const btn = h('button.tr-btn', { type: 'button', disabled: !r.available, 'aria-expanded': 'false', 'aria-controls': 'tr-panel', onclick: () => show(r, btn) },
+        h('strong', {}, r.title), h('span', {}, r.available ? blurb : 'Not available here'));
+      return btn;
+    };
+    const btns = [choice(rep.template, 'A fixed form filled in by rules. No AI.'), choice(rep.ai, 'Uses your background too. Checked by code.')];
+    return h('section.tr.no-print', { 'aria-label': 'Two reports on this ad' },
+      h('h3', {}, 'Two reports from the same evidence'),
+      h('div.tr-btns', {}, btns),
+      rep.ai.available ? null : h('p.hint', {}, rep.ai.reason),
+      panel);
+  }
   /** The top of the answer: what the ad(s) state, how that relates to you (no eligibility wording), and one question to send. */
   function summaryCard(b) {
     const sm = b.summary, eq = b.employer_question;
@@ -322,13 +367,7 @@
     const qText = eq ? (LB().en(eq.text_en) || eq.text) : '';
     const said = h('span.sum-copied', { 'aria-live': 'polite' });
     const copy = async () => {
-      let ok = false;
-      try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(qText); ok = true; } } catch (e) { ok = false; }
-      if (!ok) {   // fallback: a temporary textarea and execCommand (http on a LAN, older browsers)
-        const t = h('textarea', { 'aria-hidden': 'true', style: 'position:fixed;top:0;left:0;opacity:0' }); t.value = qText; document.body.append(t); t.select();
-        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-        t.remove();
-      }
+      const ok = await copyText(qText);
       said.textContent = ok ? 'Copied. Edit it before you send it.' : 'Could not copy. Select the text and copy it yourself.';
     };
     return h('section.sum-card', { 'aria-labelledby': 'sum-h' },
@@ -406,9 +445,11 @@
 
   /* ---------- downloads ---------- */
   function downloadMd(b) {
-    const md = b.markdown || '# AgeLens brief\n\nMarkdown was not provided by the server.';
+    saveMd(b.markdown || '# AgeLens brief\n\nMarkdown was not provided by the server.', 'agelens-brief.md');
+  }
+  function saveMd(md, name) {
     const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
-    const a = h('a', { href: url, download: 'agelens-brief.md' }); document.body.append(a); a.click(); a.remove();
+    const a = h('a', { href: url, download: name }); document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
   function printBrief() {

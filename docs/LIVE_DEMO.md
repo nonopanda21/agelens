@@ -16,6 +16,8 @@ What changes on stage:
 - If the model fails, times out or hits the daily limit, the page says "Model not run" and shows the rules answer. That is the fallback; it is not a crash.
 - Model off (key removed) gives the same page with the label "Template demo".
 
+**Two report buttons.** After Check this ad, the answer offers **Fixed template report** and **AI report**, from the same evidence. They show what each arm of the planned evaluation writes; open one, then the other. The AI report reuses the checked model sentences, so it makes no second paid call. With the model off, the AI button is disabled and the page says why. They are examples, not evaluation results.
+
 Lines to say: "Rules read the wording. The model only explains. Code removes statements it can catch: an invented number, a quote not in the ad, an eligibility claim." And: "That check is not a guarantee, and we have not tested whether this helps anyone."
 
 Do not show the file `data/study/dryrun_2026-11-03_luna/SIMULATED_analysis.txt` as a result. It prints "EVIDENCE OF BENEFIT" from scripted sessions with no participants.
