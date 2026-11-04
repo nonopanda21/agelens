@@ -56,12 +56,14 @@ class PasteUnitTests(unittest.TestCase):
         self.assertIn("NOT followed", b["markdown"])
         self.assertNotIn("Demo · Synthetic data", b["markdown"])
 
-    def test_english_only_text_is_refused_not_read_as_no_limit(self):
-        # the rules read Chinese wording; an English ad must not come back as "no age requirement"
-        with self.assertRaises(api_seeker.HTTPError) as cm:
-            self.check("Operations manager. Applicants must be under 35 years old.")
-        self.assertEqual(cm.exception.status, 422)
-        self.assertIn("Chinese", str(cm.exception))
+    def test_english_ad_is_read_and_labelled(self):
+        b = self.check("Operations manager. Applicants must be under 35 years old.")
+        self.assertEqual((b["pasted"]["age_status"], b["pasted"]["age_class"]), ("explicit", "hard_cap"))
+        self.assertTrue(any("not been measured" in n for n in b["pasted"]["reading_notes"]))
+
+    def test_unreadable_age_is_unclear_not_none(self):
+        for t in ("年龄35-25岁", "年 龄 3 5 岁 以 下", "年龄999岁以下", "Our age policy is decided at interview."):
+            self.assertEqual(self.check(t)["pasted"]["age_status"], "uncertain", t)
 
     def test_conflicting_limits_are_not_called_no_maximum(self):
         b = self.check("运营经理。年龄35岁以下。……任职要求：年龄40岁以内。")
@@ -261,4 +263,4 @@ class QuickCheckTests(unittest.TestCase):
         # the reading is unchanged and the line comes back only as a verbatim quote
         self.assertEqual((r["age_class"], r["age_status"]), ("hard_cap", "explicit"))
         self.assertTrue(all(t["snippet"] in line for t in r["terms"]))
-        self.assertEqual(set(r), {"age_class", "age_status", "rule_version", "terms", "stored"})
+        self.assertEqual(set(r), {"age_class", "age_status", "rule_version", "reading_notes", "terms", "stored"})

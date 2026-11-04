@@ -76,7 +76,7 @@ try:
     tokens = json.dumps({made["code"]: made["token"]})
     ROUTES = [("home", "#/"), ("why", "#/why"), ("findings", "#/findings"), ("seeker", "#/seeker"), ("evidence", "#/evidence/" + ev_id),
               ("requests", "#/requests"), ("request_detail", "#/requests/" + made["code"]), ("reviewer", "#/reviewer"),
-              ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("access", "#/access"), ("pro", "#/pro")]
+              ("study", "#/study"), ("score", "#/study/score"), ("about", "#/about"), ("status", "#/status"), ("access", "#/access"), ("pro", "#/pro")]
 
     with sync_playwright() as pw:
         br = pw.chromium.launch(args=["--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"])

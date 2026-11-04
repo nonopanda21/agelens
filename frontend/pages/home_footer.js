@@ -26,7 +26,7 @@
       h('div.wrap.xf-inner', {},
         h('div.xf-brand', {}, h('p.xf-logo', {}, 'AgeLens'), h('p.xf-tag', {}, 'An evidence-grounded clarification assistant for mid-career jobseekers.')),
         col('Product', [['Check an ad', '#/seeker'], ['Human review', '#/requests'], ['Full report', '#/pro'], ['Reviewer', '#/reviewer']]),
-        col('Project', [['Why it matters', '#/why'], ['Findings', '#/findings'], ['Method and sources', '#/about'], ['Study tools', '#/study'], ['Scoring', '#/study/score']]),
+        col('Project', [['Why it matters', '#/why'], ['Findings', '#/findings'], ['Method and sources', '#/about'], ['Project status', '#/status'], ['Study tools', '#/study'], ['Scoring', '#/study/score']]),
         h('div.xf-col', {}, h('p.xf-h', {}, 'About'), note)),
       h('div.xf-bar', {}, h('div.wrap', {}, h('span', {}, 'AgeLens · course prototype'), AL.motionToggle(), barData)));
     el.append(foot);

@@ -232,7 +232,10 @@ class Handler(BaseHTTPRequestHandler):
 def serve(host="127.0.0.1", port=8765):
     db.init_schema()
     load_routes()
-    httpd = ThreadingHTTPServer((host, port), Handler)
+    class Server(ThreadingHTTPServer):
+        request_queue_size = 128     # the default of 5 resets connections when a classroom opens the page at once
+        daemon_threads = True
+    httpd = Server((host, port), Handler)
     reviewer_token()  # local: make sure the demo reviewer token exists before anyone needs it (public: env only)
     src = "env AGELENS_REVIEWER_TOKEN" if os.environ.get("AGELENS_REVIEWER_TOKEN") else str(db.DATA_DIR / "reviewer_token")
     print(f"AgeLens running at http://{host}:{port}  (Ctrl+C to stop)")

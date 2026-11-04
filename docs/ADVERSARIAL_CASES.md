@@ -40,3 +40,6 @@ count as a stated maximum/minimum; 年龄不限 (`unlimited`) is no longer count
 Known limit: the "looks like an instruction" list is a regex for the user-facing note only; it is not the safety
 boundary (nothing in pasted text is followed whether or not it matches). A connected model's failure (API error)
 cannot be shown live without server configuration; it is covered by the API1-3 unit tests only.
+
+## English and unreadable input (2026-11-03; tests/test_ageparse_en.py, scripts/demo_preflight.py)
+English pasted text used to be refused with 422. It is now read by `backend/ageparse_en.py` (`age-en-1.1.0`, accuracy not measured, labelled on the page). Text that mentions age in a way no rule can read (年龄35-25岁, 年 龄 3 5 岁, Age under 999, "Our customers are under 35") is "unclear", not "no age requirement". Only pasted and one-line checks use this; `scripts/real_aggregate.py` and stored ads still use `ageparse.parse_age` alone. Known limits: docs/LIVE_DEMO.md.

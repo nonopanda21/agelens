@@ -380,6 +380,7 @@
         hidden ? h('p.hint', {}, hidden === p.instruction_like.length ? hidden + (hidden === 1 ? ' line' : ' lines') + ' in Chinese, not repeated here: this interface shows English only.'
           : 'And ' + hidden + ' more ' + (hidden === 1 ? 'line' : 'lines') + ' in Chinese, not repeated here: this interface shows English only.') : null));
     }
+    (p.reading_notes || []).forEach((x) => out.push(h('p.answer-note', { role: 'note' }, x)));
     const en = (list) => (Array.isArray(list) ? list.map((x) => LB().en(x)).filter(Boolean) : []);
     const tr = en(p.truncated_en), cf = en(p.conflict_en);
     if (p.truncated && p.truncated.length) out.push(h('p.answer-note', { role: 'note' }, 'The text seems to stop in the middle of an age condition' + (tr.length ? ' (“' + tr[0] + '”)' : '') + '. No age limit was read from the cut-off part. Ask for the full ad.'));

@@ -68,7 +68,7 @@
     lineForm.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c && lc) { lineIn.value = ''; lc.readExample(lineOut, +c.dataset.ex); } });
     const check = h('section.xh-check', { 'aria-labelledby': 'xh-check-h' },
       h('h2#xh-check-h', {}, 'Check one line'),
-      h('p.xh-check-note', {}, 'Paste it as the ad writes it, in Chinese. Fixed rules read the wording; nothing you paste is stored.'),
+      h('p.xh-check-note', {}, 'Paste it in Chinese or English. Fixed rules read the wording; nothing you paste is stored.'),
       lineForm, lineOut,
       h('a.xh-check-more', { href: '#/seeker' }, 'Ask about your situation', h('span.xarrow', { 'aria-hidden': 'true' }, ' →')));
     const art = h('div.xh-art'); art.innerHTML = DOODLE;

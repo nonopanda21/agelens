@@ -82,6 +82,17 @@ _WHO = [
 _TO = re.compile(r"(?:放宽|放宽至|放宽到|放宽为)\s*(?:至|到)?\s*(\d{2})\s*(?:周岁|岁)?")
 
 
+_WHO_EN = re.compile(r"\b(outstanding|excellent|exceptional|strong|experienced|senior|qualified)\s+(?:candidates?|applicants?|profiles?|people)\b", re.I)
+_RELAX_ZH = re.compile(r"放宽(?:年龄)?(?:到|至|为)\s*(\d{2})")
+_RELAX_EN = re.compile(r"\b(?:relaxed|extended|raised|up)?\s*to\s+(\d{2})\b|\(\s*(\d{2})\s+for\b", re.I)
+
+
+def relax_age(text):
+    """The higher age an exception clause names (放宽至40岁, "up to 40 for strong candidates"), or None."""
+    m = _RELAX_ZH.search(text or "") or _RELAX_EN.search(text or "")
+    return int(next(g for g in m.groups() if g)) if m else None
+
+
 def exception_en(text):
     """Generic English rendering of an exception clause, built from keyword rules. Unsure -> "an exception clause"."""
     if not text or not isinstance(text, str):
@@ -90,7 +101,10 @@ def exception_en(text):
     if not s:
         return ""
     if not has_cjk(s):            # already English (or digits only): never echo arbitrary text back
-        return "an exception clause"
+        to = relax_age(s)
+        who = _WHO_EN.search(s)
+        who = (" for %s candidates" % who.group(1).lower()) if who else ""
+        return ("may be relaxed to %d%s" % (to, who)) if to else ("exceptions may be possible%s" % who) if who else "an exception clause"
     who = None
     for pat, en in _WHO:
         m = pat.search(s)
@@ -131,6 +145,13 @@ def _generation(code):
 
 
 def _ambiguous_en(t, snip, mx):
+    fl = _flags(t)
+    if "near_miss" in fl:
+        return "Age is mentioned, but no limit on applicants could be read from it"
+    if "vague_en" in fl:
+        return "Vague age wording (%s), not a number" % snip.lower()
+    if "birth_year" in fl and not has_cjk(snip):
+        return "Generation or birth-year wording (%s), not a stated age limit" % snip.lower()
     if mx is not None:
         return "Around age %d (approximate wording, not a firm limit)" % mx
     m = _GEN.search(snip)

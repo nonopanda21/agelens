@@ -67,12 +67,6 @@
   const years = (t) => t.kind === 'range' ? `${t.min_age}–${t.max_age}` : t.max_age != null ? `up to ${t.max_age}` : t.min_age != null ? `${t.min_age} or older` : null;
   // reads one line with the rules and fills `out` with the result (shared with the Overview hero box)
   async function read(out, text, exampleLabel) {
-    // the rules read the original Chinese wording; an English line would come back as "no age wording", which would be wrong
-    if (!AL.hasCJK(text)) {
-      out.replaceChildren(h('div.sk-res.sk-ambiguous', { role: 'status' }, h('p.sk-cls', {}, 'Paste the original wording'),
-        h('p.sk-why', {}, 'AgeLens reads the age wording as the ad writes it, in Chinese. This line has no Chinese text, so it could not be read. Paste the line from the original ad, or try one of the examples.')));
-      return;
-    }
     out.replaceChildren(h('p.hint', {}, 'Reading…'));
     let r;
     try { r = await AL.api('/api/age/check', { method: 'POST', json: { text } }); }
@@ -85,6 +79,7 @@
         h('span.sk-gloss', {}, AL.labels.termGloss(t)),
         years(t) ? h('span.sk-age', {}, 'Ages: ' + years(t)) : null,
         AL.labels.en(t.exception_en) ? h('span.sk-age', {}, 'Exception: ' + AL.labels.en(t.exception_en)) : null))) : null,
+      ...(r.reading_notes || []).map((x) => h('p.sk-why', {}, x)),
       h('p.sk-ver', { title: 'Rule set ' + r.rule_version }, 'Read by fixed rules · not stored')));
   }
   AgeLens.lineCheck = {
@@ -99,7 +94,7 @@
   const form = h('form.sk-form', {},
     h('label', { for: 'sk-in' }, 'One line of age wording'), input,
     h('div.sk-ex', {}, h('span', {}, 'Try an example:'), EXAMPLES.map(([label], i) => h('button.sk-chip', { type: 'button', 'data-ex': String(i) }, label))),
-    h('p.sk-hint', {}, 'Each example checks a real-style line from a Chinese ad. The reading is shown in English.'),
+    h('p.sk-hint', {}, 'Each example checks a real-style line from a Chinese ad. English lines can be read too, by a smaller rule set.'),
     h('button.btn.sk-go', { type: 'submit' }, 'Read this line'));
   const panel = h('section#sk-panel.sk-panel', { 'aria-label': 'Check one line', hidden: '' },
     h('div.sk-head', {}, h('h2', {}, 'Check one line'), h('button.sk-x', { type: 'button', 'aria-label': 'Close the one-line check' }, '×')),

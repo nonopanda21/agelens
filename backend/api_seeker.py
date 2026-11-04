@@ -3,7 +3,7 @@ Never logs bodies, CV text, pasted ad text or questions (the server logger recor
 import re
 import unicodedata
 
-from . import ageparse, brief, cv, gloss, llm
+from . import ageparse, ageparse_en, brief, cv, gloss, llm
 from .server import HTTPError, Response  # noqa: F401  (HTTPError used below)
 
 # ---- pasted ad text (live adversarial exchange: someone hands you an ad) --------------------------------------
@@ -55,6 +55,29 @@ class _PastedEvidence:
                 "filters_applied": {}, "using_demo": False}
 
 
+def _read_terms(text):
+    """Age terms of pasted text: the Chinese rules, the small English set, and "unclear" rather than "none" when age is
+    mentioned but no rule could read it. Pasted and one-line checks only; the real-data aggregate uses ageparse alone."""
+    terms = ageparse_en.demote_zh_audience(text, ageparse.parse_age(text))
+    en = ageparse_en.parse(text)
+    terms = ageparse._finalize(terms + en)
+    if not terms:
+        miss = ageparse_en.near_miss(text)
+        terms = [miss] if miss else []
+    return terms
+
+
+def _reading_notes(text, terms):
+    notes = []
+    if not gloss.has_cjk(text):
+        notes.append("This text is in English. AgeLens was built and checked on Chinese ads; English is read by a smaller rule set, added so anyone can try the tool, and its accuracy has not been measured.")
+    if not terms:
+        notes.append("No age wording was found, but fixed rules can miss unusual phrasing. This does not prove the employer has no age condition.")
+    elif any("near_miss" in (t.get("flag") or "") for t in terms):
+        notes.append("Age is mentioned here, but the rules could not read it as a limit that applies to the applicant. Read the original line yourself.")
+    return notes
+
+
 def check_age_line(body):
     """-> rules-only reading of one line of age wording (the side-panel "Quick check"). No model, nothing stored."""
     text = body.get("text")
@@ -63,10 +86,10 @@ def check_age_line(body):
     text = text.strip()
     if len(text) > AGE_CHECK_MAX_CHARS:
         raise HTTPError(413, "Paste one line only; the limit is %d characters." % AGE_CHECK_MAX_CHARS)
-    terms = ageparse.parse_age(text)
+    terms = _read_terms(text)
     keep = ("kind", "min_age", "max_age", "exception_text", "flag", "snippet", "age_class")
     return {"age_class": ageparse.ad_class(terms), "age_status": ageparse.age_status(terms), "rule_version": ageparse.RULE_VERSION,
-            "terms": [_term_out(t, keep) for t in terms], "stored": False}
+            "reading_notes": _reading_notes(text, terms), "terms": [_term_out(t, keep) for t in terms], "stored": False}
 
 
 def _term_out(t, keep):
@@ -103,9 +126,7 @@ def check_pasted(body, allow_model=True):
         raise HTTPError(422, "This does not look like ad text (it contains binary or control characters). Copy the text of the ad itself.")
     if not str(body.get("question") or "").strip():
         raise HTTPError(400, "A question is required to build an Evidence brief.")
-    if not gloss.has_cjk(text):  # the rules read Chinese ad wording; an English text would wrongly come back as "no age requirement"
-        raise HTTPError(422, "AgeLens reads the original Chinese ad text. This text has no Chinese in it, so its age wording cannot be read. Paste the ad as it was posted.")
-    terms = ageparse.parse_age(text)
+    terms = _read_terms(text)
     ad = {"id": PASTE_ID, "title": "Pasted ad text", "company": None, "occupation": None, "province": None, "city": None,
           "posted_date": None, "source": PASTE_LABEL, "is_demo": False, "description": text, "age_terms": terms,
           "age_status": ageparse.age_status(terms), "age_class": ageparse.ad_class(terms), "snippet_highlight": ""}
@@ -122,7 +143,7 @@ def check_pasted(body, allow_model=True):
     conflict = [t["snippet"] for t in terms if "conflict" in (t.get("flag") or "")]
     b["pasted"] = {"label": PASTE_LABEL, "stored": False, "chars": len(text), "max_chars": PASTE_MAX_CHARS,
                    "age_status": ad["age_status"], "age_class": ad["age_class"], "rule_version": ageparse.RULE_VERSION,
-                   "instruction_like": _instruction_lines(text), "truncated": trunc[:1],
+                   "instruction_like": _instruction_lines(text), "truncated": trunc[:1], "reading_notes": _reading_notes(text, terms),
                    "conflict": list(dict.fromkeys(conflict))[:3],
                    "truncated_en": [gloss.quote_en(x, terms) for x in trunc[:1]],
                    "conflict_en": [gloss.quote_en(x, terms) for x in list(dict.fromkeys(conflict))[:3]],

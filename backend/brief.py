@@ -57,6 +57,8 @@ def clean_profile(p):
     skills = p.get("skills") or []
     if isinstance(skills, str):
         skills = [x for x in skills.replace("\n", ",").split(",")]
+    elif not isinstance(skills, (list, tuple)):
+        skills = []
     skills = [str(x).strip()[:60] for x in skills if str(x).strip()][:20]
     return {"age": _int(p.get("age"), 14, 80), "occupation": s("occupation", 80),
             "years_experience": _int(p.get("years_experience"), 0, 60), "skills": skills,
@@ -177,7 +179,9 @@ def _employer_question(ads, n, with_max, exc_ads, amb, profile):
     elif one and cut and not with_max:
         core = "The age requirement in the ad seems to be cut off. Could you tell me the full requirement for this role?"
     elif with_max and exc_ads:
-        core = ("The ad states a maximum age of %d and says exceptions are possible. Is the age a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
+        to = _relax_to(with_max[0]) if one else None
+        core = ("The ad states a maximum age of %d and says it may be relaxed to %d for some candidates. How is that decided for this role?" % (_max_age(with_max[0]), to)) if to \
+            else ("The ad states a maximum age of %d and says exceptions are possible. Is the age a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
             else "For this role, is there an age requirement, and if so, is it firm %s" % consider
     elif with_max:
         core = ("The ad states a maximum age of %d. Is that a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
@@ -211,7 +215,8 @@ def _summary(ads, n, status, with_max, exc_ads, profile):
             states = "The ad states different maximum ages (%s)." % ", ".join(str(c) for c in caps)
         elif mx is not None or mn is not None:
             parts = (["a maximum age of %d" % mx] if mx is not None else []) + (["a minimum age of %d" % mn] if mn is not None else [])
-            states = "The ad states %s%s." % (" and ".join(parts), " and adds exception wording" if _exceptions(a) else "")
+            to = _relax_to(a)
+            states = "The ad states %s%s." % (" and ".join(parts), (" and says it may be relaxed to %d for some candidates" % to) if to else " and adds exception wording" if _exceptions(a) else "")
         elif any(_flagged(t, "truncated") for t in _terms(a)):
             states = "The ad's age wording seems to be cut off, so no age limit was read from it."
         elif any(_flagged(t, "unlimited") for t in _terms(a)):
@@ -240,15 +245,26 @@ def _summary(ads, n, status, with_max, exc_ads, profile):
     elif not with_max:
         relates = "No stated maximum age to compare with the age you entered (%d)." % age
     elif one:
-        mx = _max_age(with_max[0])
-        relates = "You entered %d; the stated maximum is %d. Only the employer can say how the limit is applied%s." % (
-            age, mx, " and whether the exception wording covers you" if _exceptions(with_max[0]) else "")
+        mx, to = _max_age(with_max[0]), _relax_to(with_max[0])
+        if to and mx < age <= to:
+            relates = "You entered %d: above the stated maximum of %d, within the %d the exception names. Only the employer can say whether the exception covers you." % (age, mx, to)
+        else:
+            relates = "You entered %d; the stated maximum is %d. Only the employer can say how the limit is applied%s." % (
+                age, mx, " and whether the exception wording covers you" if _exceptions(with_max[0]) else "")
     else:
         lower = sum(1 for a in with_max if _max_age(a) < age)
         share = ("all %d ads" % len(with_max)) if lower == len(with_max) and lower > 1 else ("%d of the %d ads" % (lower, len(with_max)))
         relates = "You entered %d: %s that state a maximum give one below that. Only employers can say how their limits are applied." % (age, share)
     terms = _all_terms(ads)
     return {"states": states, "states_en": gloss.en_text(states, terms), "relates": relates, "relates_en": gloss.en_text(relates, terms)}
+
+
+def _relax_to(ad):
+    """The higher age an exception names, when one usable cap has one and it is above that cap."""
+    mx = _max_age(ad)
+    vals = [gloss.relax_age(t.get("exception_text")) for t in _terms(ad) if t.get("exception_text") and _usable(t)]
+    vals = [v for v in vals if v and mx is not None and v > mx]
+    return max(vals) if vals else None
 
 
 def _max_age(ad):

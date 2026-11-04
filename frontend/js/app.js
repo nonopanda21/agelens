@@ -168,7 +168,7 @@
   const routes = [
     [/^\/?$/, 'home'], [/^\/why$/, 'why'], [/^\/findings$/, 'findings'], [/^\/seeker$/, 'seeker'],
     [/^\/evidence\/([\w-]+)$/, 'evidence'], [/^\/requests(?:\/([\w-]+))?$/, 'requests'], [/^\/reviewer(?:\/([\w-]+))?$/, 'reviewer'],
-    [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
+    [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/status$/, 'status'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
   ];
   /** Small line icon for centred states (empty / sign-in / not found). Static SVG markup, no user text. */
   const ICONS = {

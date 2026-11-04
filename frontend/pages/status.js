@@ -1,0 +1,45 @@
+/* Project status: the plain account for the midterm. Everything here mirrors docs (BUDGET, EVAL_PLAN, PENDING_TEACHER,
+   LIVE_DEMO). Team-owned facts that are not recorded stay marked as not recorded; never fill them in here without a source. */
+AgeLens.pages.status = {
+  title: 'Project status',
+  render(el) {
+    const h = AgeLens.h;
+    const sec = (title, ...kids) => h('section.ab-sec', {}, h('h2', {}, title), ...kids);
+    const ul = (items) => h('ul', {}, items.map((x) => h('li', {}, x)));
+    el.append(h('div.wrap.section.ab', {},
+      h('h1', {}, 'Project ', h('span.ink-pink', {}, 'status')),
+      h('p.ab-lead', {}, 'What runs, what does not, and what we are unsure about. Written so another team can question it.'),
+      sec('What works today',
+        ul(['Paste an ad, in Chinese or English, and get the age wording, what is unclear, and one neutral question for the employer. It runs live; try to break it on ',
+          'Counts from about 10 million real Zhaopin ads, 2021–2024: counts only, no ad text.',
+          'Sending a request to a human reviewer and reading the reply. On the public site the reviewer desk needs a token.',
+          'A Word report and a study tool, tested only on simulated sessions.'].map((x, i) => i ? x : h('span', {}, x, h('a', { href: '#/seeker' }, 'Check an ad'), '.')))),
+      sec('What does not work',
+        ul(['No AI model is connected. Every answer comes from fixed rules and templates.',
+          'The English rules are small and their accuracy has not been measured. An exact age (“must be 35”) is shown as unclear, not read as a limit.',
+          'Rules read patterns, not meaning. Unusual phrasing is missed, and a miss looks like “no age wording found”, which is why the page warns about it.',
+          'The ads you can open are simulated. Only the counts are real.',
+          'On the free hosting plan, the site sleeps (a first load took 22 seconds) and review requests are lost on restart.'])),
+      sec('Changed or abandoned',
+        ul(['Separate Explore page: removed. Old links now land on the map on the Overview.',
+          'Testimonials: not built, because there are no real users.',
+          'Rules-only comparison study (rules versus the ad alone): superseded on 2026-10-29 by the AI versus template design below.']),
+        h('p.hint', {}, 'The team still has to check this list against the original pitch.')),
+      sec('Spending',
+        h('p', {}, 'Cap: US$200. Plan: memberships $80, API tokens $50, participants $50, reserve $20.'),
+        h('p', {}, h('strong', {}, 'Actual spend and largest single line: not yet recorded by the team.'), ' No paid API has been connected to the product.')),
+      sec('Evaluation plan',
+        h('dl.ab-dl', {},
+          h('dt', {}, 'Claim'), h('dd', {}, 'Improved decision support only. No claim about interviews, hiring or employment.'),
+          h('dt', {}, 'Threshold'), h('dd', {}, 'Interpretation accuracy is at least 10 points higher with AI, the 95% CI lower bound is above 0, and p < 0.05.'),
+          h('dt', {}, 'Counterfactual'), h('dd', {}, 'A fixed template using the same evidence.'),
+          h('dt', {}, 'Assignment'), h('dd', {}, 'Within-person crossover: 4 fictional tasks, counterbalanced with permuted blocks.'),
+          h('dt', {}, 'Sample and power'), h('dd', {}, 'Target 24, minimum 16. Assumed, with no pilot data: N = 24 detects +0.20 about 94% of the time and +0.10 only about 40%.'),
+          h('dt', {}, 'Status'), h('dd', {}, h('strong', {}, 'Not yet approved. No participants and no results.'), ' The AI arm cannot run until a model is connected.'))),
+      sec('Two decisions we are least sure about',
+        h('p.hint', {}, 'Draft: the team should confirm these. We would like your recommendation.'),
+        h('ol', {},
+          h('li', {}, h('strong', {}, 'Should we connect a model at all? '), 'The rules already quote the wording and never invent a claim. A model may tailor the answer better, but it adds cost and the risk of unsupported claims.'),
+          h('li', {}, h('strong', {}, 'Should a “no age wording found” result be shown as reassurance? '), 'Rules miss unusual phrasing. A plain answer is easier to act on; a heavier warning is more honest but may make the answer less useful.')))));
+  },
+};
