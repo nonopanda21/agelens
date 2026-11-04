@@ -29,7 +29,15 @@ def run(n, eff, sims, base=0.60, sd=0.8, seed=20261023):
         sig += lo > 0; hit += (m >= 0.10 - 1e-12 and lo > 0)
     return sig / sims, hit / sims, sum(sds) / sims
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--sims", type=int, default=3000); ap.add_argument("--out"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--sims", type=int, default=3000); ap.add_argument("--out"); ap.add_argument("--sensitivity", action="store_true", help="N = 24 under other assumptions, instead of the main table"); a = ap.parse_args()
+    if a.sensitivity:
+        L = ["# Power sensitivity, N = 24 (SIMULATION OF ASSUMPTIONS; no pilot data, no AI model run)", "", "P(benefit rule met), %d trials per cell.\n" % a.sims,
+             "| template accuracy | person logit SD | +0.00 | +0.15 | +0.20 |", "|---|---|---|---|---|"]
+        for base, sd in ((.6, .8), (.5, .8), (.7, .8), (.6, .4), (.6, 1.2)):
+            L.append("| %.2f | %.1f | %s |" % (base, sd, " | ".join("%.2f" % run(24, e, a.sims, base, sd)[1] for e in (0.0, 0.15, 0.20))))
+        txt = "\n".join(L); print(txt)
+        if a.out: Path(a.out).write_text(txt + "\n")
+        sys.exit(0)
     L = ["# Power, crossover-ai-v1 primary outcome (SIMULATION OF ASSUMPTIONS; no pilot data, no AI model run)", "",
          "Template accuracy 0.60, person logit SD 0.8, 13 key facts over 4 tasks, %d trials per cell. Benefit rule: mean D >= +0.10 and CI lower bound > 0 (t approximation).\n" % a.sims,
          "| N | true effect | P(CI lower bound > 0) | P(benefit rule met) | mean SD of D |", "|---|---|---|---|---|"]

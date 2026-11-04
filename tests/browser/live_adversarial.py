@@ -50,7 +50,7 @@ with sync_playwright() as p:
         pg.goto(BASE + "/#/status")
         pg.wait_for_timeout(500)
         st = pg.inner_text("body")
-        for want in ("What does not work", "Spending", "Evaluation plan", "least sure"):
+        for want in ("What does not work", "Spending", "Evaluation plan", "least sure", "Power calculation", "What this calculation leaves out"):
             if want not in st:
                 fails.append((w, "status", want))
         if errs:

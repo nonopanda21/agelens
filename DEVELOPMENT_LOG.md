@@ -845,6 +845,9 @@ Requirement: the website shows no Chinese. The rules keep reading the Chinese te
 - Below 1000px the nav is one row (brand, "Check an ad", Menu); it used to wrap onto two rows between 641 and 1000px.
 - Checks: unit 373 OK; sweep 131/131; no_cjk 0; a11y 0 high (the quieter Reviewer link first failed contrast at 4.39 and was fixed); map_real 40/40; public_demo 33/33; e2e_loop 22/22; review_loop 37/37; pro_flow 27/27; demo_cases, seeker_flow, theme, palette, labels, map_v2, map_explore, patterns, lit pass; check_before_push passes.
 
+## 2026-11-03 · Power calculation on #/status
+Added power and sensitivity tables to the status page, from `scripts/power_ai.py` (main table reproduced exactly; new `--sensitivity`, saved to `data/study/power_ai_sensitivity.md`). Simulated assumptions only: no pilot data. Carryover, rater error and dropout are not modelled.
+
 ## 2026-11-03 · Primary nav cut to four items
 Human review, Full report, Project status and Reviewer moved to the footer; the answer page links to Full report and requests. Human review now says a reply is not guaranteed and requests can be lost on restart (still true on the free plan).
 

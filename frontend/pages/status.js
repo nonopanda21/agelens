@@ -5,6 +5,12 @@ AgeLens.pages.status = {
   render(el) {
     const h = AgeLens.h;
     const sec = (title, ...kids) => h('section.ab-sec', {}, h('h2', {}, title), ...kids);
+    // data/study/power_ai.md and power_ai_sensitivity.md (tests/test_status_power.py keeps these in step)
+    const POWER = [[12, '2%', '21%', '41%', '66%'], [16, '3%', '25%', '55%', '81%'], [24, '2%', '37%', '72%', '93%'], [32, '1%', '43%', '79%', '97%'], [48, '0%', '40%', '85%', '99%']];
+    const SENS = [['Our base case: template accuracy 60%, person SD 0.8', '2%', '72%', '93%'], ['Template accuracy 50%', '2%', '66%', '89%'], ['Template accuracy 70%', '2%', '82%', '99%'],
+      ['People vary less (SD 0.4)', '2%', '76%', '95%'], ['People vary more (SD 1.2)', '2%', '65%', '90%']];
+    const table = (head, rows, mark) => h('table.st-table', {}, h('thead', {}, h('tr', {}, head.map((x) => h('th', { scope: 'col' }, x)))),
+      h('tbody', {}, rows.map((row) => h('tr' + (row[0] === mark ? '.st-mark' : ''), {}, row.map((x, i) => (i ? h('td', {}, x) : h('th', { scope: 'row' }, String(x))))))));
     const ul = (items) => h('ul', {}, items.map((x) => h('li', {}, x)));
     el.append(h('div.wrap.section.ab', {},
       h('h1', {}, 'Project ', h('span.ink-pink', {}, 'status')),
@@ -34,8 +40,23 @@ AgeLens.pages.status = {
           h('dt', {}, 'Threshold'), h('dd', {}, 'Interpretation accuracy is at least 10 points higher with AI, the 95% CI lower bound is above 0, and p < 0.05.'),
           h('dt', {}, 'Counterfactual'), h('dd', {}, 'A fixed template using the same evidence.'),
           h('dt', {}, 'Assignment'), h('dd', {}, 'Within-person crossover: 4 fictional tasks, counterbalanced with permuted blocks.'),
-          h('dt', {}, 'Sample and power'), h('dd', {}, 'Target 24, minimum 16. Assumed, with no pilot data: N = 24 detects +0.20 about 94% of the time and +0.10 only about 40%.'),
+          h('dt', {}, 'Primary outcome'), h('dd', {}, 'Share of an ad’s key facts the person states correctly, scored blind by two raters; a third resolves disagreements. Unsupported claims are the key safety outcome.'),
+          h('dt', {}, 'Sample'), h('dd', {}, 'Target 24, minimum 16; below 16 the result is reported as inconclusive. Each session takes about 35 minutes.'),
           h('dt', {}, 'Status'), h('dd', {}, h('strong', {}, 'Not yet approved. No participants and no results.'), ' The AI arm cannot run until a model is connected.'))),
+      sec('Power calculation',
+        h('p', {}, h('strong', {}, 'These are simulations of assumptions, not data. '), 'There is no pilot yet. Each cell is the chance of meeting the full evidence-of-benefit rule above, from 3,000 simulated studies (scripts/power_ai.py).'),
+        h('div.st-scroll', { tabindex: '0', role: 'region', 'aria-label': 'Power by sample size' }, table(['Participants (N)', 'No real effect', 'True +0.10', 'True +0.15', 'True +0.20'], POWER, 24)),
+        ul(['At N = 24, a true gain of +0.20 meets the rule 93% of the time and +0.15 meets it 72%. The study is not built to detect less.',
+          'A true gain of +0.10 usually fails: the rule needs an observed gain of at least +0.10, so more participants barely help (37% at 24, 40% at 48). “No evidence of benefit” would therefore not show that the AI does not help.',
+          'False alarms are rare: with no real effect the rule is met about 2% of the time at N = 24.',
+          'The class pilot must supply at least 16 people. At 16, +0.20 meets the rule 81% of the time and +0.15 only 55%.']),
+        h('h3', {}, 'If our assumptions are wrong (N = 24)'),
+        h('div.st-scroll', { tabindex: '0', role: 'region', 'aria-label': 'Power under other assumptions' }, table(['Assumption', 'No real effect', 'True +0.15', 'True +0.20'], SENS)),
+        h('p', {}, 'The results hold up across these cases: +0.20 stays at 89% or higher and +0.15 at 65% or higher.'),
+        h('h3', {}, 'What this calculation leaves out'),
+        ul(['Carryover between the two tools, rater error and dropout are not modelled, so real power may be lower.',
+          'It uses a t approximation; the planned analysis uses an exact sign-flip test and a bootstrap interval.',
+          'It covers the primary outcome only. Secondary outcomes are underpowered by design.'])),
       sec('Two decisions we are least sure about',
         h('p.hint', {}, 'Draft: the team should confirm these. We would like your recommendation.'),
         h('ol', {},
