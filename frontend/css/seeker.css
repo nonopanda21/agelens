@@ -201,3 +201,7 @@ fieldset.share .chk{margin-right:var(--s4)}
 .st{padding:var(--s2) 0}
 .ev-more summary{cursor:pointer;font-weight:600}
 .ev-more>.hint{margin-top:var(--s3)}
+
+.link-btn{font:inherit;background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer}
+.using{margin:0 0 var(--s3)}
+.answer-stale{margin-bottom:var(--s3)}

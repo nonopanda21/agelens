@@ -251,7 +251,8 @@ def _summary(ads, n, status, with_max, exc_ads, profile):
     elif one and ads and _below_min(ads[0], age) is not None and not mixed:
         relates = "You entered %d; the stated minimum is %d. Only the employer can say how the age range is applied." % (age, _below_min(ads[0], age))
     elif mixed:
-        relates = "You entered %d. The ad gives more than one age limit, so only the employer can say which one applies, if any." % age
+        relates = ("You entered %d. The ad gives more than one age limit, so only the employer can say which one applies, if any." % age if _max_age(ads[0]) is not None or any(t.get("max_age") is not None and t.get("kind") in ("max", "range") for t in _terms(ads[0]))
+                   else "You entered %d. The ad's age wording points in different directions, so only the employer can say what applies, if anything." % age)
     elif not with_max:
         relates = "No stated maximum age to compare with the age you entered (%d)." % age
     elif one:

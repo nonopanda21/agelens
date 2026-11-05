@@ -25,6 +25,31 @@
   };
   try { Object.assign(S.p, JSON.parse(sessionStorage.getItem('al_seeker') || '{}')); } catch (e) {}
   const save = () => { try { sessionStorage.setItem('al_seeker', JSON.stringify(S.p)); } catch (e) {} };
+  const answeredWith = () => JSON.stringify([S.paste.trim(), S.p]);
+  // A question belongs to one ad, so a new ad does not reuse it unless the person retyped it. Age and background belong to the person and stay.
+  const lastQ = { get() { try { return sessionStorage.getItem('al_seeker_lastq') || ''; } catch (e) { return ''; } }, set(v) { try { sessionStorage.setItem('al_seeker_lastq', v); } catch (e) {} } };
+  // The ad itself is not kept in the tab, only a fingerprint, so a re-paste after a reload still counts as the same ad.
+  const adPrint = { of(t) { let n = 5381; for (let i = 0; i < t.length; i++) n = (n * 33 + t.charCodeAt(i)) | 0; return String(n); },
+    get() { try { return sessionStorage.getItem('al_seeker_lastad') || ''; } catch (e) { return ''; } }, set(t) { try { sessionStorage.setItem('al_seeker_lastad', adPrint.of(t)); } catch (e) {} } };
+  function sameAd(text) {
+    if (!S.pasteSent) return adPrint.of(text) === adPrint.get();
+    const words = (t) => new Set(t.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean));
+    const a = words(text), b = words(S.pasteSent); let shared = 0; a.forEach((w) => { if (b.has(w)) shared++; });
+    return shared / Math.max(1, a.size + b.size - shared) >= 0.5;  // an edit to the same ad keeps the question
+  }
+  function refreshUsing() {
+    const box = $('using'), note = $('answer-stale');
+    if (note) note.hidden = !(S.mode === 'paste' && S.brief && S.sentWith && answeredWith() !== S.sentWith);
+    if (!box) return;
+    const bits = [S.p.age && 'age ' + S.p.age, S.p.years && S.p.years + ' years of experience', S.p.occupation && 'your role', S.p.region && 'your region',
+      S.p.education && 'your education', S.p.skills && 'your skills', S.p.question.trim() && 'your question'].filter(Boolean);
+    box.hidden = !bits.length;
+    const said = box.querySelector('span');
+    if (said) said.textContent = 'Using ' + bits.join(', ') + '. ';  // text only: rebuilding the button on blur would swallow the click
+  }
+  function clearDetails() {
+    S.demo = null; S.clar = null; lastQ.set(''); Object.keys(S.p).forEach((k) => { S.p[k] = ''; }); S.termEdited = false; syncTerm(); save(); fillForm(); renderReview();
+  }
   const $ = (id) => document.getElementById(id);
   const PAGE = 10, MAX_SELECT = 10, TIMEOUT_MS = 30000, CV_TIMEOUT_MS = 60000;
   const DEMO = 'Demo · Synthetic data';
@@ -150,6 +175,7 @@
     for (const k of ['question', 'age', 'occupation', 'years', 'skills', 'education']) { const e = $('f-' + k); if (e) e.value = S.p[k]; }
     const r = $('f-region'); if (r) r.value = S.p.region;
     const more = $('more-about'); if (more && (S.p.education || S.p.skills)) more.open = true;  // never leave a filled field out of sight
+    refreshUsing();
   }
   const spin = (t) => h('p', { role: 'status' }, h('span.spinner'), ' ' + t);
 
@@ -283,6 +309,7 @@
     return q === LB().NOT_SHOWN ? h('p.quote-missing.hint', {}, q + ' (no English version yet; open the ad for its age conditions).') : h('blockquote.quote', {}, q);
   }
   function renderAnswer(loading) {
+    queueMicrotask(refreshUsing);
     const box = $('answer'); if (!box) return;
     if (loading) return box.replaceChildren(h('div.answer', { 'aria-busy': 'true' }, h('p.hint', { role: 'status' }, S.mode === 'paste' || S.results ? 'Building your answer…' : 'Finding similar ads, then building your answer…', AgeLens.byModel('', ' With the AI model this usually takes about 10 seconds.')), h('div.skel', { 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))));
     const paste = S.mode === 'paste';
@@ -297,7 +324,7 @@
       h('div.answer-head', {}, b.data_label ? h(paste ? 'span.badge' : 'span.badge.sim', { title: paste ? 'Checked in memory; not saved' : 'The example ads are fictional' }, b.data_label) : null,
         h('span.badge.model' + (m.ran ? '.on' : ''), { title: m.ran ? (b.ai_note || '') : (m.note || 'Written by fixed rules, no AI') }, m.ran ? 'AI model · checked by code' : m.connected ? 'Model not run · rules answer' : (m.label || 'Template demo'))),
       h('h2.answer-title', {}, paste ? 'Your answer about this ad' : 'Your answer from similar ads'),
-      demoNote(), paste ? pasteNotes(b.pasted || {}) : null,
+      demoNote(), paste && S.qCleared ? h('p.answer-note', { role: 'status' }, 'New ad, so your previous question was cleared and the usual question was used. Your age and background were kept.') : null, paste ? pasteNotes(b.pasted || {}) : null,
       S.broadened.length ? h('p.answer-note', { role: 'status' }, 'You broadened this search: ' + S.broadened.join(', ') + '.') : null,
       b.insufficient && !paste ? h('p.answer-note', { role: 'status' }, 'Only ' + b.scope.ads_analysed + (b.scope.ads_analysed === 1 ? ' similar ad was' : ' similar ads were') + ' found, too few to describe a pattern. Below is only what those ads say.') : null,
       summaryCard(b),
@@ -635,19 +662,27 @@
     if (!text) { stale(); err.textContent = 'Paste the ad text first.'; $('f-adtext').setAttribute('aria-invalid', 'true'); $('f-adtext').focus(); return; }
     if (text.length > PASTE_MAX) { stale(); err.textContent = 'The text is ' + text.length + ' characters; the limit is ' + PASTE_MAX + '. Paste only the part with the requirements.'; $('f-adtext').focus(); return; }
     err.textContent = ''; $('f-adtext').removeAttribute('aria-invalid');
+    const earlierQ = S.p.question;
+    S.qCleared = !!(earlierQ.trim() && earlierQ === lastQ.get() && !sameAd(text));
+    if (S.qCleared) { S.p.question = ''; S.clar = null; save(); fillForm(); }
+    if (S.submit && S.submit.ok) S.submit = null;
+    lastQ.set(S.p.question); adPrint.set(text); S.sentWith = answeredWith();
     S.busy = true; S.problem = null; S.mode = 'paste'; S.results = null; S.brief = null; S.pasteSent = text;
     setBusy(true); renderAnswer(true); renderAds(); renderReview();
     try {
       S.brief = await call('/api/paste/check', { json: { text, question: askText('paste'), question_default: !S.p.question.trim(), profile: profileOut() }, timeout: 45000 });
       if (!S.brief || !S.brief.answer) throw Object.assign(new Error('parse'), { kind: 'parse' });
-    } catch (e) { S.problem = e; S.brief = null; }
-    S.busy = false; setBusy(false); renderAnswer(false); renderAds(); renderReview();
+    } catch (e) {
+      S.problem = e; S.brief = null;
+      if (S.qCleared) { S.p.question = earlierQ; S.qCleared = false; lastQ.set(earlierQ); save(); fillForm(); }  // nothing was answered, so nothing is lost
+    }
+    S.busy = false; setBusy(false); renderAnswer(false); renderAds(); renderReview(); refreshUsing();
     const a = $('answer'); if (a) { a.scrollIntoView({ behavior: AgeLens.reducedMotion() ? 'auto' : 'smooth', block: 'start' }); const hd = a.querySelector('h2'); if (hd) { hd.setAttribute('tabindex', '-1'); hd.focus({ preventScroll: true }); } }
   }
   function pasteCount() { const c = $('paste-count'); if (c) c.textContent = S.paste.length + ' / ' + PASTE_MAX + ' characters'; }
   function runCase(id) {
     const c = CASES.find((x) => x.id === id); if (!c || S.busy) return;
-    S.demo = c.id;
+    S.demo = c.id; lastQ.set(c.p.question || ''); S.pasteSent = c.ad || ''; adPrint.set(S.pasteSent);
     S.p = Object.assign({ question: '', occupation: '', age: '', years: '', region: '', education: '', skills: '' }, c.p);
     S.termEdited = false; syncTerm(); save(); fillForm();
     for (const k of Object.keys(S.adv)) S.adv[k] = '';
@@ -700,12 +735,12 @@
       const region = h('select', { id: 'f-region', onchange: (e) => { S.p.region = e.target.value; save(); } }, h('option', { value: '' }, 'Any region'),
         S.provinces.slice().sort((a, b) => String(a.en || a.name).localeCompare(String(b.en || b.name))).map((p) => h('option', { value: p.name }, p.en || LB().prov(p.name))));
       region.value = S.p.region;
-      const qEl = h('textarea', { id: 'f-question', 'aria-describedby': 'q-hint', placeholder: 'For example: This ad says applicants should normally be under 35 but exceptions are possible. Would my experience count?', oninput: (e) => { S.p.question = e.target.value; S.submitKey = null; save(); } });
+      const qEl = h('textarea', { id: 'f-question', 'aria-describedby': 'q-hint', placeholder: 'For example: This ad says applicants should normally be under 35 but exceptions are possible. Would my experience count?', oninput: (e) => { lastQ.set(''); S.p.question = e.target.value; S.submitKey = null; save(); } });
       qEl.value = S.p.question;
       const skills = h('textarea', { id: 'f-skills', style: 'min-height:84px', oninput: (e) => { S.p.skills = e.target.value; save(); } }); skills.value = S.p.skills;
-      // Enter in a field: check the pasted ad if there is one, otherwise search similar ads. The two buttons say which they do.
-      const form = h('form.ask-form', { novalidate: true, onsubmit: (e) => {
-        e.preventDefault(); S.demo = null;
+      // Enter in a field acts as the first button, Check this ad. The two buttons say which they do.
+      const form = h('form.ask-form', { novalidate: true, oninput: () => { refreshUsing(); renderReview(); }, onchange: (e) => { if (e.target.tagName === 'SELECT') { refreshUsing(); renderReview(); } }, onsubmit: (e) => {
+        e.preventDefault(); if (!S.demoAd) S.demo = null;
         const by = e.submitter && e.submitter.id;
         if (by === 'paste-btn' || (by !== 'go-btn' && S.paste.trim())) runPaste(); else run(1);
       } },
@@ -726,7 +761,8 @@
         h('div.form-block.q-field', {},
           h('h2', {}, stepNo(3), h('label', { for: 'f-question', style: 'font-size:inherit;margin:0;display:inline' }, 'Your question'), h('span.req.opt', {}, 'optional')),
           h('p.sub', { id: 'q-hint' }, 'Left blank, AgeLens answers the usual one: what the age wording means for you, and what to ask the employer.'), qEl,
-          h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); } }, 'Fill in an example question'))),
+          h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; lastQ.set(''); Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); } }, 'Fill in an example question'))),
+        h('p.hint.using', { id: 'using', hidden: true }, h('span'), h('button.link-btn', { type: 'button', onclick: clearDetails }, 'Clear these')),
         h('div.submit-row', {}, h('button.btn.btn-primary.btn-lg', { type: 'submit', id: 'paste-btn' }, 'Check this ad'),
           h('span.hint', {}, 'Nothing is stored.')),
         h('div.form-block.alt-search', {},
@@ -742,7 +778,7 @@
           (simData ? 'Example ads are fictional · ' : '') + (connected ? 'Answers use fixed rules plus an AI model, checked by code · ' : 'Answers come from fixed rules, no AI yet · ')
           + 'AgeLens cannot tell you whether you will be hired, and it is not legal advice.'),
         form,
-        h('div.answer-zone', {}, h('div', { id: 'answer', 'aria-live': 'polite', tabindex: '-1' }), h('div', { id: 'ads' })),
+        h('div.answer-zone', {}, h('p.notice.answer-stale', { id: 'answer-stale', role: 'status', hidden: true }, 'You changed something since this answer. It is still about the previous text; press Check this ad to update.'), h('div', { id: 'answer', 'aria-live': 'polite', tabindex: '-1' }), h('div', { id: 'ads' })),
         h('section.review-sec', { id: 'review-sec', 'aria-labelledby': 'review-h' }, h('h2', { id: 'review-h' }, 'Ask a human reviewer'),
           h('p.lead', {}, 'Optional. A person on the course team replies under Human review. You choose what background to share.'), h('div', { id: 'review' }))));
       renderAnswer(false); renderAds(); renderReview();

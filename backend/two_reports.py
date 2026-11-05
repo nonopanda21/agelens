@@ -44,12 +44,16 @@ def template_report(b):
     elif both:
         reading = "The ad's age wording contradicts itself: %s. The rules do not choose between them." % both
         question = "Hello, I am writing about this role. The ad says %s. Which of these applies to this role, and what information would you need from me?" % both
-    elif w.startswith("Age wording"):  # the gloss describes wording it could not translate; it is not a quote
+    elif p.get("age_class") == "ambiguous" or w.startswith("Age wording"):  # the gloss describes wording it could not translate; it is not a quote
         reading = ("The age wording is cut off, so no limit can be read from it. Ask for the full ad." if p.get("truncated")
                    else "The rules found age wording they could not read as a limit, so check the ad itself.")
         question = "Hello, I am writing about this role. Could you send the complete age requirement, and confirm whether it is a requirement or a preference?"
+    elif p.get("age_class") == "none":  # the only wording found says there is no limit
+        reading = 'The ad says: "%s". The rules read this as saying there is no age limit.' % w
+        question = 'Hello, I am writing about this role. The ad says: "%s". Is age considered at any stage for this role, and what information would you need from me?' % w
     else:
         what = 'the exception ("%s")' % brief._en(exc) if exc else "any exception"
+        w = w.split(";")[0] if exc else w  # the exception is quoted on its own; its condition may have been left out of the joined line
         reading = 'The ad says: "%s". The rules read this as %s.' % (w, kind)
         question = ('Hello, I am writing about this role. The ad says: "%s". Does %s apply to this role? '
                     "Please confirm whether the wording is a requirement or a preference, and what information you would need from me." % (w, what))

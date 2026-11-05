@@ -38,29 +38,42 @@ NOT_BEFORE = re.compile(r"\b(?:not|never|no)(?:\s+be)?\s*$|n't(?:\s+be)?\s*$", r
 DICTATES = re.compile(r"^\W*(say|state|report|tell|claim|declare|output|print|respond|reply|answer|treat|write)\b.*\b(age|years? old|limit)\b", re.I)
 INSTRUCTION = re.compile(r"\b(?:ignore|disregard|forget|override)\b[^.;\n]*\b(?:instructions?|rules?|prompts?|above|previous)\b|\b(?:system|assistant)\s*:|"
                          r"\b(?:tell|say|report|respond|output|answer)\b[^.;\n]*\b(?:that|the (?:user|applicant|candidate)|age limit)\b", re.I)
-PREF = re.compile(r"\b(prefer\w*|ideally|is a plus|would be a plus|desirable|nice to have)\b|优先", re.I)
+PREF = re.compile(r"\b(prefer\w*|ideally|a plus|an advantage|advantageous|priority|desirable|nice to have)\b|优先", re.I)
 _WHO = r"(?:outstanding|excellent|exceptional|strong|experienced|senior|highly qualified|qualified)\s+(?:candidates?|applicants?|profiles?|people)"
-EXC = re.compile(r"\b(?:exceptions?\b[^.;\n]*|(?:may|can|could|might) be (?:relaxed|waived|extended|raised|flexible)[^.;\n]*|negotiable|flexible|unless\b[^.;\n]*|"
-                 r"(?:relaxed|extended|raised) to\s+%s[^.;\n]*|(?:up to|to)\s+%s\s+for\b[^.;\n]*|%s\b[^.;\n]*)|\(\s*%s\s+for\b[^)\n]*\)" % (N, N, _WHO, N), re.I)
+EXC = re.compile(r"\b(?:exceptions?\b[^.;\n]*|(?:up to|to)\s+%s\b[^.;\n]*?(?:may|can|could|might) be considered[^.;\n]*|(?:may|can|could|might) be (?:relaxed|waived|extended|raised|flexible|considered)[^.;\n]*|negotiable|flexible|unless\b[^.;\n]*|"
+                 r"(?:relaxed|extended|raised) to\s+%s[^.;\n]*|(?:up to|to)\s+%s\s+for\b[^.;\n]*|%s\b[^.;\n]*)|\(\s*%s\s+for\b[^)\n]*\)" % (N, N, N, _WHO, N), re.I)
+
+
+def _exception(sent):
+    """The exception clause of a sentence. "Salary negotiable" and "Flexible working hours" are about the job, not about age."""
+    m = EXC.search(sent)
+    if m and re.match(r"negotiable|flexible", m.group(), re.I):
+        clause = re.split(r"[,;]", sent[:m.start()])[-1] + sent[m.start():].split(",")[0]
+        if not (AGE_WORD.search(clause) or re.search(r"\d", clause)):
+            return None
+    return m
 
 _UPPER = (r"under|below|younger than|less than|up to|no older than|not older than|no more than|not more than|not over|not above|"
-          r"not be over|not be above|not be older than|not exceed(?:ing)?|cannot be over|cannot be older than|can't be over|at most|sub|<=?|≤")
+          r"not (?:to )?be over|not (?:to )?be above|not (?:to )?be older than|not exceed(?:ing)?|cannot be over|cannot be older than|can't be over|at most|sub|<=?|≤")
 MAX_WORD = re.compile(r"(?<![\w-])(?:%s)[\s-]*(?:the\s+age\s+of\s+|age\s+)?%s(?:'?s\b)?(?:\s*%s)?" % (_UPPER, N, OLD), re.I)
 MAX_AFTER = re.compile(r"\b%s\s*(?:%s\s*|%s\s*)?(?:or|and|&)\s*(?:younger|under|below|less)\b" % (N, OLD, LOOSE_YEARS), re.I)
 MAX_NAMED = re.compile(r"\b(?:(?:maximum|max\.?|upper)\s+age(?:\s+limit)?|age\s+(?:limit|cap|ceiling)|age\s+(?:maximum|max\.?))(?:\s+(?:is|of))?\s*:?\s*(?:set\s+at\s+|at\s+)?%s"
                        r"|\bage\s*:?\s*%s\s*(?:max\.?|maximum)\b|\b(?:max\.?|maximum)\s+%s\s*(?:%s|%s)|\b%s\s*(?:%s\s*|%s\s*)(?:max\.?|maximum)\b" % (N, N, N, OLD, LOOSE_YEARS, N, OLD, LOOSE_YEARS), re.I)
 MAX_NEG = re.compile(r"\b(?:no one|nobody|no applicants?|no candidates?)\s+(?:is\s+)?(?:over|above|older than)\s+%s"
                      r"|\b(?:do not|don't|please don't)\s+apply\s+if\s+(?:you are|you're)\s+(?:over|above|older than)\s+%s"
-                     r"|\b(?:over|above|older than)\s+%s(?:\s*%s)?(?:'?s)?\s+(?:need not|should not|cannot|can't|do not|don't|will not|won't|are not|not|excluded|ineligible)\b" % (N, N, N, OLD), re.I)
+                     r"|\b(?:over|above|older than)\s+%s(?:\s*%s)?(?:'?s)?\s+(?:need not|should not|cannot|can't|do not|don't|will not|won't|are not|not|excluded|ineligible|rejected|will be (?:rejected|excluded)|(?:is|are) not)\b" % (N, N, N, OLD), re.I)
 _DASH = r"(?:-|–|—|−|~|～|to|and|through)"
-RANGE = [re.compile(r"\bage[ds]?\s*:?\s*(?:range|group|bracket|band)?\s*:?\s*(?:is\s+|of\s+)?(?:between\s+|from\s+)?%s\s*%s\s*%s" % (N, _DASH, N), re.I),
+RANGE = [re.compile(r"\b%s\s*(?:and|or)\s*(?:under|below)\s+%s" % (N, N), re.I),
+         re.compile(r"\b(?:over|above|at least|older than)\s+%s(?:\s*%s)?\s*(?:and|but|,|&)\s*(?:under|below|younger than|not over|not above)\s+%s" % (N, OLD, N), re.I),
+         re.compile(r"\b(?:must|should)\s+be\s+%s\s*%s\s*%s\b" % (N, _DASH, N), re.I),
+         re.compile(r"\bage[ds]?\s*:?\s*(?:range|group|bracket|band)?\s*:?\s*(?:is\s+|of\s+)?(?:between\s+|from\s+)?%s\s*%s\s*%s" % (N, _DASH, N), re.I),
          re.compile(r"\b(?:between\s+|from\s+)?%s\s*%s\s*%s\s*(?:%s|%s\b(?!\s+(?:of\s+)?(?:\w+\s+)?(?:experience|in\b|at\b|with\b)))" % (N, _DASH, N, OLD, LOOSE_YEARS), re.I)]
 _LOWER = r"at least|over|above|older than|no younger than|not younger than|not be under|not be below|not under|not below|minimum age(?:\s+of)?|min\.? age(?:\s+of)?"
 MIN_WORD = re.compile(r"(?<![\w-])(?:%s)\s*:?\s*(?:the\s+age\s+of\s+)?%s(?:\s*%s)?" % (_LOWER, N, OLD), re.I)
 MIN_AFTER = re.compile(r"\b%s\s*(?:%s\s*|%s\s*)?(?:or|and)\s*(?:older|over|above)\b|\b%s\+\s*%s" % (N, OLD, LOOSE_YEARS, N, OLD), re.I)
 STATED = re.compile(r"\bage[ds]?\s*:?\s*%s\b|\bmust be\s+%s(?:\s*%s)?(?=\s*[.,;!\n]|\s*$)" % (N, N, OLD), re.I)
-UNLIMITED = re.compile(r"\b(no age (?:limit|requirement|restriction|cap)s?|regardless of age|any age|all ages|age (?:is )?(?:open|unlimited|not (?:a |an )?(?:limit|issue|barrier|requirement)))\b", re.I)
-VAGUE = re.compile(r"\b(young|youthful|digital natives?|recent graduates?|fresh graduates?|new grads?)\b", re.I)
+UNLIMITED = re.compile(r"\b(no (?:upper |maximum |max )?age(?: (?:limit|requirement|restriction|cap)s?)?|no limit on age|regardless of age|any age|all ages|age\s*:?\s*(?:is )?(?:open|unlimited|any|not limited|not (?:a |an )?(?:limit|issue|barrier|requirement)))\b", re.I)
+VAGUE = re.compile(r"\b(young|youthful|younger (?:candidates?|applicants?|people|workers?|staff)|digital natives?|recent graduates?|fresh graduates?|new grads?)\b", re.I)
 BORN = re.compile(r"\b(born (?:after|since|in or after|in|from) (?:19|20)\d\d|millennials?|gen(?:eration)?[- ]z|post-[789]0s)\b", re.I)
 CUT_TAIL = re.compile(r"(?:\b(?:under|below|younger than|no older than|aged?|age limit|maximum age)\s*:?\s*\d?)$", re.I)
 # near_miss signals: Chinese with odd spacing or unreadable numbers, and any plain mention of an applicant's age
@@ -101,7 +114,9 @@ def _numbers(sent, base, skip=None):
     def add(kind, m, mn=None, mx=None, trusted=False):
         span = (base + m.start(), base + m.end())
         ages = [a for a in (mn, mx) if a is not None]
-        if (not all(_ok(a) for a in ages) or OTHERS.search(sent) or (kind == "range" and mn >= mx)
+        cut = r",|;|\band\b|\bbut\b"  # "under 40 and have customer skills" is about the applicant
+        near = re.split(cut, sent[:m.start()])[-1] + m.group() + re.split(cut, sent[m.end():])[0]
+        if (not all(_ok(a) for a in ages) or OTHERS.search(near) or (kind == "range" and mn >= mx)
                 or (not trusted and NEGATED.search(sent))):
             found.append((_term("ambiguous", None, None, "low", None, "near_miss"), span))
         else:
@@ -133,8 +148,11 @@ def _numbers(sent, base, skip=None):
         has_old = OLD_RE.search(m.group())
         if UNIT.match(sent[m.end():]) and not has_old:
             continue
+        if re.match(r"over|above|older", m.group(), re.I) and re.search(r"\b(?:not|no)(?:\s+(?:to\s+)?be)?\s*$", sent[:m.start()], re.I):
+            continue                        # "not above 35" is an upper limit: MAX_WORD below reads it
         negated = m.group().lower().startswith("not")
         if (has_old or negated or "age" in m.group().lower() or AGE_WORD.search(sent[:m.start()])
+                or re.search(r"\b(?:must|should|need to|has to|have to)\s+be\s*$", sent[:m.start()], re.I)
                 or re.search(r"\b(?:under|below|younger than)\s+\d", sent, re.I)) and free(m):
             add("min", m, _ages(m.group())[0], trusted=negated)
     for m in MAX_WORD.finditer(sent):
@@ -165,7 +183,7 @@ def parse(text):
     text = _WRAP.sub(lambda m: " " * len(m.group()), text)
     out, sents = [], list(_sentences(text))
     for i, (base, sent) in enumerate(sents):
-        exc = EXC.search(sent)
+        exc = _exception(sent)
         found = _numbers(sent, base, exc.span() if exc else None)
         numeric = [t for t, _ in found if t["kind"] in ("max", "min", "range")]
         if INSTRUCTION.search(sent) or DICTATES.search(sent):
@@ -173,10 +191,14 @@ def parse(text):
                 t.update(kind="ambiguous", min_age=None, max_age=None, confidence="low", flag="near_miss")
             numeric = []
         if numeric and PREF.search(sent):
-            for t in numeric:
+            def clause(span):  # "must be under 35, under 30 preferred": only the clause that says preferred
+                a, b = span[0] - base, span[1] - base
+                return sent[max(sent.rfind(",", 0, a), sent.rfind(";", 0, a)) + 1:(sent.find(",", b) + 1 or len(sent) + 1) - 1]
+            named = [t for t, sp in found if t in numeric and PREF.search(clause(sp))]
+            for t in named or numeric:
                 t["kind"] = "preference"
         if not exc and i + 1 < len(sents):
-            nxt = EXC.search(sents[i + 1][1])
+            nxt = _exception(sents[i + 1][1])
             if nxt and not _numbers(sents[i + 1][1], 0, nxt.span()):
                 exc = nxt
         if exc:
@@ -188,6 +210,10 @@ def parse(text):
                 t = (_term("relaxable", None, None, "high", m.group(), "unlimited") if flag == "unlimited"
                      else _term("ambiguous", None, None, "low", None, flag))
                 found.append((t, (base + m.start(), base + m.end())))
+        for k, (t, (a, b)) in enumerate(found):  # keep "preferred" with the number it qualifies
+            tail = re.match(r"\s*(?:is |are )?(?:preferred|a plus|an advantage)\b", text[b:], re.I)
+            if t["kind"] == "preference" and tail:
+                found[k] = (t, (a, b + tail.end()))
         out += [dict(t, snippet=src[a:b], start_offset=a, end_offset=b, rule_version=RULE_VERSION) for t, (a, b) in found]
     # a lower bound above the upper bound cannot both hold ("under 35 and over 40")
     mins = [t for t in out if t["kind"] == "min" and t["confidence"] == "high"]

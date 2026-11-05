@@ -57,6 +57,12 @@ def _read_terms(text):
     terms = ageparse_en.demote_zh_audience(text, ageparse.parse_age(llm.strip_instructions(text)))
     en = ageparse_en.parse(text)
     terms = ageparse._finalize(terms + en)
+    # "no age limit" beside an age preference pulls two ways. Pasted checks only, so the published counts keep rules 2.1.0.
+    free, pref = [t for t in terms if "unlimited" in (t.get("flag") or "")], [t for t in terms if t.get("kind") == "preference"]
+    if free and pref:
+        for t in free + pref:
+            ageparse._flag(t, "conflict")
+            t["confidence"] = "low"
     if not terms:
         miss = ageparse_en.near_miss(text)
         terms = [miss] if miss else []

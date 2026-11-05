@@ -182,14 +182,14 @@ def term_en(t, note_conflict=True):
         return "Age wording cut off in the text; no limit could be read"
     if kind == "relaxable":
         if "unlimited" in fl:
-            base = "No age limit"
+            base = _cap(snip.strip(" .,;:")) if snip and len(snip) <= 80 and not has_cjk(snip) else "No age limit"
         else:
             e = exception_en(exc or snip)
             base = ("Age requirement " + e) if e.startswith("may") or e.startswith("exceptions") else (
                 _cap(e) if e and e != "an exception clause" else "Age wording with an exception clause")
     elif kind in ("max", "min", "range", "preference") and snip and len(snip) <= 80 and not has_cjk(snip):
         base = _cap(snip.strip(" .,;:"))  # an English ad: its own words, not a paraphrase ("under 35" is not "35 or under")
-        if kind == "preference" and "prefer" not in base.lower():
+        if kind == "preference" and not re.search(r"prefer|plus|advantage|priority", base, re.I):
             base += " preferred"
     elif kind == "max" and mx is not None:
         base = "Age %d or under" % mx
