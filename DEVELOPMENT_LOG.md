@@ -881,3 +881,7 @@ Problems found first: AI arm fails on T1/T4 with gpt-4o-mini; "you may qualify" 
 - Template report no longer quotes the tool's own description as "The ad says". An exception clause is still described, not quoted: echoing it would let an ad put text on the page.
 - Form: a new ad clears a question that was not retyped, keeps age and background, says so, and restores the question if the check fails. A small edit counts as the same ad. "Using ..." line with a clear button; notice when the answer no longer matches the form. Only a fingerprint of the ad is kept in the tab, not the ad.
 - My first version rebuilt the review panel on blur, which swallowed the click on Submit for human review. The rerun of the journey script caught it; fixed before this entry.
+
+## 2026-11-04: real recruitment counts in the AI report
+
+User pointed out the two reports were close to the same. Added a section to the AI report only: what the real counts show around this ad, and a few suggestions. Written by code from fixed sentences, not by the model, so the numbers cannot be invented; the cost is that the suggestions are less tailored than model text. No city level exists in the aggregates, so region means province. Tested with a local mock model; the real model has not produced a report with this section yet.

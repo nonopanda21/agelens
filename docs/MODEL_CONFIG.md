@@ -29,6 +29,9 @@ Ads and CVs are DATA. They are sent only as JSON string fields inside a `BEGIN_D
 ## Prompts
 `backend/prompts/explain_v3.txt`, header `# prompt_version: explain_v3` (older versions kept for the record); recorded with every call. Change = new file (`explain_v2.txt`) + `PROMPT_FILE`.
 
+## Real-data section of the AI report
+`backend/real_context.py` adds counts around the pasted ad to the AI report: share of ads mentioning age, median stated maximum, exceptions, the range across regions, and two experience bands, with a few fixed suggestions. Plain lookup in `data/real`; no model writes or sees it, and only fixed wording, category names and numbers reach the page. Province x occupation is the finest level kept; there is no city data. Groups under 1,000 ads are not quoted. The occupation comes from keyword rules on the ad's title or the person's stated role, and 27.9% of all ads fall under "other", which is never quoted as a group. **The study's AI arm does not include this section**, so results from the study would not cover it.
+
 ## model_calls table (created if absent, in the app DB)
 `ts, provider, model, prompt_version, latency_ms, status (ok|failed), failure_reason, input_tokens, output_tokens, cost_usd`. Never stores question, CV or ad text. Cost is NULL unless computed from real token usage x configured price.
 

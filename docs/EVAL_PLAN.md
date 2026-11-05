@@ -137,6 +137,8 @@ Two independent raters (R1, R2) score every non-empty item; a third (R3) scores 
 
 ## 12. NOT yet done
 
+0. **The site's AI report is not the study's AI arm.** Since 2026-11-04 the report on Check an ad adds counts from real recruitment data (`docs/MODEL_CONFIG.md`). The arm does not, so the study would not evaluate that section. The team should decide whether the arm should match before approval.
+
 1. **The AI arm has run only in scripted sessions** (2026-11-03, local, `gpt-6-luna`, prompt `explain_v2`): 16 of 16 drafts produced. It has never been used by a person, and no model is switched on by default in the code; the demo site sets one in its environment.
 2. **No participants** recruited; no pilot with humans.
 3. **No approval**, no preregistration filed, no `APPROVAL.json`; `tasks.json` not frozen (its sha256 changed on 2026-10-29).

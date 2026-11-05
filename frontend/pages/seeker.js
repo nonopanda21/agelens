@@ -355,7 +355,7 @@
     }
     return ok;
   }
-  /** Two reports on the same evidence, one button each. The AI button says why when there is no AI report; nothing stands in for it. */
+  /** Two reports on the same rules evidence, one button each; the AI report adds counts from real recruitment data. The AI button says why when there is no AI report; nothing stands in for it. */
   function twoReports(rep) {
     const panel = h('div.tr-panel#tr-panel', { hidden: true, tabindex: '-1' });
     const list = (title, items) => (items && items.length ? [h('h4', {}, title), h('ul', {}, items.map((x) => h('li', {}, x)))] : null);
@@ -367,6 +367,7 @@
         h('h3', {}, r.title), h('p.hint', {}, r.written_by),
         r.reading ? [h('h4', {}, 'Reading'), h('p', {}, r.reading)] : null,
         list('What the ad states', r.stated), list('How it relates to you', r.related), list('What the ad leaves open', r.unclear), list('Checklist', r.checklist),
+        r.context ? [list('What real recruitment data shows', r.context.facts), list('Suggestions', r.context.suggestions), h('p.hint', {}, r.context.note)] : null,
         h('h4', {}, 'Question for the employer'),
         r.question ? h('p.tr-q', {}, r.question) : h('p', {}, 'No question passed the code check.'),
         r.removed ? h('p.hint', {}, 'The code check removed ' + r.removed + ' AI statement' + (r.removed === 1 ? '' : 's') + ' from this report.') : null,
@@ -382,9 +383,9 @@
         h('strong', {}, r.title), h('span', {}, r.available ? blurb : 'Not available here'));
       return btn;
     };
-    const btns = [choice(rep.template, 'A fixed form filled in by rules. No AI.'), choice(rep.ai, 'Uses your background too. Checked by code.')];
+    const btns = [choice(rep.template, 'A fixed form filled in by rules. No AI.'), choice(rep.ai, 'Uses your background and real recruitment counts. Checked by code.')];
     return h('section.tr.no-print', { 'aria-label': 'Two reports on this ad' },
-      h('h3', {}, 'Two reports from the same evidence'),
+      h('h3', {}, 'Two reports on this ad'),
       h('div.tr-btns', {}, btns),
       rep.ai.available ? null : h('p.hint', {}, rep.ai.reason),
       panel);

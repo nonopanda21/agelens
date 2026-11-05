@@ -68,7 +68,7 @@ _ABOVE_CAP = re.compile(r"\byou('re| are)?\b.{0,40}\b(above|over|exceed\w*|older
 _WITHIN_CAP = re.compile(r"\byou('re| are)?\b.{0,20}\b(below|under|within|inside)\b", re.I)
 _CAP_WORDS = re.compile(r"\b(maximum|max\.?|cap|limit|must|required?|only|no older|not older)\b", re.I)
 _PREF_WORDS = re.compile(r"\b(prefer\w*|preference|favou?r\w*|ideal\w*|not a (hard|firm)|may be)\b", re.I)
-_CONFLICT_WORDS = re.compile(r"\b(conflict\w*|contradict\w*|inconsisten\w*|differ\w*|unclear|while|both|but also|however)\b", re.I)
+_CONFLICT_WORDS = re.compile(r"\b(conflict\w*|contradict\w*|inconsisten\w*|differ\w*|unclear|while|both|but|however)\b", re.I)
 _QUOTED = re.compile(r"[“\"「『]([^”\"」』]{2,})[”\"」』]")
 
 

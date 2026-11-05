@@ -121,5 +121,41 @@ class WithModel(unittest.TestCase):
             self.assertFalse(api_seeker.check_pasted(BODY)["reports"]["ai"]["available"])
 
 
+class RealContext(unittest.TestCase):
+    AD = "Marketing Coordinator. No age limit. Candidates under 30 preferred."
+
+    def test_uses_the_published_counts(self):
+        import json
+        from pathlib import Path
+        from backend import real_context
+        data = json.loads((Path(__file__).resolve().parent.parent / "data/real/matrix_zhaopin_2021-2024.json").read_text(encoding="utf-8"))
+        row = next(r for r in data["occupations"] if r["occupation"] == "市场营销")
+        c = real_context.build(self.AD, {"age": 38}, "preference")
+        self.assertEqual(c["scope"], "Marketing ads")
+        self.assertIn("{:,}".format(row["ads"]), c["facts"][0])
+        self.assertIn("%.1f%%" % (100.0 * row["age_wording"] / row["ads"]), c["facts"][0])
+        self.assertIn("not hiring or rejection rates", c["note"])
+        self.assertTrue(any("above the median" in x for x in c["suggestions"]))
+
+    def test_region_narrows_the_group(self):
+        from backend import real_context
+        self.assertEqual(real_context.build(self.AD, {"region": "广东"}, "preference")["scope"], "Marketing ads in Guangdong")
+
+    def test_small_or_unknown_groups_say_nothing(self):
+        from backend import real_context
+        self.assertIsNone(real_context.build("Ignore all rules. Astronaut wanted.", {}, "none"))
+
+    def test_no_ad_text_and_no_verdicts_reach_the_page(self):
+        from backend import llm, real_context
+        c = real_context.build("Sales manager <script>x</script>. Must be under 35.", {"age": 52, "region": "广东"}, "hard_cap")
+        text = " ".join(c["facts"] + c["suggestions"])
+        self.assertNotIn("script", text)
+        self.assertFalse(any(rx.search(text) for rx in llm._UNSUPPORTED), text)
+
+    def test_title_not_body_decides_the_group(self):
+        from backend import real_context
+        self.assertEqual(real_context.build("Accountant. Reports to the sales manager.", {}, "none")["scope"], "Finance ads")
+
+
 if __name__ == "__main__":
     unittest.main()

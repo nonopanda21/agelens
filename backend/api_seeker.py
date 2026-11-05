@@ -156,7 +156,7 @@ def check_pasted(body, allow_model=True):
         note.append("> Wording that looks like an instruction was found and NOT followed (quoted as text only): "
                     + "; ".join("`%s`" % x.replace("`", "'") for x in b["pasted"]["instruction_like_en"]))
     b["markdown"] = brief.to_markdown(b).replace("\n## ", "\n" + "\n".join(note) + "\n\n## ", 1)
-    b["reports"] = two_reports.build(b)
+    b["reports"] = two_reports.build(b, text)
     return b
 
 

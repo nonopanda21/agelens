@@ -3,11 +3,11 @@
              It does not use the person's background and makes no model call.
 'ai'       : the checked model statements already in this brief, so no second paid call. Absent, it says why; nothing stands in for it.
 These are examples of what each tool writes, not study data."""
-from . import brief, study_arms
+from . import brief, real_context, study_arms
 
 _KIND = {"cap_with_exception": "an age limit with an exception", "hard_cap": "a fixed age limit", "range_or_min": "an age range or minimum",
          "preference": "an age preference", "ambiguous": "age wording the rules could not read as a limit", "none": "no age wording"}
-SHARED_NOTE = "Both reports start from the same evidence, read by the AgeLens rules. This explains wording. It does not decide anything about you, and it is not legal advice."
+SHARED_NOTE = "Both reports start from the same evidence, read by the AgeLens rules; the AI report also adds counts from real recruitment data. This explains wording. It does not decide anything about you, and it is not legal advice."
 
 
 def _rules_items(b, key):
@@ -61,7 +61,7 @@ def template_report(b):
             "reading": reading, "stated": [], "related": [], "unclear": [], "checklist": list(study_arms.CHECKLIST), "question": question}
 
 
-def ai_report(b):
+def ai_report(b, ad_text=None):
     base = {"kind": "ai", "title": "AI report", "written_by": "An AI model, then checked by code. The check catches listed failures, not every misleading sentence."}
     if b.get("ai_status") != "used":
         return dict(base, available=False, reason=(b.get("ai_note") or "No AI model is connected, so there is no AI report."))
@@ -72,7 +72,13 @@ def ai_report(b):
         return dict(base, available=False, reason="No statement from the AI model passed the code check, so there is no AI report for this ad.")
     removed = len(((b.get("ai_report") or {}).get("dropped")) or [])
     return dict(base, available=True, reading="", stated=by["explicit"] + by["exceptions"], related=by["relates"], unclear=by["cannot"], checklist=[],
-                question=by["ask"][0] if by["ask"] else None, removed=removed)
+                question=by["ask"][0] if by["ask"] else None, removed=removed,
+                context=real_context.build(ad_text, (b.get("question_background") or {}).get("profile"), (b.get("pasted") or {}).get("age_class"),
+                                           bool(_rules_exception(b))))
+
+
+def _rules_exception(b):
+    return [s for s in _rules_items(b, "exceptions") if s.get("quote") and "exception wording" in (s.get("text_en") or s["text"])]
 
 
 def _markdown(r, ev, label):
@@ -82,6 +88,9 @@ def _markdown(r, ev, label):
     for title, key in (("What the ad states", "stated"), ("How it relates to you", "related"), ("What the ad leaves open", "unclear"), ("Checklist", "checklist")):
         if r.get(key):
             L += ["## " + title, ""] + ["- " + x for x in r[key]] + [""]
+    ctx = r.get("context")
+    if ctx:
+        L += ["## What real recruitment data shows", ""] + ["- " + x for x in ctx["facts"]] + ["", "## Suggestions", ""] + ["- " + x for x in ctx["suggestions"]] + ["", ctx["note"], ""]
     L += ["## Question for the employer", "", r.get("question") or "No question passed the code check.", ""]
     if r.get("removed"):
         L += ["The code check removed %d AI statement(s) from this report." % r["removed"], ""]
@@ -89,10 +98,10 @@ def _markdown(r, ev, label):
     return "\n".join(L)
 
 
-def build(b):
+def build(b, ad_text=None):
     ev = evidence(b)
     out = {"note": SHARED_NOTE, "evidence": ev}
-    for name, r in (("template", template_report(b)), ("ai", ai_report(b))):
+    for name, r in (("template", template_report(b)), ("ai", ai_report(b, ad_text))):
         if r["available"]:
             r["markdown"] = _markdown(r, ev, b.get("data_label") or "")
             r["filename"] = "agelens-%s-report.md" % name
