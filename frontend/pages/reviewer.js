@@ -35,7 +35,7 @@
     inp.addEventListener('input', () => inp.removeAttribute('aria-invalid'));
     el.replaceChildren(h('div.wrap.section.rq.rq-center', {}, h('p.rv-kicker', {}, 'Reviewer workspace'), h('h1', {}, 'Reviewer sign-in'),
       h('div.notice.info.rv-demo-note', {}, h('strong', {}, 'Demo-grade access. '),
-        'One shared token, no personal accounts, no record of which person acted, and no password recovery. It keeps this demo’s reviewer side apart from seekers on the server, but it is not production authentication and must not be used with real personal data.'),
+        'One shared token, no personal accounts and no record of who acted. It is not production authentication and must not be used with real personal data.'),
       h('form.card.rv-signin', { onsubmit: async (ev) => {
         ev.preventDefault();
         ss.set(KEY, inp.value.trim());

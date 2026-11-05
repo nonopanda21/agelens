@@ -31,10 +31,10 @@
       const hetero = real && AL.heteroData ? await AL.heteroData() : null;
       let tiles;
       if (real) {
-        // real Zhaopin aggregate (counts only); Job Seeker keeps the simulated set
+        // real recruitment aggregate (counts only); Job Seeker keeps the simulated set
         const top = real.maxAges[0];
         tiles = h('div.dt-tiles', {},
-          tile('Real job ads', (real.ads / 1e6).toFixed(2) + 'M', fmt(real.ads) + ' Zhaopin ads posted ' + real.years + (real.rowsInFile ? ' (of ' + fmt(real.rowsInFile) + ' rows in the file)' : '')),
+          tile('Real job ads', (real.ads / 1e6).toFixed(2) + 'M', fmt(real.ads) + ' recruitment ads posted ' + real.years + (real.rowsInFile ? ' (of ' + fmt(real.rowsInFile) + ' rows in the file)' : '')),
           tile('Regions and occupations', fmt(real.regions) + ' / ' + fmt(real.occupations), 'regions with ads / occupation groups; ' + pct(real.other, real.ads) + ' of titles fit none ("Other")'),
           tile('Ads with age wording', pct(real.ageWording, real.ads), fmt(real.ageWording) + ' of ' + fmt(real.ads) + ' ads (explicit or uncertain)'),
           tile('Most common stated limit', top ? 'under ' + top[0] : 'None', top ? fmt(top[1]) + ' of the ' + fmt(real.nMax) + ' ads that state a maximum age (' + pct(top[1], real.nMax) + ')' : 'no maximum age stated'));
@@ -95,15 +95,15 @@
 
       // without the real aggregate the tiles use the simulated set; the map below can also show the real-data aggregate (mapcore.js)
       const lead = real
-        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '; no ad text is kept. The ads you can open (answers on Check an ad, the demo cases) are fictional, so each one can be shown in full.'
+        ? 'The tiles and the map count age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real recruitment ads posted ' + real.years + '; no ad text is kept. The ads you can open are fictional.'
         : 'Every number here comes from a fictional, reproducible set of job ads built for this demo' + (version ? ' (data version ' + version + ')' : '') + '.';
       el.append(h('div.wrap.section.dt', {},
         h('div.dt-head', {}, h('h2', {}, 'The data at a glance'), real ? h('span.badge.mint', {}, real.label) : h('span.badge.sim', {}, 'Demo · Synthetic data')),
-        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.', hetero ? h('span', {}, ' The same ads by experience, occupation and gender wording: ', h('a', { href: '#/findings' }, 'Findings'), '.') : null),
+        h('p.dt-lead', {}, lead, ' These are counts of ad wording, not unemployment, hiring or rejection rates.', hetero ? h('span', {}, ' More in ', h('a', { href: '#/findings' }, 'Findings'), '.') : null),
         tiles,
         h('div.dt-actions', {}, jump),
         h('div.dt-maphead', {}, h('div', {}, h('h3', {}, 'Where and in which jobs age wording appears'),
-          h('p.hint', {}, 'Compare regions within one industry, or industries within one region. Pick a metric and an industry, then select a region.')), collapse),
+          h('p.hint', {}, 'Pick a metric and an industry, then select a region.')), collapse),
         panel));
     },
   });

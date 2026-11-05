@@ -192,3 +192,12 @@ fieldset.share .chk{margin-right:var(--s4)}
 .tr-panel li{margin-bottom:var(--s1)}
 .tr-q{margin:0;padding:var(--s3) var(--s4);background:var(--yellow-soft);border-radius:var(--r-sm);line-height:1.6}
 @media (max-width:560px){.tr-btns{grid-template-columns:1fr}}
+/* Check an ad, shorter: four main fields on one row, the rest behind one disclosure; the answer a little tighter */
+@media (min-width:861px){.form-grid-4{grid-template-columns:minmax(0,1.7fr) repeat(3,minmax(0,1fr))}}
+.more-about{margin-top:var(--s4)}
+.more-about>.fld,.more-about>.sub{margin-top:var(--s3)}
+.more-about .dropzone{padding:var(--s4)}
+.answer-sec{margin-top:var(--s5)}
+.st{padding:var(--s2) 0}
+.ev-more summary{cursor:pointer;font-weight:600}
+.ev-more>.hint{margin-top:var(--s3)}

@@ -149,6 +149,7 @@
   function fillForm() {
     for (const k of ['question', 'age', 'occupation', 'years', 'skills', 'education']) { const e = $('f-' + k); if (e) e.value = S.p[k]; }
     const r = $('f-region'); if (r) r.value = S.p.region;
+    const more = $('more-about'); if (more && (S.p.education || S.p.skills)) more.open = true;  // never leave a filled field out of sight
   }
   const spin = (t) => h('p', { role: 'status' }, h('span.spinner'), ' ' + t);
 
@@ -169,6 +170,7 @@
     return h('div.cv-box', {}, zone, input, limits, out);
   }
   async function upload(file, out, zone) {
+    const more = $('more-about'); if (more) more.open = true;  // the CV review appears inside it
     const ext = (file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase();
     if (!['.txt', '.docx', '.pdf'].includes(ext)) return cvFail(out, 'This file type is not supported (' + (ext || 'no extension') + '). Use TXT, DOCX or a text-based PDF.');
     if (file.size > 5 * 1024 * 1024) return cvFail(out, 'This file is larger than 5 MB. Try a shorter version, or enter your background by hand.');
@@ -293,7 +295,7 @@
     box.replaceChildren(h('div.answer', {},
       // the honest labels, once and small: where the ads come from, and who wrote the answer
       h('div.answer-head', {}, b.data_label ? h(paste ? 'span.badge' : 'span.badge.sim', { title: paste ? 'Checked in memory; not saved' : 'The example ads are fictional' }, b.data_label) : null,
-        h('span.badge.model' + (m.ran ? '.on' : ''), { title: m.ran ? (b.ai_note || '') : (m.note || 'Written by fixed rules, no AI') }, m.ran ? 'AI model · checked by code' : (m.label || 'Template demo'))),
+        h('span.badge.model' + (m.ran ? '.on' : ''), { title: m.ran ? (b.ai_note || '') : (m.note || 'Written by fixed rules, no AI') }, m.ran ? 'AI model · checked by code' : m.connected ? 'Model not run · rules answer' : (m.label || 'Template demo'))),
       h('h2.answer-title', {}, paste ? 'Your answer about this ad' : 'Your answer from similar ads'),
       demoNote(), paste ? pasteNotes(b.pasted || {}) : null,
       S.broadened.length ? h('p.answer-note', { role: 'status' }, 'You broadened this search: ' + S.broadened.join(', ') + '.') : null,
@@ -672,8 +674,8 @@
 
   const stepNo = (n) => h('span.step-no', { 'aria-hidden': 'true' }, String(n).padStart(2, '0'));
   function pasteBox() {
-    const ta = h('textarea', { id: 'f-adtext', maxlength: String(PASTE_MAX), lang: 'zh-CN', spellcheck: 'false', autocomplete: 'off', 'aria-describedby': 'paste-hint paste-count paste-err',
-      placeholder: S.demoAd ? DEMO_AD_PH(S.paste.length) : PASTE_PH, oninput: (e) => { S.paste = e.target.value; S.demoAd = false; e.target.placeholder = PASTE_PH; pasteCount(); } });
+    const ta = h('textarea', { id: 'f-adtext', lang: 'zh-CN', spellcheck: 'false', autocomplete: 'off', 'aria-describedby': 'paste-hint paste-count paste-err',
+      placeholder: S.demoAd ? DEMO_AD_PH(S.paste.length) : PASTE_PH, oninput: (e) => { S.paste = e.target.value; S.demoAd = false; $('paste-err').textContent = ''; e.target.removeAttribute('aria-invalid'); e.target.placeholder = PASTE_PH; pasteCount(); } });
     ta.value = S.demoAd ? '' : S.paste;
     return h('div.form-block.paste-block', { id: 'paste-box' },
       h('h2', {}, stepNo(1), h('label', { for: 'f-adtext', style: 'font-size:inherit;margin:0;display:inline' }, 'Paste the ad you are looking at')),
@@ -711,29 +713,30 @@
           h('p.hint', {}, 'Each one fills in a fictional person and ad, then runs it with the real rules.' + (S.presenter ? ' Presenter mode: all six cases.' : '')),
           h('div.row.demo-row', { role: 'group', 'aria-label': 'Fictional example situations' }, CASES.filter((c) => S.presenter || !c.presenter).map((c) => h('button.btn.btn-quiet', { type: 'button', 'data-case': c.id, onclick: () => runCase(c.id) }, c.label)))),
         pasteBox(),
-        h('fieldset.form-block', {}, h('legend', {}, stepNo(2), 'About you'), h('p.sub', {}, 'Optional, but it makes the answer yours. Age is used only to explain how an ad’s condition compares with it; it never hides jobs.'),
-          h('div.form-grid', {},
+        h('fieldset.form-block', {}, h('legend', {}, stepNo(2), 'About you'), h('p.sub', {}, 'Optional. Age only explains how an ad’s condition compares with you; it never hides jobs.'),
+          h('div.form-grid.form-grid-4', {},
             field('Occupation or target role', 'occupation', { type: 'text', placeholder: 'e.g. operations manager', autocomplete: 'off' }),
             field('Age', 'age', { type: 'number', min: '14', max: '80', inputmode: 'numeric' }),
             field('Years of experience', 'years', { type: 'number', min: '0', max: '60', inputmode: 'numeric' }),
-            h('div.fld', {}, h('label', { for: 'f-region' }, 'Region'), region),
-            field('Education', 'education', { type: 'text', placeholder: 'e.g. Bachelor, business', autocomplete: 'off' }, null, true)),
-          h('div.fld', { style: 'margin-top:var(--s4)' }, h('label', { for: 'f-skills' }, 'Main experience or skills', h('span.hint', {}, ' (optional)')), skills)),
-        h('div.form-block.cv-block', {}, h('h3', {}, 'Have a CV?'), h('p.sub', {}, 'Optional. We pull out a few fields for you to check; you stay in control of what is used.'), cvZone()),
+            h('div.fld', {}, h('label', { for: 'f-region' }, 'Region'), region)),
+          h('details.adv.more-about', { id: 'more-about', open: !!(S.p.education || S.p.skills) }, h('summary', {}, 'More about you, or add a CV (optional)'),
+            field('Education', 'education', { type: 'text', placeholder: 'e.g. Bachelor, business', autocomplete: 'off' }, null, true),
+            h('div.fld', {}, h('label', { for: 'f-skills' }, 'Main experience or skills', h('span.hint', {}, ' (optional)')), skills),
+            h('p.sub', {}, 'A CV only suggests a few fields for you to check; you stay in control of what is used.'), cvZone())),
         h('div.form-block.q-field', {},
           h('h2', {}, stepNo(3), h('label', { for: 'f-question', style: 'font-size:inherit;margin:0;display:inline' }, 'Your question'), h('span.req.opt', {}, 'optional')),
-          h('p.sub', { id: 'q-hint' }, 'Ask it the way you would ask a person. Left blank, AgeLens answers the usual one: what the age wording means for you, and what to ask the employer.'), qEl,
+          h('p.sub', { id: 'q-hint' }, 'Left blank, AgeLens answers the usual one: what the age wording means for you, and what to ask the employer.'), qEl,
           h('div.row', { style: 'margin-top:0' }, h('button.btn.btn-quiet', { type: 'button', onclick: () => { S.demo = null; Object.assign(S.p, EXAMPLE); S.termEdited = false; syncTerm(); save(); fillForm(); } }, 'Fill in an example question'))),
         h('div.submit-row', {}, h('button.btn.btn-primary.btn-lg', { type: 'submit', id: 'paste-btn' }, 'Check this ad'),
-          h('span.hint', {}, 'Reads the age wording in the ad you pasted. Nothing is stored.')),
+          h('span.hint', {}, 'Nothing is stored.')),
         h('div.form-block.alt-search', {},
-          h('h2', {}, 'No ad yet, or want context?'),
-          h('p.sub', {}, 'See how similar ads word age. AgeLens searches a set of fictional example ads for your occupation and region.'),
+          h('h2', {}, 'No ad yet?'),
+          h('p.sub', {}, 'See how similar ads word age, in a set of fictional example ads for your occupation and region.'),
           advanced(),
           h('div.row', {}, h('button.btn.btn-secondary', { type: 'submit', id: 'go-btn' }, 'See similar ads'))));
       el.append(h('div.wrap.section.seeker-page', {},
         h('h1', {}, 'Check an ', h('span.ink-pink', {}, 'ad')),
-        h('p.lead', {}, 'Paste the ad you are looking at and tell us about yourself. AgeLens quotes the age wording, says what is clear and what is not, and drafts one neutral question for the employer. Nothing is decided for you.'),
+        h('p.lead', {}, 'Paste a job ad. AgeLens quotes its age wording, says what is clear and what is not, and drafts one neutral question for the employer. Nothing is decided for you.'),
         // the limits, once, in plain words (the answer repeats them only as two small tags)
         h('p.limits-line', { 'aria-label': 'What this tool is and is not' },
           (simData ? 'Example ads are fictional · ' : '') + (connected ? 'Answers use fixed rules plus an AI model, checked by code · ' : 'Answers come from fixed rules, no AI yet · ')
@@ -741,7 +744,7 @@
         form,
         h('div.answer-zone', {}, h('div', { id: 'answer', 'aria-live': 'polite', tabindex: '-1' }), h('div', { id: 'ads' })),
         h('section.review-sec', { id: 'review-sec', 'aria-labelledby': 'review-h' }, h('h2', { id: 'review-h' }, 'Ask a human reviewer'),
-          h('p.lead', {}, 'Optional. Send ads and your question to a person on the course team, who replies under Human review. You choose what background to share.'), h('div', { id: 'review' }))));
+          h('p.lead', {}, 'Optional. A person on the course team replies under Human review. You choose what background to share.'), h('div', { id: 'review' }))));
       renderAnswer(false); renderAds(); renderReview();
       // opening an ad leaves this page: remember the scroll position and the open ad list, and restore them on the way back
       el.addEventListener('click', (e) => {

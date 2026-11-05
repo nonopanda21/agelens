@@ -20,3 +20,11 @@
 .st-table th:first-child{text-align:left;font-weight:600}
 .st-table thead th{border-bottom:2px solid var(--brown);font-weight:600}
 .st-table .st-mark th,.st-table .st-mark td{background:var(--pink-soft,#FFE3E8);font-weight:700}
+.ab-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--s6)}
+.ab-two-flat p{margin:0 0 var(--s2)}.ab-two-flat{gap:var(--s3) var(--s6)}
+.ab-sec h3{font-size:1.05rem;margin:var(--s4) 0 var(--s2)}
+.ab .ab-lead{margin-bottom:var(--s4);max-width:62ch}
+.ab .ab-dl dd{margin-bottom:var(--s1)}
+.ab-lit li{margin-bottom:var(--s2)}.ab-lit summary{cursor:pointer}.ab-lit .hint{max-width:68ch}
+@media (max-width:760px){.ab-two{grid-template-columns:minmax(0,1fr)}}
+.ab-lit summary{overflow-wrap:anywhere}.ab-lit .lit-status{white-space:normal}

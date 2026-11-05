@@ -3,7 +3,7 @@
    AgeLens.mapView(host, {force?: '2d'|'3d'}) -> Promise<{setVisible(bool), dispose(), engineName(), stats(), select(name), state()}>
    Data: ONE call to /api/stats/matrix (province x occupation cells + row/column totals); every view (map, ranking, spread,
    detail, heatmap) is derived from it in the browser, so they always agree. When /api/real/status says a precomputed real
-   matrix exists (Zhaopin ads), a "Data" pill switch offers it (?source=real) and is the default; the choice is kept per tab
+   matrix exists (recruitment ads), a "Data" pill switch offers it (?source=real) and is the default; the choice is kept per tab
    (sessionStorage al_map_source). Switching re-fetches the matrix and re-renders every view.
    Engines (map3d.js / map2d.js) load on demand: AgeLens.map3d.create(opts) / AgeLens.map2d.create(opts) ->
    {setModel(model), setSelected(name, {fly}), setHover(name), resetView(), zoom(f), rotate(dx,dy), setActive(bool), resize(),
@@ -68,7 +68,7 @@
   const METRICS = {
     ads: { short: 'Ad count', title: 'Ad count', scale: 'count', num: (c) => c.ads, den: (c) => c.ads,
       unit: 'simulated ads', desc: 'Number of simulated ads (duplicates merged). Counts are not estimates, so there is no small-sample flag.',
-      realDesc: 'Number of real Zhaopin ads in the dataset. Counts are not estimates, so there is no small-sample flag.' },
+      realDesc: 'Number of real recruitment ads in the dataset. Counts are not estimates, so there is no small-sample flag.' },
     aw: { short: 'Any age wording', title: 'Share of ads with any age wording', scale: 'share', num: (c) => c.age_wording, den: (c) => c.ads,
       unit: '% of ads', numWord: 'with age wording', desc: 'Ads containing any age wording (an explicit condition, unclear wording or a preference) ÷ all ads in scope.' },
     cap: { short: 'Explicit cap', title: 'Share of ads stating an explicit maximum age', scale: 'share', num: (c) => c.cap, den: (c) => c.ads,
@@ -218,7 +218,7 @@
     const S = { regions: buildRegions(geo), ix: indexMatrix(mx), mx, source, real, canon, metric: 'aw', industry: null, selected: null, hover: null,
       engine: null, engineName: null, visible: true, destroyed: false, model: null, token: 0, kbd: -1, srcTok: 0 };
     const isReal = () => S.source === 'real';
-    const dataWord = () => (isReal() ? 'real Zhaopin' : 'simulated');
+    const dataWord = () => (isReal() ? 'real recruitment' : 'simulated');
     const canonBy = new Map(canon.map((c) => [c.name, c]));
     const provEn = (n) => (canonBy.get(n) || {}).en || enName(n);
     const inGeo = new Set(S.regions.map((r) => r.name));
@@ -258,7 +258,7 @@
       g.sync(cur); return g;
     };
     const yrs = realYears(S.mx.meta || real);
-    const sourceSeg = real ? seg('Data source', [['real', 'Real (Zhaopin' + (yrs ? ' ' + yrs : '') + ')', 'Aggregates of real Zhaopin job ads' + (real.rows_used ? ' (' + fmt(real.rows_used) + ' ads)' : '')],
+    const sourceSeg = real ? seg('Data source', [['real', 'Real (recruitment data' + (yrs ? ' ' + yrs : '') + ')', 'Aggregates of real recruitment ads' + (real.rows_used ? ' (' + fmt(real.rows_used) + ' ads)' : '')],
       ['demo', 'Simulated demo', 'The simulated sample used everywhere else in the app']], S.source, (v) => setSource(v), 'mp-source') : null;
     const badge = h('span.badge');
     const realCap = h('p.mp-realcap', { hidden: '' });
@@ -280,7 +280,7 @@
     buildChips();
     const metricDesc = h('p.mp-mdesc');
     const explain = h('p.mp-explain');
-    const explainTxt = (is3) => (is3 ? 'Each province rises from the same paper base; its extra height and top colour show the selected metric.' : 'Fill colour shows the selected metric.') + (isReal() ? ' Every number is a count of age wording in real Zhaopin job ads, not a hiring, rejection or unemployment rate.' : ' Every number is a simulated count of ad wording, not a hiring, rejection or unemployment rate.');
+    const explainTxt = (is3) => (is3 ? 'Each province rises from the same paper base; its extra height and top colour show the selected metric.' : 'Fill colour shows the selected metric.') + (isReal() ? ' Every number is a count of age wording in real recruitment ads, not a hiring, rejection or unemployment rate.' : ' Every number is a simulated count of ad wording, not a hiring, rejection or unemployment rate.');
     explain.textContent = explainTxt(true);
     const btn = (label, txt, fn, cls) => h('button.btn.btn-quiet.mp-ib' + (cls ? '.' + cls : ''), { type: 'button', 'aria-label': label, title: label, onclick: () => { fn(); if (S.engine) S.engine.noteInteraction(); } }, txt);
     const tools = h('div.mp-tools', { role: 'group', 'aria-label': 'Map controls' },
@@ -311,9 +311,9 @@
       if (sourceSeg) sourceSeg.sync(S.source);
       const n = meta.rows_used != null ? meta.rows_used : (S.mx.total || {}).ads, y = realYears(meta);
       realCap.hidden = !isReal();
-      realCap.textContent = isReal() ? 'Counts of age wording in ' + fmt(n) + ' real Zhaopin job ads' + (y ? ' posted ' + y : '') + '. They describe this dataset only, not hiring or unemployment rates.' : '';  // striping is explained in the legend
+      realCap.textContent = isReal() ? 'Counts of age wording in ' + fmt(n) + ' real recruitment ads' + (y ? ' posted ' + y : '') + '. They describe this dataset only, not hiring or unemployment rates.' : '';  // striping is explained in the legend
       src.textContent = 'Boundaries: Alibaba Cloud DataV GeoAtlas (areas_v3), simplified, province level; licence not yet verified, so local demonstration only and not an authoritative map. ' +
-        (isReal() ? 'Numbers: Zhaopin job ads supplied by the team' +  /* meta.source holds the Chinese platform name; the map UI stays English */ (y ? ', ' + y : '') + (n != null ? ', ' + fmt(n) + ' ads used' : '') + (meta.rule_version ? ', rules ' + meta.rule_version : '') + (meta.generated_at ? ', computed ' + String(meta.generated_at).slice(0, 10) : '') + '. Precomputed aggregates; filters elsewhere in the app do not apply to them.'
+        (isReal() ? 'Numbers: recruitment ads supplied by the team' +  /* meta.source holds the Chinese platform name; the map UI stays English */ (y ? ', ' + y : '') + (n != null ? ', ' + fmt(n) + ' ads used' : '') + (meta.rule_version ? ', rules ' + meta.rule_version : '') + (meta.generated_at ? ', computed ' + String(meta.generated_at).slice(0, 10) : '') + '. Precomputed aggregates; filters elsewhere in the app do not apply to them.'
           : 'Numbers: simulated ads' + (status && status.data && status.data.version ? ' (data version ' + status.data.version + ')' : '') + '.');
       explain.textContent = explainTxt(S.engineName ? S.engineName === '3d' : true);
     }
@@ -362,7 +362,7 @@
       if (S.industry != null && !S.ix.occs.some((r) => r.occupation === S.industry)) S.industry = null;
       if (S.selected && !S.ix.rowTot.has(S.selected)) { S.selected = null; if (S.engine) S.engine.setSelected(null, { fly: false }); }
       buildChips(); renderSource(); refreshModel();
-      announce('Showing ' + (isReal() ? 'real Zhaopin data' : 'the simulated demo data'));
+      announce('Showing ' + (isReal() ? 'real recruitment data' : 'the simulated demo data'));
     }
     function announce(t) { live.textContent = t; }
     function choose(name, opt) {

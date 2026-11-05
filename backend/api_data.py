@@ -66,12 +66,13 @@ def load_real():
         return None
     if not isinstance(data, dict) or not isinstance(data.get("cells"), list):
         return None
+    neutral_source(data)
     with _REAL_LOCK:
         _REAL_CACHE.clear()
         _REAL_CACHE[str(f)] = (key, data)
     return data
 
-REAL_SOURCE_EN = "Zhaopin recruitment export 2016–2025.7, supplied by the team"
+REAL_SOURCE_EN = "Recruitment data export 2016–2025.7, supplied by the team"
 
 
 def real_source_en(v):
@@ -82,6 +83,21 @@ def real_source_en(v):
     if "智联" in v or "zhaopin" in str(v).lower():
         return REAL_SOURCE_EN
     return gloss.strip_cjk(v) if gloss.has_cjk(v) else v
+
+
+def neutral_source(data):
+    """The pages say "recruitment data", not the platform's name; the data files are not edited."""
+    def word(v):
+        return v.replace("Zhaopin job ads", "Recruitment ads") if isinstance(v, str) else v
+    if data.get("label"):
+        data["label"] = word(data["label"])
+    meta, fa = data.get("meta"), data.get("filters_applied")
+    if isinstance(meta, dict) and meta.get("source"):
+        meta["source"] = real_source_en(meta["source"])
+    if isinstance(fa, dict):
+        fa["scope_label"] = word(fa.get("scope_label"))
+        if str(fa.get("source", "")).lower() == "zhaopin":
+            fa["source"] = "recruitment"
 
 
 FILTER_KEYS = ("province", "city", "occupation", "age_status", "max_age_lte", "max_age_gte", "has_exception",

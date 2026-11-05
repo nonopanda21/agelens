@@ -234,7 +234,7 @@ def build_matrix(cube, years, stats, source=SOURCE, generated_at=None):
                         "median_max_age": median_counter(b[7])})
     um = stats.get("unmapped_cities") or Counter()
     unmapped_list = sorted({_safe_city(c) for (y, c), n in um.items() if y in ys and n})
-    label = f"Real data · Zhaopin job ads {years_label(years)}"
+    label = f"Real data · Recruitment ads {years_label(years)}"
     meta = {"source": source, "years": years,
             "rows_in_file": stats.get("rows_in_file"),
             "rows_in_years": sum(year_all.values()),

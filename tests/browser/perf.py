@@ -24,7 +24,6 @@ with sync_playwright() as p:
     out("footer_visible", {"raf_per_s": rate(pg), "hero_nebula_running": pg.evaluate("window.__nebula.stats().running"), "gfx_log": pg.evaluate("AgeLens.gfx.stats.log.slice(-3)")})
     if pg.evaluate("window.__nebula.stats().running"): fails.append("hero nebula kept running while the footer nebula was on screen")
     # quiet region (no graphics on screen): expect ~0 animation frames
-    pg.evaluate("document.getElementById('fields').scrollIntoView()"); pg.wait_for_timeout(1500)
     q = rate(pg); out("no_graphics_on_screen", {"raf_per_s": q}); 
     if q > 5: fails.append(f"animation frames while no graphics visible: {q}/s")
     # regional map: collapsed -> no frames; expanded + idle -> render on demand

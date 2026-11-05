@@ -30,7 +30,7 @@ OCC_EN = {"销售": "Sales", "工程技术": "Engineering", "采购": "Procureme
 # short occupation words a user may type (e.g. from a Chinese CV) -> English
 _WORD_EN = dict(OCC_EN, **{"运营": "Operations", "客服": "Customer service", "物流": "Logistics", "人事": "Human resources",
                            "工程": "Engineering", "市场": "Marketing", "法务": "Legal", "教育": "Education", "医疗": "Healthcare"})
-SOURCE_EN = {"合成示例数据": "Simulated data (fictional)", "智联招聘": "Zhaopin"}
+SOURCE_EN = {"合成示例数据": "Simulated data (fictional)", "智联招聘": "Recruitment data"}
 
 # ------------------------------------------------------------------ helpers
 
@@ -187,6 +187,10 @@ def term_en(t, note_conflict=True):
             e = exception_en(exc or snip)
             base = ("Age requirement " + e) if e.startswith("may") or e.startswith("exceptions") else (
                 _cap(e) if e and e != "an exception clause" else "Age wording with an exception clause")
+    elif kind in ("max", "min", "range", "preference") and snip and len(snip) <= 80 and not has_cjk(snip):
+        base = _cap(snip.strip(" .,;:"))  # an English ad: its own words, not a paraphrase ("under 35" is not "35 or under")
+        if kind == "preference" and "prefer" not in base.lower():
+            base += " preferred"
     elif kind == "max" and mx is not None:
         base = "Age %d or under" % mx
     elif kind == "min" and mn is not None:
@@ -288,7 +292,7 @@ def source_en(v, is_demo=False):
     if v in SOURCE_EN:
         return SOURCE_EN[v]
     if "智联" in v:
-        return "Zhaopin"
+        return "Recruitment data"
     if has_cjk(v):
         return "Simulated data (fictional)" if is_demo else "Imported data"
     return v

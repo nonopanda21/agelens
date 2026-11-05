@@ -82,7 +82,7 @@
           textEn ? h('p.hint', {}, 'English version of the ad text' + (ad.is_demo ? ' (a fictional ad written for this demo)' : '') + '. Highlighted: the age wording the rules found.') : null,
           body, ageBox),
         h('section.card.ev-sec', {}, h('h2', {}, 'Extracted age conditions'), h('p.hint', {}, 'Rules flag wording to interpret. This is not a legal conclusion.'), conds),
-        h('section.card.ev-sec', {}, h('h2', {}, 'English gloss (rules-based)'), h('p.hint', {}, 'A mechanical paraphrase of the extracted numbers and wording, produced by code.'),
+        h('details.card.ev-sec.ev-more', {}, h('summary', {}, 'English gloss (rules-based)'), h('p.hint', {}, 'A mechanical paraphrase of the extracted numbers and wording, produced by code.'),
           terms.length ? h('ul', {}, terms.map((t) => h('li', {}, gloss(t)))) : h('p', {}, 'No age wording to gloss.')),
         h('section.card.ev-sec', {}, h('h2', {}, 'Where this came from'),
           kv([['Ad ID', ad.id], ['Data', ad.is_demo ? 'Demo · Synthetic data (fictional ad)' : 'Imported data'], ['Data version', ad.data_version], ['Import batch', ad.batch_id], ['Source file', ad.filename], ['Source row', ad.raw_row && ad.source_row ? ad.source_row : null], ['Rule version', ad.rule_version], ['Duplicates merged', ad.duplicate_count]]),

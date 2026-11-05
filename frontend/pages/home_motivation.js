@@ -27,7 +27,7 @@
 
   /* ---- two intuitive figures, modelled on the design pitch's first two slides ----
      Pitch slide 2 (the bar chart of upper age limits) becomes "35 is the number employers pick", drawn from our own
-     aggregate of real Zhaopin ads (meta.max_age_counts of /api/stats/matrix?source=real; falls back to Lin's printed
+     aggregate of real recruitment ads (meta.max_age_counts of /api/stats/matrix?source=real; falls back to Lin's printed
      shares). Pitch slide 1 (two regression-discontinuity scatter plots) becomes two "just below vs just above the line"
      pictures using only printed estimates, with a plain-language note on how to read them. */
   const dots = (n, extra, cls) => h('div.mv-dots.' + cls, { 'aria-hidden': 'true' },
@@ -54,7 +54,7 @@
     return h('figure.mv-fig.mv-line.reveal', {},
       h('figcaption.mv-fig-t', {}, h('span.mv-fig-n', {}, 'Figure 2'), 'Crossing the line changes what happens'),
       h('div.mv-how', {}, h('b', {}, 'How to read these two pictures. '),
-        'Each one compares two groups of people who are almost the same: only a few months apart in age. The one real difference is which side of a line they are on, age 35 or the age written in the ad. When the result jumps exactly at the line, the line itself is the most likely reason. (Economists call this a regression discontinuity design.)'),
+        'Each compares people only a few months apart in age, on either side of a line: age 35, or the age in the ad. A jump exactly at the line points to the line itself. (This is a regression discontinuity design.)'),
       h('div.mv-panels', {}, lin, feng));
   }
 
@@ -103,7 +103,7 @@
             h('tbody', {}, trend.map(([yr, a, b]) => h('tr', { class: b > a ? 'flip' : '' }, h('th', { scope: 'row' }, yr), h('td', {}, (100 * a).toFixed(1) + '%'), h('td', {}, (100 * b).toFixed(1) + '%'))))),
           trend.some(([, a, b]) => b > a) && (title.textContent = '35 is the most common age limit, but 45 is catching up') ? h('p.mv-take', {}, h('b', {}, 'In ' + trend.filter(([, a, b]) => b > a).map((t) => t[0]).join(', ') + ', 45 overtook 35.'), ' The “35 line” is still the most common over the whole period, but it is not fixed.') : null);
       }
-      draw(rows, by(35), 'Real data · ' + n.toLocaleString('en-US') + ' Zhaopin job ads posted ' + years + ' that state a maximum age (AgeLens count with fixed rules ' + (meta.rule_version || '') + '; the top of a range such as 18–45 counts as its maximum).',
+      draw(rows, by(35), 'Real data · ' + n.toLocaleString('en-US') + ' recruitment ads posted ' + years + ' that state a maximum age (AgeLens count with fixed rules ' + (meta.rule_version || '') + '; the top of a range such as 18–45 counts as its maximum).',
         'Lin (2025, pp. 105–106) found the same pattern across 59.69 million postings on five Chinese job sites in 2016–2021: about 1 in 5 stated an age limit, and 35 was the most common upper limit on every site (Zhaopin 27.9%).');
     }).catch(() => {
       // no real-data aggregate on this server: Lin's printed shares of 35 among capped ads, 2016–2021 (p. 106)
@@ -115,7 +115,7 @@
   }
 
   /* Theory of change: a plain chain of four steps (an ordered list, so it reads in order without the arrows), what the
-     cited studies suggest, what is NOT shown, and one neutral worked example. Studies: docs/LITERATURE.md. */
+     cited studies suggest and what is NOT shown. Studies: docs/LITERATURE.md. */
   function theoryFigure() {
     const STEPS = [
       ['Hard-to-read age wording', 'An ad says “normally under 35; exceptions possible” and does not say what that means.'],
@@ -140,17 +140,14 @@
       h('ol.mv-chain', {}, STEPS.map(([t, d], i) => h('li.mv-step', {},
         h('span.mv-step-n', { 'aria-hidden': 'true' }, String(i + 1)), h('b.mv-step-t', {}, t), h('span.mv-step-d', {}, d)))),
       h('p.mv-take', {}, 'Our first claim is limited to ', h('b', {}, 'better decision support'), '. Hiring effects and wider economic effects are left for future evaluation.'),
-      h('p.mv-take.mv-eval', {}, h('b', {}, 'How we will test it. '), 'We will compare contextual AI assistance with fixed templates on identical evidence, measuring interpretation accuracy, actionable questions, unsupported claims and completion time. No AI model is connected yet, and the study has not been run.'),
+      h('p.mv-take.mv-eval', {}, h('b', {}, 'How we will test it. '), 'We will compare contextual AI assistance with fixed templates on identical evidence, measuring interpretation accuracy, actionable questions, unsupported claims and completion time. The study has not been run.'),
       h('div.mv-cols', {},
         h('section.mv-colbox.sug', { 'aria-labelledby': 'toc-sug' }, h('h4#toc-sug', {}, 'What the evidence suggests'),
           h('ul', {}, SUGGESTS.map(([a, b]) => h('li', {}, h('b', {}, a), b))),
           h('p.mv-cite', {}, 'These findings motivate our approach but do not establish its effectiveness.')),
         h('section.mv-colbox.not', { 'aria-labelledby': 'toc-not' }, h('h4#toc-not', {}, 'What we have NOT shown'),
           h('ul', {}, NOT_SHOWN.map((t) => h('li', {}, t))))),
-      h('aside.mv-example', { 'aria-labelledby': 'toc-ex' },
-        h('h4#toc-ex', {}, 'A worked example'),
-        h('p', {}, 'A 38-year-old applicant sees “normally under 35; exceptions possible”. AgeLens marks the cap at 35 as explicit and the exception as unclear. It then drafts a neutral question: “Would eight years of operations experience be considered for the advertised exception?”'),
-        h('p.mv-cite', {}, 'The employer decides what happens next. The question may get no answer, and the answer may be no.')));
+      h('p.mv-cite', {}, 'The employer decides what happens next. A question may get no answer, and the answer may be no.'));
   }
 
   const toLit = () => {
@@ -171,15 +168,14 @@
 
     el.append(h('div.wrap.xs.mv', {},
       h('div.xs-head.reveal', {}, h('h2', {}, 'The motivation'),
-        h('p', {}, 'Many Chinese job ads put an age in the requirements. For someone in their late 30s, one short line can decide whether they apply at all. This is why we built AgeLens, and why it works the way it does.')),
+        h('p', {}, 'For someone in their late 30s, one short line in a job ad can decide whether they apply at all.')),
 
       // 1 · the problem
       h('div.mv-block.mv-problem', {},
         h('div.mv-copy.reveal', {},
           h('h3.mv-h', {}, h('span.xc-n', {}, '01'), 'The problem'),
-          h('p', {}, 'High earnings in mid-career can go together with real difficulty getting a new job. AgeLens is for workers who are changing jobs or returning to work.'),
-          h('p', {}, 'Age limits in Chinese recruitment are common, and 35 is the usual number. Many ads soften the cap with an exception, but rarely say what the exception means.'),
-          h('p', {}, 'Mid-career job seekers in engineering, operations, sales and professional services are left to guess. Some may rule themselves out of jobs they could get; others apply without knowing where they stand.')),
+          h('p', {}, 'Age limits in Chinese recruitment are common, and 35 is the usual number. Many ads soften the cap with an exception, but rarely say what it means.'),
+          h('p', {}, 'Mid-career job seekers are left to guess. Some may rule themselves out of jobs they could get; others apply without knowing where they stand.')),
         ad),
 
       // 2 · the literature
@@ -187,7 +183,7 @@
       capFigure(), lineFigure(),
       h('p.mv-note.reveal', {}, 'Neither study tells us whether a given ad’s exception will be applied to a given person, and neither evaluates a tool like AgeLens. ',
         h('button.mv-jump', { type: 'button', onclick: toLit }, 'See the redrawn figures below'), '.'),
-      h('p.mv-note.mv-hetero.reveal', {}, 'Together with Neumark et al. (2019), these studies suggest that occupation, experience and gender matter. Our Zhaopin data can describe that variation: it compares stated age requirements across occupations, required experience and locations, alongside explicitly stated gender requirements. This describes how ads are worded, not differences in who is hired. ',
+      h('p.mv-note.mv-hetero.reveal', {}, 'With Neumark et al. (2019), these studies suggest that occupation, experience and gender matter. Our recruitment data shows how ads are worded across those groups, not differences in who is hired. ',
         h('a', { href: '#/findings' }, 'See the findings'), '.'),
 
       // 3 · the gap
@@ -209,12 +205,12 @@
       theoryFigure(),
 
       // 5 · design decisions
-      h('h3.mv-h.reveal', {}, h('span.xc-n', {}, '05'), 'Why AgeLens is designed this way'),
-      h('div.mv-dec', {}, DECISIONS.map(([t, b, s], i) => h('article.xc.mv-dec-card.reveal', { style: `--d:${i * 60}ms` },
-        h('h4.xc-title', {}, t), h('p', {}, h('b', {}, 'Because: '), b), h('p.mv-src', {}, s)))),
+      h('details.mv-more', {}, h('summary', {}, 'Why AgeLens is designed this way: five decisions'),
+        h('div.mv-dec', {}, DECISIONS.map(([t, b, s]) => h('article.xc.mv-dec-card', {},
+          h('h4.xc-title', {}, t), h('p', {}, h('b', {}, 'Because: '), b), h('p.mv-src', {}, s))))),
 
       h('div.mv-foot.reveal', {},
-        h('p', {}, h('b', {}, 'Where it stands today. '), AgeLens.byModel('AgeLens reads ads with fixed rules; no AI model is connected.', 'AgeLens reads ads with fixed rules, and an AI model adds an explanation that code checks.'), ' The statistics and the map summarise about 10 million real Zhaopin job ads (2021–2024, counts only); the ads you can open are simulated. Whether it improves job outcomes has not been tested.'),
+        h('p', {}, h('b', {}, 'Where it stands today. '), AgeLens.byModel('AgeLens reads ads with fixed rules; no AI model is connected.', 'AgeLens reads ads with fixed rules, and an AI model adds an explanation that code checks.'), ' The statistics and the map summarise about 10 million real recruitment ads (2021–2024, counts only); the ads you can open are simulated. Whether it improves job outcomes has not been tested.'),
         h('a.xbtn.xbtn-2', { href: '#/about' }, 'Method and sources', h('span.xarrow', { 'aria-hidden': 'true' }, '→')))));
   } });
 })();

@@ -71,7 +71,7 @@ class StatusTests(unittest.TestCase):
 class PromptTests(unittest.TestCase):
     def test_version_and_delimited_data(self):
         v, system = llm.load_prompt()
-        self.assertEqual(v, "explain_v2")
+        self.assertEqual(v, "explain_v3")
         self.assertIn("BEGIN_DATA_JSON", system)
         self.assertNotIn("prompt_version", system)
 
@@ -299,7 +299,7 @@ class CallLogTests(unittest.TestCase):
         p = llm.FakeProvider({"statements": []}, meta={"input_tokens": 10, "output_tokens": 5})
         llm.run_explanation(inp, provider=p)
         (r,) = self.rows()
-        self.assertEqual((r["status"], r["prompt_version"], r["model"], r["input_tokens"], r["output_tokens"]), ("ok", "explain_v2", "fake-model", 10, 5))
+        self.assertEqual((r["status"], r["prompt_version"], r["model"], r["input_tokens"], r["output_tokens"]), ("ok", "explain_v3", "fake-model", 10, 5))
         self.assertIsNone(r["cost_usd"])
         self.assertNotIn("SECRET", json.dumps(r))
 

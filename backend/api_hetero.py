@@ -47,6 +47,7 @@ def load_hetero():
         return None
     if not isinstance(data, dict) or not isinstance(data.get("by_experience"), list) or not isinstance(data.get("meta"), dict):
         return None
+    api_data.neutral_source(data)
     with _LOCK:
         _CACHE.clear()
         _CACHE[str(f)] = (key, data)

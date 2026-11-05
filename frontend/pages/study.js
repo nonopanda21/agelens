@@ -10,9 +10,11 @@
   const SK = 'al_study_session';
   const mmss = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
+  const plainNotice = (t) => { const x = String(t || 'No AI model was used; text drafted by a script for the rehearsal.').replace(/^SIMULATED( rehearsal)?:\s*/, ''); return x.charAt(0).toUpperCase() + x.slice(1); };
+
   function banner(cfg) {
-    if (cfg.simulated && cfg.ai_design) return h('div.st-banner.sim', { role: 'status' }, h('strong', {}, 'SIMULATED, not study data.'),
-      h('span', {}, ' ' + (cfg.sim_notice || 'No AI model was used; text drafted by a script for the rehearsal.')));
+    if (cfg.simulated && cfg.ai_design) return h('div.st-banner.sim', { role: 'status' }, h('strong', {}, 'SIMULATED practice run, not study data.'),
+      h('span', {}, ' ' + plainNotice(cfg.sim_notice)));
     if (cfg.simulated) return h('div.st-banner.sim', { role: 'status' }, h('strong', {}, 'Simulation, not study data.'),
       h('span', {}, cfg.conditions ? ' Practice run of the study tools; nothing here is study data.'
         : cfg.model.connected ? ' Pilot of the tools only.' : ' No model is connected, so the drafted help comes from a labelled simulated provider.'));
@@ -83,18 +85,38 @@
             nextTask(r.session);
           } catch (e) { err.textContent = e.message; err.hidden = false; go.disabled = false; go.textContent = 'Begin'; }
         } }, 'Begin');
-        show(h('h1', {}, cfg.ai_design ? 'Read the age wording and ask the employer' : 'Write a clarification request'),
-          h('p.lead', {}, cfg.ai_design ? 'You will read four short fictional job ads. For each one you write how you read the age wording, and the one question the job seeker could send the employer. A writing tool helps: Tool A on the first two tasks, Tool B on the last two. About 7 minutes per task.'
-            : 'You will read four short fictional job ads and write the message a job seeker could send to ask the employer about the age wording. About 7 minutes per task.'),
-          h('section.card.st-consent', { 'aria-labelledby': 'cons-h' },
-            h('span.badge.sim', {}, 'Draft · awaiting teacher and ethics approval'), h('h2', { id: 'cons-h' }, 'Information and consent'),
-            String(cfg.consent_draft || '').split(/\n\s*\n|\n/).filter((t) => t.trim()).map((t) => h('p', {}, t.trim())),
-            h('p.hint', {}, 'Tasks: ' + cfg.tasks_version + ' (' + cfg.tasks_status.split('.')[0] + '). ' + (cfg.ai_design ? 'Tool A and Tool B are two different writing tools that get the same evidence from the ad. Which is which is explained after the last task. The order is assigned at random after you agree.'
-              : cfg.conditions
-              ? 'On two tasks you see the ad only; on the other two you also see AgeLens’s evidence check. Which tasks, and in which order, is assigned at random after you agree.'
-              : 'You are assigned a writing aid at random after you agree.') + ' Every task has the same time limit (' + Math.round(cfg.time_limit_s / 60 * 10) / 10 + ' min) and layout.'),
-            h('div.st-check', {}, agree, h('label', { for: 'st-agree' }, 'I have read this and agree to take part.')), err, go),
-          h('p.hint', {}, 'Raters: ', h('a', { href: '#/study/score' }, 'scoring desk')));
+        const mins = Math.round(cfg.time_limit_s / 60 * 10) / 10;
+        const fine = h('p.hint', {}, 'Tasks: ' + cfg.tasks_version + ' (' + cfg.tasks_status.split('.')[0] + '). ' + (cfg.ai_design ? 'Tool A and Tool B are two different writing tools that get the same evidence from the ad. Which is which is explained after the last task. The order is assigned at random after you agree.'
+          : cfg.conditions
+          ? 'On two tasks you see the ad only; on the other two you also see AgeLens’s evidence check. Which tasks, and in which order, is assigned at random after you agree.'
+          : 'You are assigned a writing aid at random after you agree.') + ' Every task has the same time limit (' + mins + ' min) and layout.');
+        const fullText = [String(cfg.consent_draft || '').split(/\n\s*\n|\n/).filter((t) => t.trim()).map((t) => h('p', {}, t.trim())), fine];
+        const consent = h('section.card.st-consent', { 'aria-labelledby': 'cons-h' },
+          cfg.simulated ? h('span.badge.sim', {}, 'Draft · awaiting teacher and ethics approval') : null, h('h2', { id: 'cons-h' }, 'Information and consent'),
+          cfg.ai_design ? [h('ul.st-keypoints', {},
+              h('li', {}, h('strong', {}, 'Your choice. '), 'You can stop at any time. If you withdraw, the text you wrote is deleted.'),
+              h('li', {}, h('strong', {}, 'Anonymous. '), 'We record a random code, the tool used on each task, timing and what you write. Not your name, email or IP address.'),
+              h('li', {}, h('strong', {}, 'Fictional. '), 'All ads and job seekers are made up. Please do not type real personal information.'),
+              h('li', {}, h('strong', {}, 'Scored blind. '), 'Two people score your text without seeing which tool you used. Results are reported only in aggregate.'),
+              h('li', {}, h('strong', {}, 'Limited. '), 'This measures reading and question writing only. It cannot show effects on interviews, hiring or employment.')),
+            h('details.st-full', { open: !cfg.simulated }, h('summary', {}, 'Read the full text'), h('div', {}, fullText))] : fullText,
+          h('div.st-check', {}, agree, h('label', { for: 'st-agree' }, 'I have read this and agree to take part.')), err, go);
+        if (!cfg.ai_design) {
+          show(h('h1', {}, 'Write a clarification request'),
+            h('p.lead', {}, 'You will read four short fictional job ads and write the message a job seeker could send to ask the employer about the age wording. About 7 minutes per task.'),
+            consent, h('p.hint', {}, 'Raters: ', h('a', { href: '#/study/score' }, 'scoring desk')));
+          return;
+        }
+        const step = (n, title, text) => h('li.st-step', {}, h('span.st-step-n', { 'aria-hidden': 'true' }, String(n)), h('h3', {}, title), h('p', {}, text));
+        show(h('h1', {}, 'Two writing tools, one job ad'),
+          h('p.lead', {}, 'Job ads often mention age in unclear ways. This study compares two writing tools, to see how well people then understand the wording and what they would ask the employer. It tests the tools, not you.'),
+          h('ol.st-steps', {},
+            step(1, 'Read', 'A short fictional job ad, and the job seeker asking about it.'),
+            step(2, 'Check the tool', 'See what it suggests. Tool A on the first two ads, Tool B on the last two.'),
+            step(3, 'Write', 'How you read the age wording, and one question for the employer.')),
+          h('p.st-meta', {}, h('span', {}, '4 ads'), h('span', {}, 'up to ' + mins + ' minutes each'), h('span', {}, 'about 30 minutes in total')),
+          consent,
+          h('p.hint', {}, 'Just looking? ', h('a', { href: '#/status' }, 'See the evaluation plan and its limits'), '. Raters: ', h('a', { href: '#/study/score' }, 'scoring desk'), '.'));
       }
 
       async function nextTask(sess) {
@@ -124,10 +146,35 @@
           h('p', {}, ev.wording_line), h('ul', {}, ev.items.map((x) => h('li', {}, x))));
       }
 
+      /* The reading material behind three tabs, so the writing box stays in view. Arrow keys move between tabs (WAI-ARIA tabs pattern). */
+      function refTabs(items) {
+        const btns = [], panels = [], seen = new Set();
+        const select = (i, focus) => {
+          seen.add(i);
+          btns.forEach((b, k) => { const on = k === i; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; panels[k].hidden = !on; });
+          if (focus) btns[i].focus({ preventScroll: focus === 'quiet' });
+        };
+        items.forEach((it, i) => {
+          const next = items[i + 1];
+          btns.push(h('button.st-rtab', { type: 'button', role: 'tab', id: 'tab-' + it.id, 'aria-controls': 'panel-' + it.id, onclick: () => select(i),
+            onkeydown: (e) => {
+              const to = e.key === 'ArrowRight' ? (i + 1) % items.length : e.key === 'ArrowLeft' ? (i + items.length - 1) % items.length : e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : -1;
+              if (to >= 0) { e.preventDefault(); select(to, true); }
+            } }, h('span.st-rtab-n', { 'aria-hidden': 'true' }, String(i + 1)), it.label));
+          panels.push(h('div.st-rpanel', { role: 'tabpanel', id: 'panel-' + it.id, 'aria-labelledby': 'tab-' + it.id }, it.body,
+            next ? h('button.btn.btn-quiet.st-rnext', { type: 'button', onclick: () => { select(i + 1, 'quiet'); requestAnimationFrame(() => { const head = document.querySelector('.st-head'); window.scrollBy({ top: wrap.getBoundingClientRect().top - (head ? head.getBoundingClientRect().bottom : 0) - 8, behavior: 'instant' }); }); } }, 'Next: ' + next.label) : null));
+        });
+        const wrap = h('div.st-refs', {}, h('div.st-rtabs', { role: 'tablist', 'aria-label': 'Reading material' }, btns), panels);
+        select(0);
+        wrap.first = () => btns[0];
+        wrap.allSeen = () => seen.size === items.length;
+        return wrap;
+      }
+
       function aiTaskView(sess, t) {
         const kr = 'al_study_draft_r_' + t.task.id + '_' + sess.code, kq = 'al_study_draft_q_' + t.task.id + '_' + sess.code;
-        const reading = h('textarea', { id: 'st-reading', rows: 6, maxlength: 3000, placeholder: 'How do you read the age wording? What does the ad say, and what is unclear?' });
-        const question = h('textarea', { id: 'st-question', rows: 4, maxlength: 3000, placeholder: 'The question you would send the employer…' });
+        const reading = h('textarea', { id: 'st-reading', rows: 5, maxlength: 3000, placeholder: 'How do you read the age wording? What does the ad say, and what is unclear?' });
+        const question = h('textarea', { id: 'st-question', rows: 3, maxlength: 3000, placeholder: 'The question you would send the employer…' });
         reading.value = ss.get(kr) || ''; question.value = ss.get(kq) || '';
         const count = h('p.hint', { id: 'st-count' }, '');
         const upd = () => { count.textContent = (reading.value.trim().length + question.value.trim().length) + ' characters'; ss.set(kr, reading.value); ss.set(kq, question.value); };
@@ -141,7 +188,11 @@
           if ((reading.value.trim() || question.value.trim()) && !confirm('Replace what you have written with the tool\'s draft?')) return;
           reading.value = tool.reading || ''; question.value = tool.question || ''; inserted = true; upd(); reading.focus();
         } }, 'Use the tool\'s draft as my starting point') : null;
-        const submitBtn = h('button.btn.btn-primary', { type: 'button', onclick: () => send(false) }, t.position < t.total ? 'Submit and continue' : 'Submit');
+        const submitBtn = h('button.btn.btn-primary', { type: 'button', onclick: () => {
+          if (!reading.value.trim() && !question.value.trim() && !confirm('Your answer is empty. Submit it anyway?')) return;
+          if (!refs.allSeen() && !confirm('You have not opened all three tabs. Submit anyway?')) return;
+          send(false);
+        } }, t.position < t.total ? 'Submit and continue' : 'Submit');
         const t0 = performance.now(), rem0 = t.remaining_ms, limit = t.limit_ms;
         async function send(timedOut) {
           if (submitted) return; submitted = true; stopTimer(); submitBtn.disabled = true; reading.readOnly = true; question.readOnly = true;
@@ -159,14 +210,16 @@
           if (sec === 60) live.textContent = 'One minute left.'; else if (sec === 30) live.textContent = 'Thirty seconds left.';
           if (left <= 0) send(true);
         };
-        show(h('header.st-head', {}, h('div', {}, h('p.hint', {}, 'Task ' + t.position + ' of ' + t.total + ' · ' + t.aid.label), h('h1', {}, t.task.title)),
+        const refs = refTabs([{ id: 'ad', label: 'Ad and job seeker', body: taskFacts(t.task) }, { id: 'ev', label: 'Evidence', body: evidenceCard(t.evidence) }, { id: 'tool', label: t.aid.label, body: toolCard(t.aid) }]);
+        // the heading is the job title, not the task's internal title: "Hard age cap" would hand over the answer being scored
+        show(h('header.st-head', {}, h('div', {}, h('p.st-prog', {}, h('span.st-dots', { 'aria-hidden': 'true' }, Array.from({ length: t.total }, (_, i) => h('i' + (i < t.position - 1 ? '.done' : i === t.position - 1 ? '.now' : '')))), 'Task ' + t.position + ' of ' + t.total + ' · ' + t.aid.label), h('h1', {}, jobTitle(t.task))),
             h('div.st-timer', {}, h('span.hint', {}, 'Time left'), clock)),
-          h('p.lead', {}, 'Write how you read the ad\'s age wording, and the one question this job seeker would send the employer. No real personal information.'),
-          live, h('div.st-grid', {}, taskFacts(t.task), h('div.st-write', {}, evidenceCard(t.evidence), toolCard(t.aid),
-            h('div.card', {}, h('label', { for: 'st-reading' }, 'Your reading of the age wording'), reading,
-              h('label', { for: 'st-question' }, 'The question you would send the employer'), question, count, useDraft, err, h('div.st-actions', {}, submitBtn, withdrawBtn())))));
+          h('p.st-how', {}, 'Go through the three tabs, then write your answer. Please use no real personal information.'),
+          live, h('div.st-work', {}, refs, h('div.st-write.st-side', {},
+            h('section.card', { 'aria-labelledby': 'ans-h' }, h('h2', { id: 'ans-h' }, 'Your answer'), h('label', { for: 'st-reading' }, 'How you read the age wording'), reading,
+              h('label', { for: 'st-question' }, 'The question you would send the employer'), question, h('div.st-tools', {}, count, useDraft), err, h('div.st-actions', {}, submitBtn, withdrawBtn())))));
         timer = setInterval(tick, 250);
-        reading.focus({ preventScroll: true });
+        refs.first().focus({ preventScroll: true });
       }
 
       function taskView(sess, t) {
@@ -220,7 +273,7 @@
           if (s === 60) live.textContent = 'One minute left.'; else if (s === 30) live.textContent = 'Thirty seconds left.';
           if (left <= 0) send(true);
         };
-        show(h('header.st-head', {}, h('div', {}, h('p.hint', {}, 'Task ' + t.position + ' of ' + t.total), h('h1', {}, t.task.title)),
+        show(h('header.st-head', {}, h('div', {}, h('p.hint', {}, 'Task ' + t.position + ' of ' + t.total), h('h1', {}, jobTitle(t.task))),
             h('div.st-timer', {}, h('span.hint', {}, 'Time left'), clock)),
           h('p.lead', {}, 'Write the clarification request this job seeker would send to the employer before applying. 3 to 8 sentences. No real personal information.'),
           live, h('div.st-grid', {}, taskFacts(t.task), h('div.st-write', {}, aidCard,

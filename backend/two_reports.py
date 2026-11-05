@@ -35,11 +35,15 @@ def _wording(b):
 def template_report(b):
     p = b.get("pasted") or {}
     w = brief._en(_wording(b) or "")
-    exc = next((s.get("quote_en") for s in _rules_items(b, "exceptions") if s.get("quote") and s.get("quote_en")), None)
+    exc = next((s.get("quote_en") for s in _rules_items(b, "exceptions") if s.get("quote") and s.get("quote_en") and "exception wording" in (s.get("text_en") or s["text"])), None)
+    both = " and ".join('"%s"' % brief._en(x) for x in p.get("conflict_en") or [])
     kind = "age wording that contradicts itself" if p.get("conflict") else "cut-off age wording" if p.get("truncated") else _KIND.get(p.get("age_class"), "age wording of an unclear type")
     if not w:
         reading = "The rules found no age wording in this text. They can miss phrasing, so check the ad itself."
         question = "Hello, I am writing about this role. Does it have any age requirement? Please confirm, and tell me what information you would need from me."
+    elif both:
+        reading = "The ad's age wording contradicts itself: %s. The rules do not choose between them." % both
+        question = "Hello, I am writing about this role. The ad says %s. Which of these applies to this role, and what information would you need from me?" % both
     elif w.startswith("Age wording"):  # the gloss describes wording it could not translate; it is not a quote
         reading = ("The age wording is cut off, so no limit can be read from it. Ask for the full ad." if p.get("truncated")
                    else "The rules found age wording they could not read as a limit, so check the ad itself.")

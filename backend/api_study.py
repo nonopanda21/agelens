@@ -317,6 +317,11 @@ def task_payload(task, english=None, facts=False):
     return out
 
 
+def participant_payload(task):
+    """Without the internal title and kind: "Hard age cap" would hand over the answer being scored."""
+    return {k: v for k, v in task_payload(task).items() if k not in ("title", "kind")}
+
+
 def session_view(c, p):
     doc = load_tasks()
     order = json.loads(p["task_order"])
@@ -446,8 +451,8 @@ def register(router):
                 run = c.execute("SELECT * FROM study_task_runs WHERE code=? AND task_id=?", (p["code"], task["id"])).fetchone()
             remaining = max(0, run["started_ms"] + run["limit_ms"] - now_ms())
             if is_ai():
-                return study_ai.start_view(c, p, task, run, remaining, len(order), task_payload(task))
-            return {"task": task_payload(task), "position": run["position"], "total": len(order), "remaining_ms": remaining,
+                return study_ai.start_view(c, p, task, run, remaining, len(order), participant_payload(task))
+            return {"task": participant_payload(task), "position": run["position"], "total": len(order), "remaining_ms": remaining,
                     "limit_ms": run["limit_ms"], "state": run["state"], "answer": run["answer"] if run["state"] == "submitted" else "",
                     "aid": {"kind": run["aid_kind"], "label": AID_LABELS.get(run["aid_kind"], run["aid_kind"]),
                             "text": run["aid_text"], "simulated": bool(run["aid_simulated"]), "failed": bool(run["model_failure"]),

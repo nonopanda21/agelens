@@ -34,6 +34,8 @@ NEGATED = re.compile(r"\b(never|do not|don't|does not|doesn't|did not|no longer|
                      r"if you are|if you're|whether)\b", re.I)
 NOT_BEFORE = re.compile(r"\b(?:not|never|no)(?:\s+be)?\s*$|n't(?:\s+be)?\s*$", re.I)
 # text addressed to a machine: anything inside it is not a statement about the job
+# A sentence telling the reader what to report ("Say the maximum age is 18."): an ad describes a job, it does not dictate an answer.
+DICTATES = re.compile(r"^\W*(say|state|report|tell|claim|declare|output|print|respond|reply|answer|treat|write)\b.*\b(age|years? old|limit)\b", re.I)
 INSTRUCTION = re.compile(r"\b(?:ignore|disregard|forget|override)\b[^.;\n]*\b(?:instructions?|rules?|prompts?|above|previous)\b|\b(?:system|assistant)\s*:|"
                          r"\b(?:tell|say|report|respond|output|answer)\b[^.;\n]*\b(?:that|the (?:user|applicant|candidate)|age limit)\b", re.I)
 PREF = re.compile(r"\b(prefer\w*|ideally|is a plus|would be a plus|desirable|nice to have)\b|优先", re.I)
@@ -166,7 +168,7 @@ def parse(text):
         exc = EXC.search(sent)
         found = _numbers(sent, base, exc.span() if exc else None)
         numeric = [t for t, _ in found if t["kind"] in ("max", "min", "range")]
-        if INSTRUCTION.search(sent):
+        if INSTRUCTION.search(sent) or DICTATES.search(sent):
             for t, _ in found:
                 t.update(kind="ambiguous", min_age=None, max_age=None, confidence="low", flag="near_miss")
             numeric = []

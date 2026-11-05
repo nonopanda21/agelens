@@ -161,7 +161,7 @@ class Aggregator(unittest.TestCase):
         d = self.data
         self.assertEqual(set(d), {"cells", "provinces", "occupations", "total", "filters_applied", "using_demo", "label", "meta"})
         self.assertFalse(d["using_demo"])
-        self.assertEqual(d["label"], "Real data · Zhaopin job ads 2021–2024")
+        self.assertEqual(d["label"], "Real data · Recruitment ads 2021–2024")
         keys = {"ads", "explicit", "cap", "age_wording", "with_exception", "preference", "n_max_age", "median_max_age"}
         for c in d["cells"]:
             self.assertEqual(set(c), keys | {"province", "occupation"})

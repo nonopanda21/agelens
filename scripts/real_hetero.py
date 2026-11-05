@@ -25,7 +25,7 @@ from backend.realdata import ad_text, city_to_province, measures_from_terms, occ
 DEFAULT_CSV = ROOT / "data" / "raw" / "zhaopin_2016-2025.7.csv"
 I_TITLE, I_CITY, I_DESC, I_EXP, I_YEAR = 1, 2, 6, 8, 17
 MAX_WORKERS = 6
-SOURCE = "Zhaopin recruitment export 2016–2025.7, supplied by the team"
+SOURCE = "Recruitment data export 2016–2025.7, supplied by the team"
 CAVEAT = "Counts of how ads are worded, not hiring outcomes"
 
 # 要求经验 (required experience) -> ordered bands. 不限 ("not limited") and 无经验 ("no experience") both mean the ad asks for

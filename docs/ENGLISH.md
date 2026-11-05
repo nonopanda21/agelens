@@ -33,7 +33,7 @@ the `*_en` fields.
 | `/api/age/check` `terms[*]` | `gloss_en`, `class_en`, `exception_en` (top-level keys unchanged) |
 | `/api/requests/*` `evidence[*]` | at read time: `gloss_en`/`class_en`/`exception_en` per term, plus `title_en` etc. from the ad if it is still in the database. The stored snapshot is not changed. |
 | `/api/stats/provinces`, `/api/stats/occupations` | `province_en` / `occupation_en` |
-| `/api/real/status` | `source` is English only: "Zhaopin recruitment export 2016–2025.7, supplied by the team" (mapped in `api_data.real_source_en`; `data/real/*.json` is not edited) |
+| `/api/real/status` | `source` is English only: "Recruitment data export 2016–2025.7, supplied by the team" (mapped in `api_data.real_source_en`; `data/real/*.json` is not edited) |
 | `/api/study/...` task payload | `ad_text_en`, `job_title_en` (from `data/study/tasks.json`) |
 
 Use `text_en`, not `text`, for statements. A `text` that quotes contradictory ad wording still contains the Chinese quote.

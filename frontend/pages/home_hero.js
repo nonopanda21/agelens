@@ -98,7 +98,7 @@
     syncPaused(); AL.motion.onChange(syncPaused);
     el.append(hero);
 
-    // real Zhaopin statistics when the server has them, otherwise the simulated set (labels say which)
+    // real recruitment statistics when the server has them, otherwise the simulated set (labels say which)
     Promise.all([AL.realSummary(), AL.api('/api/overview').catch(() => null)]).then(([real, ov]) => {
       let v;
       if (real) {

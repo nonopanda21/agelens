@@ -208,9 +208,9 @@
     const tokens = AgeLens.ownerTokens.all(), codes = Object.keys(tokens);
     const personal = !!AgeLens.access.invite && AgeLens.session.info().personal;  // public demo, personal invite code
     const wrap = h('div.wrap.section.rq', {}, h('h1', {}, 'Human ', h('span.ink-pink', {}, 'review')),
-      h('p.lead.rq-intro', {}, 'Course demo: a reply is not guaranteed, and on the public site a request can be lost when the server restarts. Questions you sent to a person on the course team, and their replies. A reviewer reads the ads and your question, then separates what the ad text supports from what still needs checking.'),
+      h('p.lead.rq-intro', {}, 'Questions you sent to a person on the course team, and their replies. Course demo: a reply is not guaranteed, and on the public site a request can be lost when the server restarts.'),
       personal ? h('p.hint.rq-lede', {}, 'Requests you send with your personal invite code are kept on the code, so they open in any browser where you enter it. Requests sent from this browser earlier are listed too.')
-        : h('p.hint.rq-lede', {}, 'Requests sent from this browser are listed here. Only this browser can open them: the access key stays here and cannot be recovered.'));
+        : h('p.hint.rq-lede', {}, 'Only this browser can open these requests: the access key stays here and cannot be recovered.'));
     el.replaceChildren(wrap);
     let onAccount = [];
     if (personal) {
@@ -218,7 +218,7 @@
     }
     if (!codes.length && !onAccount.length) {
       wrap.append(h('div.card.rq-empty', {}, AgeLens.stateIcon('inbox'), h('h2', {}, 'Nothing sent for human review yet'),
-        h('p', {}, 'Check an ad first. Under your answer, choose “Ask a reviewer about similar ads” (or tick “Select for review” on the ads you want a person to look at), then send it. You choose what background to share. The reply appears here.'),
+        h('p', {}, 'Check an ad first. Under your answer, choose “Ask a reviewer about similar ads”, or tick “Select for review” on an ad, then send it. The reply appears here.'),
         h('p.hint', {}, 'Sent from another browser? Open Human review there; the key is not stored on the server.'),
         h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad')));
       return;

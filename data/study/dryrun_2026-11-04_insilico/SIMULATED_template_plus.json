@@ -1,0 +1,4082 @@
+[
+ {
+  "i": 0,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad explicitly says \"Age 35 or under,\" so I would read that as a stated requirement, not just a preference. Since I am 38, I would assume I do not fit the posted age condition as written. The ad does not explain any exception, so I would want to ask whether there is any flexibility before proceeding.",
+   "question": "The posting says applicants should be 35 or under. Is that a strict requirement, or is there any exception or flexibility for someone who is 38 with relevant procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 0,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says the general age limit is not above 35, but it also says it may be relaxed to 40 for people with an intermediate or higher professional title or with 8+ years of relevant industry experience. Since I am 38 and have 9 years in e-commerce operations, I would read that as possibly within the relaxed range, though it is not completely clear how strictly they apply it.",
+   "question": "I’m 38 with 9 years of relevant e-commerce operations experience and no professional title. Am I eligible for the age relaxation to 40 under this posting, and if so, what proof would you want from me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 0,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is a preference, not a hard cutoff, because it says “under 30 preferred.” Still, it clearly signals the employer is looking for younger candidates, so I would not read it as neutral. Since I am 41, I would treat this as a likely concern and ask them directly whether they will consider me despite that wording.",
+   "question": "I am 41 with 12 years of administration experience. Your ad says “under 30 preferred”; would you still consider an older candidate, or is that age preference firm?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 0,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off in the ad, so I can only see “Age requirement: 28-3,” which is incomplete and impossible to read as a full age limit. I would not assume it clearly excludes me, but I also cannot tell whether it is a strict cutoff or just a preference. Because of the truncation, I need the employer to state the complete wording before I can judge it.",
+   "question": "The age requirement is cut off in the posting at “28-3”. Could you please send the full age wording and confirm whether it is a strict requirement or only a preference?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 1,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says applicants should be 35 or under. Since I’m 38, that sounds like a hard cutoff, not just a nice-to-have, and it may rule me out as written. I’d want to know if they really mean it strictly or if there’s any flexibility.",
+   "question": "Is the age 35-or-under requirement fixed, or is there any exception for someone with 8 years of procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 1,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says age is generally capped at 35, but there’s a relaxation up to 40 if you have either an intermediate-or-higher professional title or 8+ years of relevant industry experience. Since I’m 38 with 9 years in e-commerce operations, I look like I should fall under the relaxed range, but it’s not totally clear how they verify that. I’d want to confirm whether they count my experience and whether the age rule is actually enforced.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title. Does my experience qualify me for the age relaxation up to 40, and what proof do you need?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 1,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" so that reads like an age preference, not a hard rule, but it still sounds like they may favor younger applicants. Since I’m 41, I’d want to know if they’ll actually consider me or if it’s basically a cutoff. The ad doesn’t explain any exception.",
+   "question": "Is \"under 30 preferred\" just a preference, or is it a real age cutoff for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": false,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 1,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I only see \"Age requirement: 28-3\" and can't tell the full range. At 36, I can't know from this whether I fit or if it's a hard cutoff. It looks like something I need the full wording on before I assume anything.",
+   "question": "Can you send the full age requirement wording and tell me if 36 is acceptable for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 2,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad plainly says applicants should be \"35 or under,\" so on the face of it I read that as an age limit, not just a nice-to-have. I’m 38, so I’d assume they may screen me out unless they say otherwise. I wouldn’t rely on the tool’s interpretation; I’d go by the wording in the posting.",
+   "question": "Your posting says applicants should be 35 or under. Is that a hard screening requirement, or can candidates over 35 still be considered if they meet the other qualifications?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 2,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It reads like they want people under 35, but they do leave a carve-out up to 40 if you have 8+ years of relevant industry experience or an intermediate title. On the face of it, 38 with 9 years sounds like it could fit the relaxed condition, but I would not assume they will count my experience the way I do. The ad does not spell out how strictly they apply it or what counts as “relevant industry experience.”",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title — would you treat that as meeting the relaxed age condition, and what proof would you want for the 8+ years of relevant experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 2,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" so that sounds like an age preference, not a hard cutoff, but it is still age wording. On the face of the ad, I would read it as they want younger applicants, and I can’t tell if they’d actually reject someone older. The ad does not explain any exception or whether experience could outweigh that point.",
+   "question": "Is \"under 30 preferred\" just a preference in your screening, or is it effectively a cutoff for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 2,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so all I can really read is \"Age requirement: 28-3\" and that looks incomplete or possibly mistranscribed. I would not assume it means I fit or don’t fit from that fragment alone. Since I’m 36, I need the full wording before I can tell what they actually mean.",
+   "question": "Could you please send the full age requirement as written in the posting?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 3,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says applicants should be 35 or under, so on the face of it I don’t think I match that part. I’m not sure if they mean it as a hard cutoff or just a preference, and the ad doesn’t explain any exception. Since I’m 38, I would want to know if they would still consider me before I spend time applying.",
+   "question": "Is the 35-or-under age condition a strict requirement, or can you make an exception for someone who is 38 with 8 years of procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": true,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 3,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It seems like they want people under 35, but there is some kind of exception up to 40 if you have either an intermediate title or 8+ years of relevant experience. I’m 38 and have 9 years in e-commerce operations, so I think I may fit the relaxed part, but I’m not totally sure how they decide it. It still feels a bit unclear to me because it says “generally” and I don’t know if they will count my background as enough.",
+   "question": "I’m 38 with 9 years of e-commerce operations experience and no professional title. Does the relaxed age rule apply to me, and if so what proof or materials would you need to confirm it?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 3,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says “under 30 preferred,” so to me that sounds like they want someone younger, but I’m not sure if it is a hard rule or just a preference. Since I’m 41, I would worry I may not fit what they are looking for. I can’t tell from the wording whether they would still consider someone older with good experience.",
+   "question": "Is “under 30 preferred” just a preference, or is it actually a requirement for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 3,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It looks like the age line is cut off, so I can only see \"28-3\" and I’m not sure what the full age range is. From what I can tell, it sounds like they are asking for a specific age, but I can’t tell if 36 is okay or not. I would want the full wording before I assume anything.",
+   "question": "Could you please send the full age requirement line, so I can see whether 36 fits or if there is any exception?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 4,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says age 35 or under. So by the words, 38 looks over the line. The ad does not say if they can make an exception.",
+   "question": "Is the age 35 limit strict, or can you still consider someone who is 38 with 8 years of procurement work?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 4,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says age is usually under 35. But if you have 8 or more years of related work, it can go up to 40. So at 38, I may fit the relaxed rule if my work counts as relevant.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no title. Does my experience count for the age exception, and what proof do you need?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 4,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred.” That sounds like age is wanted, but it is not worded as a hard rule. I would read it as a strong bias for younger people, and I cannot tell if they would still take someone older.",
+   "question": "Is “under 30 preferred” just a preference, or is it really a cut-off for this job?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 4,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I cannot tell the full rule. It only shows \"28-3\", which looks incomplete and not clear for someone who is 36. I would not want to guess what they mean.",
+   "question": "Could you send the full age requirement line, and tell me if 36 is okay or not?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 5,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad explicitly says “Age 35 or under,” so on its face it sets a hard upper age limit. It also separately asks for 3+ years of procurement-related experience, which you appear to meet. I would read the age wording as a strict condition unless the employer says otherwise.",
+   "question": "Is the “age 35 or under” line a strict eligibility requirement, or is there any exception or waiver for applicants with strong procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 5,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is a general cap of 35, with an explicit relaxation up to 40 for candidates who either have an intermediate-or-higher professional title or have 8+ years of relevant industry experience. On the face of the ad, a 38-year-old with 9 years of relevant experience appears to fall within the stated relaxed range, assuming the employer counts that experience as relevant. I would still want to confirm whether they apply that exception in practice and what they use to verify it.",
+   "question": "I’m 38 and have 9 years of relevant e-commerce operations experience, with no professional title. Can you confirm that I meet the relaxed age condition, and what documents or proof you need for the experience requirement?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 5,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred,” which reads as an age preference rather than a clear hard cutoff, but it still signals that younger applicants are favored. It does not explain whether people over 30 are excluded, waived, or reviewed case by case. Since I am 41, I would want to know whether this is an actual screening limit or just a stated preference.",
+   "question": "Is “under 30 preferred” a strict age requirement or only a preference, and would applicants over 30 still be considered?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 5,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is cut off, so I can only see \"Age requirement: 28-3\" and not the full range. As written, it is incomplete and I cannot tell whether 36 is included, excluded, or whether there is some other condition attached to the age line. I would treat it as an unclear age requirement that needs confirmation before I assume it applies to me.",
+   "question": "Please confirm the full age requirement in the posting, including whether applicants age 36 are eligible and whether there are any exceptions or special conditions."
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 6,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says applicants should be 35 or under. I am 38, so this means I may not fit this age condition. It looks like a hard requirement, but I am not sure if they can make an exception.",
+   "question": "I am 38 with 8 years of procurement experience. Is the age limit a strict requirement, and is there any exception for someone with my background?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 6,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says age is generally not above 35, but it can be relaxed to 40 for people with 8+ years of relevant industry experience. I am 38 and have 9 years, so I think I may fit the relaxed rule, but it is not 100% clear. I would like to know if my e-commerce operations experience counts for this exception.",
+   "question": "I am 38 with 9 years in e-commerce operations and no professional title. Does my experience count for the age relaxation to 40, and what proof do you need?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 6,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred.” To me, this sounds like a preference, not a very strict rule, but it still may mean they want younger applicants. It is not clear if they can still accept someone older, so I should ask. ",
+   "question": "I am 41 with 12 years in administration. Is “under 30 preferred” only a preference, or is it a limit for applying?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 6,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I only see \"28-3\" and I cannot tell the full range. It looks like they may want a certain age, but I do not know if 36 is allowed or not. I would need the complete age wording to understand it.",
+   "question": "Could you please send the full age requirement line, because the ad is cut off at \"28-3\" and I need to know if 36 is acceptable?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 7,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says applicants should be 35 or under, so on its face that excludes me at 38. I’d read that as a hard age cutoff unless they tell me otherwise. Since I have solid procurement experience, I’d want to know if they actually consider older candidates.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the age limit a hard requirement, or can you still consider my application?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 7,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says 35 is the usual age limit, but there is a carve-out up to 40 if you have an intermediate or higher title or 8+ years of relevant industry experience. Since I’m 38 with 9 years in e-commerce operations, I look like I should fit the relaxed range. I’d still want to confirm they really count my experience and don’t have some hidden condition.",
+   "question": "I’m 38 with 9 years of e-commerce operations experience and no professional title. Do you accept candidates under the relaxed age rule, and is there anything specific you want me to provide to prove the experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 7,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says “under 30 preferred,” so that sounds like they want younger applicants, but it’s not phrased as a hard cutoff. I’d still treat it as a possible筛选条件, so I’d want to know whether they really will reject older candidates. The rest of the ad is pretty standard admin work.",
+   "question": "I’m 41 with 12 years in administration. Is the “under 30 preferred” line just a preference, or is it a real screening requirement?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 7,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only see \"28-3\" and not the full rule. It looks like they want a specific age range, but I can’t tell whether 36 is included or whether there’s any exception. I’d treat it as unclear and ask for the full wording.",
+   "question": "Could you please send me the full age requirement and confirm whether a 36-year-old with 10 years of customer service experience is eligible?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 8,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad explicitly says \"Age 35 or under,\" so I would read that as a hard age requirement, not just a preference. Since I am 38, I do not meet that stated condition even though I have the experience they ask for. I would want to confirm whether this is truly fixed or whether there is any exception in practice.",
+   "question": "The ad says applicants should be 35 or under. Is that a strict requirement for this role, or is there any exception for applicants with strong procurement experience like mine?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 8,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is a general limit of 35, with an exception that can be relaxed to 40 for people who have either an intermediate-or-higher professional title or at least 8 years of relevant industry experience. Since I’m 38 and have 9 years in e-commerce operations, I read this as potentially within the relaxed range, but it’s not fully clear whether they will count my experience as matching their requirement. I would want to confirm that my background really fits their definition of relevant experience.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title. Does my experience qualify for the age-relaxation to 40, and what evidence should I provide to show that it counts as relevant industry experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 8,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “Under 30 preferred,” which reads to me as a preference rather than a hard cutoff, but it still clearly points to a younger age. Since I am 41, I would treat it as a potentially limiting condition and not assume it includes me. I would want to confirm whether age is truly decisive or only one factor among others.",
+   "question": "Is “under 30 preferred” only a preference, or is it effectively a screening condition for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 8,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is cut off, so I can only read it as “28-3…” and not as a complete requirement. Because the line is incomplete, I would not assume whether 36 is inside or outside the range. I would ask for the full wording before deciding anything.",
+   "question": "Could you please send the complete age requirement line, since the posted ad is cut off at “28-3…”?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 9,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"Age 35 or under,\" so on the face of it I read that as a hard requirement, not just a nice-to-have. I’m 38, so based on this wording I’d assume I may be screened out unless they have some exception. The rest of the ad doesn’t explain any exception or how strictly they use it.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the \"35 or under\" condition a hard requirement, or is there any exception for strong experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 9,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says generally not above 35, but there’s a relaxable exception up to 40 if you have 8+ years of relevant industry experience or an intermediate/higher title. Since I’m 38 with 9 years in e-commerce operations, I look like I fit the relaxed part. I’d want to confirm they’ll count my experience and what proof they need.",
+   "question": "I’m 38 with 9 years of relevant e-commerce operations experience and no professional title. Can I be considered under the relaxed age limit, and what documents should I provide to prove the experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 9,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" so to me that sounds like they want younger candidates, even if they word it as a preference. I’m 41, so I’d read it as a possible filter, not something I can assume won’t matter. It’s not clear from the ad whether they’ll still consider older applicants.",
+   "question": "Is the \"under 30 preferred\" line just a preference, or will it be used as a real screening rule for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 9,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only see \"Age requirement: 28-3,\" which looks incomplete. I can’t tell if 36 is actually allowed or not from this text. I’d want the full age wording before assuming anything.",
+   "question": "Could you send the full age requirement and confirm whether someone who is 36 can still be considered for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 10,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad plainly says “Age 35 or under,” so on its face I’d take that as a hard requirement, not just a nice-to-have. I wouldn’t assume my 8 years of procurement experience makes it flexible unless the employer says so. If they mean something different, they should state it clearly in the posting.",
+   "question": "Is “age 35 or under” a strict hiring requirement for this role, or is there any exemption for applicants with relevant procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 10,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It reads like they want under 35 in general, but they also say they may relax it up to 40 if you have 8+ years of relevant industry experience or an intermediate title. On the face of it, 38 with 9 years should fit the relaxed case, but I would not assume they will actually apply it. The ad is still putting an age limit in there, so I’d want them to say plainly whether they will accept my application.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title — can you confirm whether you will accept my application under the relaxed age condition, and if so what proof of experience you need?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": true,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 10,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" which reads like an age preference, not a hard cutoff, but it is still age-based. I would not assume they will ignore it just because it says preferred. On the face of the ad, a 41-year-old would likely be at a disadvantage unless they are willing to make an exception.",
+   "question": "Is \"under 30 preferred\" just a preference, or is it effectively a limit for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 10,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only see \"Age requirement: 28-3\" and that is not enough to know what they actually mean. I would not assume this is a real requirement for me until I see the full text. It could be a typo, a range, or something else, but from what I have it is incomplete.",
+   "question": "Please send the full age requirement as written in the ad, because the current version cuts off at \"28-3\" and I need to know whether there is actually an age limit or if it is just incomplete text."
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 11,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It looks like they want people who are 35 or under, so on the face of it I may not fit. I’m not sure if that is a hard cutoff or just how they wrote it, and I don’t know if they would make any exception. The rest of the ad sounds like my background matches, but the age part is the problem.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the “35 or under” age line a strict requirement, or is there any exception for someone with my experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": false,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 11,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "I read it as they usually want people 35 or under, but there is an exception if you have 8+ years of relevant industry experience, which I do. So I think I may fit the relaxed age part, but I’m not totally sure if my e-commerce operations counts the way they mean it.",
+   "question": "I’m 38 and have 9 years in e-commerce operations, but no professional title. Does my experience count for the age relaxation to 40, and what proof would you need from me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 11,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says “under 30 preferred,” so to me that sounds like they would like younger applicants, but I’m not sure if it is a hard rule or just a preference. I’m 41, so I would want to know whether they would still look at my application. The wording is a bit unclear to me.",
+   "question": "I’m 41 with experience in administration. Does “under 30 preferred” mean I still can apply, or is it a strict age limit?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 11,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It looks like the age line is cut off, so I can only see \"28-3\" and I’m not sure what it really means. From what I can tell, it sounds like they want a specific age range, but I can’t tell if 36 fits or not. I would want the full wording before I assume anything.",
+   "question": "Could you please send the full age requirement and tell me whether someone who is 36 can still apply?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": false,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 12,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says applicants should be 35 or under. I am 38, so this wording looks like a hard limit, not a small plus. It may mean I do not match this rule even if I have the right work experience.",
+   "question": "Is the age 35 or under a hard rule for this role, or can you consider people over 35 with strong procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 12,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says people are usually wanted under 35. But it also says the age can be relaxed up to 40 if you have 8+ years of related work or an intermediate title. I am 38, so I look like I may fit the relaxed rule.",
+   "question": "I’m 38 with 9 years of related e-commerce operations work and no professional title. Can I count for the relaxed age rule, and what proof do you need from me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": false
+   },
+   "q1": true,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 12,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" so it sounds like they want younger people, but it is not worded as a hard rule. I cannot tell if they would still accept someone age 41. The ad does not explain any exception or how strict this is.",
+   "question": "Is \"under 30 preferred\" just a preference, or is it a hard age limit?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 12,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It looks like the age line is cut off. I only see \"Age requirement: 28-3,\" so I cannot tell the full age range or if I fit it. At 36, I would want the full line before I assume anything.",
+   "question": "Could you send the full age requirement and tell me if 36 is okay for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 13,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad explicitly says \"Age 35 or under,\" so on its face it is a hard age limit, not just a general preference. Since I am 38, this wording would seem to exclude me unless the employer says it is only a screening standard or there is some exception. The posting does not explain any exception, how strictly they apply it, or whether the age line is tied to a particular role condition.",
+   "question": "Is the \"age 35 or under\" item a strict requirement or only a screening preference, and if there is any exception, what would I need to provide to be considered?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 13,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is a general cap of 35, with a stated relaxation up to 40 for people who have either an intermediate-or-higher professional title or at least 8 years of relevant industry experience. On the face of it, someone who is 38 and has 9 years of relevant experience seems to fit the relaxed range, even though no professional title is mentioned. I would still treat it as something to confirm because the ad does not explain how they verify \"relevant industry experience\" or whether they apply the relaxation automatically.",
+   "question": "For a 38-year-old candidate with 9 years of relevant e-commerce operations experience and no professional title, do you apply the age relaxation up to 40, and what proof do you need to confirm the 8+ years of relevant experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 13,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is \"under 30 preferred,\" so on its face it is presented as a preference, not an absolute cutoff. It still clearly points to a younger age group, and the ad gives no explanation of whether older applicants will be considered. As written, I would read it as age being a stated preference that may affect screening, even though it is not phrased as a hard requirement.",
+   "question": "Is \"under 30 preferred\" only a preference, or will it be used as an actual screening condition for applicants over 30, including someone age 41 with relevant experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 13,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is cut off, so the only visible part is “Age requirement: 28-3,” which is incomplete and not clear on its own. I cannot tell whether it means a range, a preference, or a hard cutoff, and I also cannot tell whether someone age 36 is included or excluded. Because the rest of the line is missing, the safest reading is that the full condition is not visible in the ad text I have.",
+   "question": "What is the full age requirement line, including whether it is a strict cutoff or a preference, and would a 36-year-old applicant be considered?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 14,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says applicants should be age 35 or under. I am 38, so this part looks like a clear limit, not only a suggestion. Even though I have enough experience, I am not sure if they will still accept me.",
+   "question": "I am 38 with 8 years of procurement experience. Is the age 35 or under a strict requirement, or can you consider older candidates too?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 14,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line looks like it is mainly 35, but it can be relaxed to 40 for some people. I think I may fit the exception because I am 38 and have 9 years of relevant experience. But I am not sure if they need a professional title or other proof.",
+   "question": "I am 38 with 9 years in e-commerce operations and no professional title. Can I still apply under the age relaxation, and what documents or proof do you need?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 14,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred”, so I think age is asked but maybe not a hard rule. It looks like a preference, but it is not clear if they will still consider older people. I am not sure if 41 can apply or not.",
+   "question": "Is “under 30 preferred” only a preference, or is it a real age limit for this job?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 14,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I cannot see the full rule. It looks like it starts with \"28-3\" but I do not know if it means 28-35, 28-38, or something else. At my age, 36, I need the full wording before I know if I fit.",
+   "question": "Could you please send the full age requirement line, and tell me if 36 is acceptable?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 15,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"age 35 or under,\" so on the face of it I’d read that as a hard filter, not just a nice-to-have. Since I’m 38, that’s the main issue for me. The ad doesn’t explain any exception or how strictly they use it.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the age limit a hard requirement, or is there any flexibility for someone in my situation?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 15,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says the job is generally for people 35 or under, but there is a relaxed limit up to 40 if you have either an intermediate-or-higher professional title or 8+ years of relevant industry experience. Since I’m 38 with 9 years in e-commerce operations, I look like I should fit the relaxed part, but I’d still want to confirm they count my experience that way.",
+   "question": "I’m 38 with 9 years of e-commerce operations experience and no professional title. Do I qualify under your age exception, and what proof do you need for the experience requirement?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": true,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 15,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "I noticed the ad says “under 30 preferred,” so it sounds like an age preference, not a hard rule, but it’s still a warning sign. The posting doesn’t explain whether they’d consider someone older, so I’d want to confirm that directly before spending time on it.",
+   "question": "I have 12 years of administration experience. Is “under 30 preferred” just a preference, or is it a real screening limit for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 15,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only see \"28-3\" and not the full requirement. At 36, I can't tell if that's an actual limit, a range, or just incomplete text. I’d want the full wording before reading too much into it.",
+   "question": "Could you send me the full age requirement for this role, and let me know whether 36 is still eligible?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 16,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The posting says applicants should be “age 35 or under,” so it reads like a stated requirement rather than just a preference. Since I’m 38, I would treat this as a potential screening rule and not assume my experience changes that. I’d want to know whether they will actually consider candidates over 35 before spending time applying.",
+   "question": "The ad says applicants should be 35 or under. Is this a hard screening requirement, or will you still consider applicants over 35 with strong procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 16,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording says candidates are generally expected to be 35 or under, but there is a stated relaxation up to 40 for people with an intermediate or higher professional title or 8+ years of relevant industry experience. Since the profile is 38 with 9 years in e-commerce operations, it looks like the relaxation could apply if that experience counts as relevant industry experience. I would still want to confirm how they define “relevant” and whether they need proof of it.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title. Does my experience count as the 8+ years of relevant industry experience for the age relaxation to 40, and what proof would you need?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 16,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred,” so I read it as an age preference rather than an absolute cutoff, but it still clearly points to a younger candidate. Since I’m 41, I would want to confirm whether they really consider applications above that age or whether it is effectively a limit. The rest of the posting is ordinary and does not add any further age detail.",
+   "question": "Is “under 30 preferred” only a preference, or is it effectively a hiring limit for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 16,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only read it as \"Age requirement: 28-3\" and not tell whether that is a full range or something incomplete. Since the posting is incomplete, I would not assume it rules me out or fits me; I would want the full wording before reading it as a hard limit.",
+   "question": "Could you please send the complete age requirement line and confirm whether age is a strict requirement or just a preference?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 17,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says applicants should be 35 or under, so at face value I’d read that as a hard age limit. Since I’m 38, that sounds like a likely mismatch even though I have the experience they want. I’d want to know if they really mean it strictly or if there’s any exception.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the \"35 or under\" line a hard requirement, or is there any exception for applicants like me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 17,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says 35 is the normal age limit, but there’s a relaxation up to 40 if you have either an intermediate-or-higher professional title or 8+ years of relevant industry experience. Since I’m 38 with 9 years in e-commerce operations, I look like I should fall under the relaxed part, but the ad doesn’t say how they judge that. I’d want to confirm they really accept my experience and whether they need any proof.",
+   "question": "I’m 38 with 9 years in e-commerce operations. Can I apply under the age-relaxation clause, and what proof of experience would you need from me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 17,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred,” so it reads like an age preference, not a hard cutoff. But it still sounds like they may be leaning that way, and I’m 41 so I’d want to know if they will really consider older applicants. The rest of the post is standard admin work, so age is the only thing that stands out.",
+   "question": "Is “under 30 preferred” just a preference, or is there really an age limit for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 17,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only see \"28-3\" and not the full requirement. As written, it looks like there may be an age limit, but I can't tell if 36 is excluded or if it was meant to say something else. I would treat it as unclear and ask for the complete wording.",
+   "question": "Can you send the full age requirement text? I’m 36 with 10 years in customer service, so I need to know whether 36 is acceptable or if there’s a strict limit."
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 18,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad plainly says the requirement is “Age 35 or under.” On the face of it, that means I don’t meet that condition at 38, so I would treat it as a real limit rather than a suggestion. The tool’s wording may be right, but I’d rely on the ad itself and ask the employer to confirm whether they will actually consider older applicants.",
+   "question": "The ad says applicants should be 35 or under. Is that a hard requirement for this role, or will you still consider applicants over 35 with strong procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 18,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It reads like they want someone under 35 in general, but they do give a carve-out up to 40 for people with 8+ years of relevant industry experience. On the face of it, 38 and 9 years should fit that exception, though I would not assume anything until they confirm it. The ad does not explain whether \"relevant industry experience\" means exactly e-commerce operations or something narrower.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title. Does the 8+ years exception apply to my background, and what proof or details would you need to confirm it?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 18,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says “under 30 preferred,” so on the face of it that sounds like a preference, not a hard cutoff. But I would not assume that means they will seriously consider someone who is 41; the ad gives no sign of an exception, and I’d read it as they likely want younger candidates. The tool may be right, but I’d trust the wording in the ad first.",
+   "question": "“Under 30 preferred” — is that just a preference, or do you actually only want applicants under 30?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 2
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 18,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can only see \"Age requirement: 28-3,\" which is not complete enough to know what they actually mean. On the face of it, it looks like they are setting a specific age band, but I would not trust software to interpret that without the full text. I’m 36, so I’d want to know whether they really mean a hard limit or whether the ad is just truncated.",
+   "question": "Your age requirement is cut off in the version I have. Could you send the full wording and confirm whether 36 is acceptable for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": false,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 19,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says applicants should be 35 or under, so at face value I think 38 would not fit that requirement. I’m not sure if this is a strict rule or just a preference, but the wording looks like an age limit. I would want to check whether there is any exception before applying.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the “35 or under” line a strict requirement, or is there any exception for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 19,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "I think the ad says people are usually supposed to be 35 or under, but there is some kind of exception up to 40 if you have 8+ years of relevant experience or a middle-level title. I’m 38 and have 9 years in e-commerce operations, so I guess I may fit the exception, but I’m not totally sure how they judge it. It sounds like they may still decide case by case.",
+   "question": "I’m 38 and have 9 years of e-commerce operations experience, with no professional title. Does that count for the age relaxation up to 40, and do you need any proof or extra materials from me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 19,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says “under 30 preferred,” so to me that sounds like they want younger applicants, but I’m not sure if it is a hard rule or just a preference. Since I am 41, I can’t tell from the wording whether I should still apply. I would want the employer to explain how strictly they use that age line.",
+   "question": "Is “under 30 preferred” just a preference or a real age limit, and would you still consider my application at 41?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 19,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It looks like the age line is cut off, so I can only see \"Age requirement: 28-3\" and I don't know if that means a range or something else. I'm 36, so I can't tell from this whether I fit or not. I would want the full wording before I assume anything.",
+   "question": "Could you send the full age requirement line and tell me whether age is a hard requirement or just a preference?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 20,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says age 35 or under. I read that as a hard limit, not just a nice-to-have. It does not say what happens if someone is older, even if they have the right experience.",
+   "question": "Is the age 35 or under rule a hard requirement, or can you make an exception for someone older with strong procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 20,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says people should be 35 or under in general. But if you have 8 or more years in the same kind of work, the age can be relaxed to 40. I am 38 and have 9 years in e-commerce operations, so it sounds like I may fit the relaxed rule.",
+   "question": "I’m 38 with 9 years of e-commerce operations work and no title. Do I qualify under the relaxed age rule, and what proof do you need from me?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 2
+  }
+ },
+ {
+  "i": 20,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" so it reads like they want younger people. It sounds like a preference, but it still may mean they may not pick older applicants. From the ad alone, I can't tell if they would make an exception.",
+   "question": "I am 41 with 12 years in administration. Is the \"under 30 preferred\" part only a preference, and can I still apply?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 20,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says the age line is cut off: \"28-3\". So I can’t tell if 36 is allowed or not. The full age rule is missing, so I would not guess.",
+   "question": "What is the full age requirement in this ad, and would 36 still be okay?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 21,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad explicitly says \"Age 35 or under,\" so it reads as a stated age limit, not just a vague hint. It does not give any exception, explanation, or alternative route for someone older, including someone who otherwise meets the experience requirement. Based on the wording alone, a 38-year-old would appear outside the stated condition.",
+   "question": "Is the \"35 or under\" condition a hard requirement or just a preference, and if it is a hard requirement, is there any exception process for applicants over 35?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 21,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is: generally not above 35, with a possible relaxation to 40 for candidates who have either an intermediate or higher professional title, or 8+ years of relevant industry experience. On the face of it, someone aged 38 is over 35 but still within the possible relaxed range if the 8+ years condition is accepted. Since the ad does not spell out exactly how \"relevant industry experience\" is judged, I would want to confirm that e-commerce operations counts.",
+   "question": "Does 9 years of e-commerce operations experience qualify as the \"8+ years of relevant industry experience\" for the age relaxation to 40, and do you need any supporting documents?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 21,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording is \"under 30 preferred,\" so it reads like a preference rather than an absolute cutoff. But it still clearly names an age condition, and for someone who is 41 it could be used as a screening factor. The ad does not explain whether there are exceptions, so the practical meaning is uncertain.",
+   "question": "Is \"under 30 preferred\" only a preference, or is it used as a screening requirement for this role, and would you consider applicants who are older?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 21,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The visible age wording is cut off, so I can only read it as “Age requirement: 28-3,” which is incomplete and not reliable as a full rule. Because it is truncated, I cannot tell whether it is a fixed age range, a preference, or whether there is any exception. At 36, I would want the employer to confirm the full age requirement in writing before treating it as applicable.",
+   "question": "What is the complete age requirement in the posting, and is it a strict cutoff or a preference?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 22,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says applicants should be 35 or under, so it sounds like an age limit. I am 38, so I may not fit this requirement. I think it is better to ask if this is a hard rule or only a preference.",
+   "question": "Is the age 35 or under a strict requirement, or can you consider candidates like me who are 38 with strong procurement experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 22,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age wording says usually under 35, but people with 8 or more years of relevant experience can be up to 40. I think I may fit the relaxed rule because I am 38 and have 9 years in e-commerce operations. But I want to confirm if they really count my experience and if I need any proof.",
+   "question": "I am 38 with 9 years in e-commerce operations and no professional title. Do I meet the relaxed age rule, and what proof or documents should I provide?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 22,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age part says \"under 30 preferred\". I read it as not a hard rule, but it still sounds they want younger people. It is not clear if older applicants can still apply, so I would ask to confirm this.",
+   "question": "I am 41 and have 12 years of administration experience. Is the \"under 30 preferred\" line only a preference, and can I still apply?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 22,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I only see \"Age requirement: 28-3\". This looks unfinished, and I cannot tell if 36 is accepted or not. I would ask for the full age rule, because right now it is unclear.",
+   "question": "Could you please send the full age requirement line, and tell me if 36 is acceptable for this role?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 23,
+  "tid": "T1",
+  "tool": {
+   "reading": "The ad says: \"Age 35 or under\". It does not say how this is applied to someone aged 38 with 8 years in procurement.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 8 years in procurement. The ad says: \"Age 35 or under\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad says applicants should be 35 or under, so on the face of it I’m over the stated limit. I’d take that as a real filter unless the company says it’s flexible. I’d want to know whether they will still consider someone with solid procurement experience.",
+   "question": "I’m 38 with 8 years of procurement experience. Is the age limit a hard requirement, or would you still consider my application?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 23,
+  "tid": "T2",
+  "tool": {
+   "reading": "The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". It does not say how this is applied to someone aged 38 with 9 years in e-commerce operations.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 38 with 9 years in e-commerce operations. The ad says: \"Age generally not above 35; for candidates with an intermediate or higher professional title, or 8+ years of relevant industry experience, the age limit may be relaxed to 40\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The ad seems to set 35 as the normal age limit, but it also says it can be relaxed to 40 for people with an intermediate or higher title or 8+ years of relevant experience. Since I’m 38 with 9 years in e-commerce operations, I look like I could fit the relaxed case. I’d still want to confirm whether they will actually count my experience as enough.",
+   "question": "I’m 38 with 9 years in e-commerce operations and no professional title. Can you confirm whether I qualify under the relaxed age rule, and what proof you need for the experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": false,
+    "F4": false
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 1
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true,
+    "F4": true
+   },
+   "q1": true,
+   "q2": false,
+   "q3": true,
+   "q4": false,
+   "unsupported": 1
+  }
+ },
+ {
+  "i": 23,
+  "tid": "T3",
+  "tool": {
+   "reading": "The ad says: \"Under 30 preferred\". It does not say how this is applied to someone aged 41 with 12 years in administration.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 41 with 12 years in administration. The ad says: \"Under 30 preferred\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "It says \"under 30 preferred,\" so that sounds like an age preference, not a hard rule. But it still suggests they may lean younger, so I’d want to ask if they’ll actually consider someone over 30 with strong admin experience. The rest of the ad looks normal, with basic admin duties and no other obvious age wording.",
+   "question": "I’m 41 with 12 years in administration. Is the \"under 30 preferred\" line just a preference, and would you still consider my application based on experience?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": false,
+   "q4": false,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ },
+ {
+  "i": 23,
+  "tid": "T4",
+  "tool": {
+   "reading": "The ad says: \"Age requirement: 28-3\". It does not say how this is applied to someone aged 36 with 10 years in customer service.",
+   "checklist": [
+    "Is the wording a fixed requirement or a preference?",
+    "Is there an exception, and who decides it?",
+    "What information or proof would the employer need from me?",
+    "Is the full age wording visible in the ad?"
+   ],
+   "question": "I am 36 with 10 years in customer service. The ad says: \"Age requirement: 28-3\". Is that a requirement or a preference, does any exception apply to me, and what would you need from me?"
+  },
+  "ans": {
+   "reading": "The age line is cut off, so I can’t tell the full rule from \"28-3\". From what is visible, it sounds like they want a specific age range, and I’m not sure if 36 fits. I’d ask them to confirm the full age requirement and whether experience can override it.",
+   "question": "Could you please confirm the full age requirement and whether my 10 years of customer service experience could be considered if I’m 36?"
+  },
+  "R1": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": true,
+   "q2": true,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  },
+  "R2": {
+   "facts": {
+    "F1": true,
+    "F2": true,
+    "F3": true
+   },
+   "q1": false,
+   "q2": false,
+   "q3": true,
+   "q4": true,
+   "unsupported": 0
+  }
+ }
+]

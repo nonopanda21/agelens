@@ -85,7 +85,7 @@ with sync_playwright() as pw:
     obs["state_kept_after_evidence"] = page.input_value("#f-question")[:20]
 
     # ---------- CV upload: file chooser + drag/drop + failures ----------
-    page.goto(BASE + "/#/seeker"); page.wait_for_selector("#cv-drop")
+    page.goto(BASE + "/#/seeker"); page.click("#more-about summary"); page.wait_for_selector("#cv-drop")
     page.set_input_files("#cv-file", {"name": "cv.txt", "mimeType": "text/plain", "buffer": CV})
     page.wait_for_selector("#cv-review"); shot(page, "05_cv_review_1280.png")
     obs["cv_fields"] = {k: page.input_value("#cvx-" + k) for k in ("occupation", "years", "skills", "education")}

@@ -27,7 +27,7 @@ Connected only when provider, key and model id are all set. Both providers use u
 Ads and CVs are DATA. They are sent only as JSON string fields inside a `BEGIN_DATA_JSON ... END_DATA_JSON` block in the user message (`<`/`>` escaped); the instructions live in the system prompt. Only the question, the user-confirmed structured profile (age, occupation, years, skills/summary lines, region, education) and at most 12 ads (first 1500 chars each) are sent. CV files and full CV text never reach the adapter.
 
 ## Prompts
-`backend/prompts/explain_v2.txt`, header `# prompt_version: explain_v2` (v1 kept for the record); recorded with every call. Change = new file (`explain_v2.txt`) + `PROMPT_FILE`.
+`backend/prompts/explain_v3.txt`, header `# prompt_version: explain_v3` (older versions kept for the record); recorded with every call. Change = new file (`explain_v2.txt`) + `PROMPT_FILE`.
 
 ## model_calls table (created if absent, in the app DB)
 `ts, provider, model, prompt_version, latency_ms, status (ok|failed), failure_reason, input_tokens, output_tokens, cost_usd`. Never stores question, CV or ad text. Cost is NULL unless computed from real token usage x configured price.

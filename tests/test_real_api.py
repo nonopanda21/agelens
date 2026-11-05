@@ -130,5 +130,23 @@ class RealApi(unittest.TestCase):
         self.assertEqual(self.get("/api/stats/matrix?source=real")[0], 404)
 
 
+class SourceWording(unittest.TestCase):
+    """Pages say "recruitment data". The one exception is Lin (2025), whose published figures are per named site."""
+
+    def test_api_labels(self):
+        d = {"label": "Real data · Zhaopin job ads 2021–2024", "meta": {"source": "智联招聘 (Zhaopin) recruitment export"},
+             "filters_applied": {"scope_label": "Real data · Zhaopin job ads 2021–2024", "source": "zhaopin"}}
+        api_data.neutral_source(d)
+        self.assertNotIn("zhaopin", json.dumps(d, ensure_ascii=False).lower())
+        self.assertNotIn("智联", json.dumps(d, ensure_ascii=False))
+
+    def test_pages(self):
+        root = Path(__file__).resolve().parent.parent / "frontend"
+        for f in [root / "index.html", root / "js/mapcore.js", *(root / "pages").glob("*.js")]:
+            for line in f.read_text(encoding="utf-8").splitlines():
+                if "zhaopin" in line.lower():
+                    self.assertTrue(f.name == "home_motivation.js" and ("Lin (2025" in line or "51job" in line), f.name + ": " + line[:90])
+
+
 if __name__ == "__main__":
     unittest.main()

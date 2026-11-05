@@ -101,7 +101,7 @@
       let w = { active: false };
       try { w = await AgeLens.pro.status(); } catch (e) { /* no Pro */ }
       if (!w.active) {
-        walletBox.replaceChildren(h('h2', {}, 'Unlock Pro'), h('p', {}, 'In this course demo, Pro codes are handed out by the AgeLens team. No payment is taken and no card is needed.'), codeForm(() => paint(), 'page'));
+        walletBox.replaceChildren(h('h2', {}, 'Unlock Pro'), h('p', {}, 'In this course demo, the AgeLens team hands out Pro codes. No payment, no card.'), codeForm(() => paint(), 'page'));
         return;
       }
       const out = h('button.btn.btn-quiet', { type: 'button' }, 'Remove Pro from this browser');
@@ -112,9 +112,9 @@
         h('div.row', {}, h('a.btn.btn-primary', { href: '#/seeker' }, 'Check an ad'), out));
     };
     wrap.append(h('h1', {}, 'The full ', h('span.ink-pink', {}, 'report')),
-      h('p.hint.rq-lede', {}, 'Checking an ad, your answer and the brief stay free. With a Pro code you can also make the full report, a Word file you can keep, print or send: every matching ad’s age wording in plain English, what is explicit and what is unclear, how your region and occupation compare, and a draft message to the employer.'),
+      h('p.hint.rq-lede', {}, 'Checking an ad, your answer and the brief are free. A Pro code also makes the full report, a Word file: every matching ad’s age wording in plain English, what is explicit and what is unclear, how your region and occupation compare, and a draft message to the employer.'),
       table, walletBox,
-      h('p.hint', {}, 'The report is built by fixed rules from the same evidence the free answer uses. It is not legal advice, does not say whether you qualify and does not predict any hiring outcome. The ads in it are fictional examples; the comparisons use counts from 10 million real Zhaopin ads.'));
+      h('p.hint', {}, 'The report is built by fixed rules from the same evidence the free answer uses. It is not legal advice, does not say whether you qualify and does not predict any hiring outcome. The ads in it are fictional examples; the comparisons use counts from 10 million real recruitment ads.'));
     paint();
   }
 

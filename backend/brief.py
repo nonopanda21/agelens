@@ -183,6 +183,8 @@ def _employer_question(ads, n, with_max, exc_ads, amb, profile):
         core = ("The ad states a maximum age of %d and says it may be relaxed to %d for some candidates. How is that decided for this role?" % (_max_age(with_max[0]), to)) if to \
             else ("The ad states a maximum age of %d and says exceptions are possible. Is the age a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
             else "For this role, is there an age requirement, and if so, is it firm %s" % consider
+    elif one and ads and _below_min(ads[0], profile.get("age")) is not None:
+        core = "The ad states a minimum age of %d. Is that a firm requirement for this role, %s" % (_below_min(ads[0], profile.get("age")), consider)
     elif with_max:
         core = ("The ad states a maximum age of %d. Is that a firm requirement for this role, %s" % (_max_age(with_max[0]), consider)) if one \
             else "For this role, is there an age requirement, and if so, is it firm %s" % consider
@@ -196,6 +198,12 @@ def _employer_question(ads, n, with_max, exc_ads, amb, profile):
         core = "At which stage of the process (screening, interview, offer) are age-related requirements applied for this role, if at all?"
     text = (exp + " " + core) if exp else core
     return {"text": text, "text_en": gloss.en_text(text, _all_terms(conf[:1] or with_max[:1] or exc_ads[:1] or ads[:1]))}
+
+
+def _below_min(ad, age):
+    """The ad's stated minimum age if the person is below it, else None."""
+    mins = [t["min_age"] for t in _terms(ad) if t.get("min_age") is not None and t.get("kind") in ("min", "range") and _usable(t)]
+    return max(mins) if mins and age is not None and age < max(mins) else None
 
 
 def _summary(ads, n, status, with_max, exc_ads, profile):
@@ -239,7 +247,9 @@ def _summary(ads, n, status, with_max, exc_ads, profile):
         states += "; %d mention exceptions." % len(exc_ads) if exc_ads else "."
     mixed = one and ads and (_conflict_snippets(ads[0]) or len({t["max_age"] for t in _terms(ads[0]) if t.get("max_age") is not None and t.get("kind") in ("max", "range") and _usable(t)}) > 1)
     if age is None:
-        relates = "You did not give your age, so the stated limits are not compared with it. Age never hides ads."
+        relates = "No age from 14 to 80 was entered, so the stated limits are not compared with it. Age never hides ads."
+    elif one and ads and _below_min(ads[0], age) is not None and not mixed:
+        relates = "You entered %d; the stated minimum is %d. Only the employer can say how the age range is applied." % (age, _below_min(ads[0], age))
     elif mixed:
         relates = "You entered %d. The ad gives more than one age limit, so only the employer can say which one applies, if any." % age
     elif not with_max:
@@ -601,10 +611,10 @@ def _answer(ads, llm_input, profile, question, n, insufficient, status, with_max
             elif any(_flagged(x, "unlimited") for x in _terms(a)):
                 line = "This ad says there is no age limit."
             else:
-                line = "This ad mentions age, but not as a clear number."
+                line = "This ad mentions age, but not as a clear limit."
             add("explicit", "ad_fact", line, [a], quote=_quote(a, t and t["snippet"]))
         if not shown and not status["uncertain"]:
-            add("explicit", "rules", "None of the similar ads states an age requirement that the rules could find (read the ads to be sure).", ads)
+            add("explicit", "rules", ("The rules found no age requirement in this ad (read the ad to be sure)." if n == 1 else "None of the similar ads states an age requirement that the rules could find (read the ads to be sure)."), ads)
     # ---- exceptions
     pref = [a for a in ads if a.get("age_class") == "preference" or any(t.get("kind") == "relaxable" and not _flagged(t, "unlimited") for t in _terms(a))]
     if exc_ads and not insufficient:
@@ -706,7 +716,7 @@ def _en(s):
 def to_markdown(b):
     L = ["# AgeLens brief", ""]
     badges = [b["data_label"]] if b.get("data_label") else []
-    badges.append(b["model"]["label"] if not b["model"]["ran"] else "Model connected (output checked by code, not guaranteed)")
+    badges.append("Model connected (output checked by code, not guaranteed)" if b["model"]["ran"] else "Model not run (rules answer)" if b["model"]["connected"] else b["model"]["label"])
     L += ["**" + " · ".join(_en(x) for x in badges) + "**", "", "*" + b["disclaimer"] + "*", ""]
     if b["model"]["note"]:
         L += ["> " + b["model"]["note"], ""]

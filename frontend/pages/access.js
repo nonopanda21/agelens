@@ -35,7 +35,7 @@
     });
     el.replaceChildren(h('div.wrap.section.rq.rq-center.inv', {},
       h('p.rv-kicker', {}, 'Course project demo'), h('h1', {}, 'Welcome to AgeLens'),
-      h('p.hint.inv-lede', {}, 'This is the public demo of a Northwestern SEPOL 425 course project. It is open by invitation. The ads you can open are fictional; the statistics come from 10 million real Zhaopin ads (counts only). It gives no legal advice and makes no hiring decisions.'),
+      h('p.hint.inv-lede', {}, 'Public demo of a Northwestern SEPOL 425 course project, open by invitation. The ads you can open are fictional; the statistics come from 10 million real recruitment ads (counts only). It gives no legal advice and makes no hiring decisions.'),
       form,
       h('ul.inv-facts', {}, h('li', {}, 'No sign-up, no email: the code is all you need.'),
         h('li', {}, 'Please do not enter real personal information anywhere in the demo.'),

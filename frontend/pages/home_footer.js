@@ -6,23 +6,17 @@
   AL.home.sections.push({ id: 'footer', order: 90, page: '*', async render(el) {
     const canvas = h('canvas.xf-canvas', { 'aria-hidden': 'true' });
     const col = (title, links) => h('div.xf-col', {}, h('p.xf-h', {}, title), h('ul', {}, links.map(([t, href]) => h('li', {}, h('a', { href }, t)))));
-    const fstat = (label) => h('div.xf-stat', {}, h('p.xf-stat-n', {}, '–'), h('p.xf-stat-l', {}, label));
-    const stats = h('div.wrap.xf-stats', { 'aria-label': 'Dataset size' }, fstat('Job ads'), fstat('Regions with ads'), fstat('Occupation groups'));
-    const note = h('p.xf-note', {}, 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads; the example ads and cases are fictional. AgeLens cannot tell you whether you will be hired, and it is not legal advice.');
+    const note = h('p.xf-note', {}, 'Northwestern SEPOL 425 course project. Statistics come from real recruitment ads; the example ads and cases are fictional. AgeLens cannot tell you whether you will be hired, and it is not legal advice.');
     const barData = h('span', {}, 'Demo · Synthetic data');
-    // real Zhaopin statistics when the server has them (the examples and cases stay simulated), otherwise the simulated set
-    Promise.all([AL.realSummary(), AL.api('/api/overview').catch(() => null)]).then(([real, ov]) => {
-      const v = real ? [real.ads, real.regions, real.occupations] : ov ? [ov.unique_ads, ov.provinces, ov.occupations] : null;
-      if (!v) { stats.hidden = true; return; }
-      stats.querySelector('.xf-stat-l').textContent = real ? 'Real job ads, ' + real.years : 'Simulated ads';
-      stats.querySelectorAll('.xf-stat-n').forEach((n, i) => { n.textContent = typeof v[i] === 'number' ? v[i].toLocaleString('en-US') : '–'; });
-      if (real) AL.heteroData().then((hd) => { if (hd) note.textContent = note.textContent.replace('Statistics come from real Zhaopin job ads (' + real.years + ')', 'Statistics come from real Zhaopin job ads (' + real.years + '), including required experience and stated gender requirements'); });
+    // real recruitment statistics when the server has them (the examples and cases stay simulated), otherwise the simulated set
+    AL.realSummary().then((real) => {
+      if (real) AL.heteroData().then((hd) => { if (hd) note.textContent = note.textContent.replace('Statistics come from real recruitment ads (' + real.years + ')', 'Statistics come from real recruitment ads (' + real.years + '), including required experience and stated gender requirements'); });
       if (real) {
-        note.textContent = 'Northwestern SEPOL 425 course project. Statistics come from real Zhaopin job ads (' + real.years + '); the example ads and cases are fictional. AgeLens cannot tell you whether you will be hired, and it is not legal advice.';
+        note.textContent = 'Northwestern SEPOL 425 course project. Statistics come from real recruitment ads (' + real.years + '); the example ads and cases are fictional. AgeLens cannot tell you whether you will be hired, and it is not legal advice.';
         barData.textContent = 'Real ad statistics · simulated examples';
       }
-    }).catch(() => { stats.hidden = true; });
-    const foot = h('footer.xf', {}, canvas, stats,
+    }).catch(() => {});
+    const foot = h('footer.xf', {}, canvas,
       h('div.wrap.xf-inner', {},
         h('div.xf-brand', {}, h('p.xf-logo', {}, 'AgeLens'), h('p.xf-tag', {}, 'An evidence-grounded clarification assistant for mid-career jobseekers.')),
         col('Product', [['Check an ad', '#/seeker'], ['Human review', '#/requests'], ['Full report', '#/pro'], ['Reviewer', '#/reviewer']]),

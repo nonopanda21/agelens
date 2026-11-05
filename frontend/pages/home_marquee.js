@@ -31,8 +31,8 @@
     const real = await AL.realSummary();
     let cards;
     if (real) {
-      // real Zhaopin aggregate: the same six questions, answered from 10M+ real ads (counts only, no ad text)
-      head.querySelector('p').textContent = 'Counts of age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real Zhaopin job ads posted ' + real.years + '. They describe these ads only, not hiring or unemployment rates.';
+      // real recruitment aggregate: the same six questions, answered from 10M+ real ads (counts only, no ad text)
+      head.querySelector('p').textContent = 'Counts of age wording in ' + (real.ads / 1e6).toFixed(2) + ' million real recruitment ads posted ' + real.years + '. They describe these ads only, not hiring or unemployment rates.';
       const bd = head.querySelector('.badge'); bd.className = 'badge mint'; bd.textContent = real.label;
       band.setAttribute('aria-label', 'Real data cards');
       let names2 = [];

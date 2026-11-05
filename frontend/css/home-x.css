@@ -339,3 +339,13 @@ body[data-layout="home"] .home-sec>.xs.xex-wrap{padding-block:calc(var(--xpad) *
   .xfit-lanes::before{left:50%;right:auto;top:6%;bottom:6%;width:3px;height:auto;background:repeating-linear-gradient(180deg,var(--brown) 0 8px,transparent 8px 15px)}
   .xfit-cols{grid-template-columns:minmax(0,1fr);max-width:560px}
 }
+
+/* shorter pages: tighter section rhythm, and collapsed detail that reads as part of the page */
+body[data-layout="home"]{--xpad:clamp(36px,5vw,64px)}
+.xs-head{margin-bottom:28px}
+.home-more .xc-grid{margin-bottom:0}
+.mv-more{margin:0 0 var(--s4);border:1.5px dashed rgba(74,55,40,.35);border-radius:12px;padding:12px 18px;background:#fff}
+.mv-more>summary{cursor:pointer;font-family:var(--font-sketch);font-size:1.2rem;color:var(--pink-ink)}
+.mv-more[open]>summary{margin-bottom:16px}
+.mv-more .mv-dec-card{rotate:0deg}
+@media (max-width:640px){.xf-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px}.xf-inner>.xf-brand,.xf-inner>.xf-col:last-child{grid-column:1 / -1}}

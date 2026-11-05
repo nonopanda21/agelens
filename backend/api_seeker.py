@@ -54,7 +54,7 @@ class _PastedEvidence:
 def _read_terms(text):
     """Age terms of pasted text: the Chinese rules, the small English set, and "unclear" rather than "none" when age is
     mentioned but no rule could read it. Pasted and one-line checks only; the real-data aggregate uses ageparse alone."""
-    terms = ageparse_en.demote_zh_audience(text, ageparse.parse_age(text))
+    terms = ageparse_en.demote_zh_audience(text, ageparse.parse_age(llm.strip_instructions(text)))
     en = ageparse_en.parse(text)
     terms = ageparse._finalize(terms + en)
     if not terms:

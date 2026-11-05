@@ -324,7 +324,7 @@ class RealStatus(unittest.TestCase):
         finally:
             if old is None: os.environ.pop("AGELENS_REAL_DIR", None)
             else: os.environ["AGELENS_REAL_DIR"] = old
-        self.assertEqual(st["source"], "Zhaopin recruitment export 2016–2025.7, supplied by the team")
+        self.assertEqual(st["source"], "Recruitment data export 2016–2025.7, supplied by the team")
         self.assertFalse(CJK.search(json.dumps(st, ensure_ascii=False)))
         self.assertEqual(api_data.real_source_en("test"), "test")
 

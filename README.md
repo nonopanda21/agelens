@@ -7,13 +7,13 @@ AgeLens helps mid-career job seekers in China with lines like `35岁以下，条
 A Northwestern University SEPOL 425 course project (Group Delta).
 
 **Live demo:** https://agelens-sepol425.onrender.com
-- Open to everyone. Statistics and the map use real Zhaopin job ads (counts only); the ads you can open are simulated.
+- Open to everyone. Statistics and the map use real recruitment ads (counts only); the ads you can open are simulated.
 - The free host sleeps when unused, so the first visit can take up to a minute.
 
 ![AgeLens overview](docs/screenshots/readme/home.png)
 
 > **Status, stated plainly.**
-> - **Statistics and the map** summarise **10.05 million real Zhaopin job ads** posted 2021–2024. Only counts are published: no ad text, company or contact (`data/real/`, method in [`docs/REAL_DATA_YEARS.md`](docs/REAL_DATA_YEARS.md)).
+> - **Statistics and the map** summarise **10.05 million real recruitment ads** posted 2021–2024. Only counts are published: no ad text, company or contact (`data/real/`, method in [`docs/REAL_DATA_YEARS.md`](docs/REAL_DATA_YEARS.md)).
 > - **The ads you can open**, the Job Seeker answers and the demo cases use a fictional, reproducible set of 960 ads, labelled "Demo · Synthetic data".
 > - **No AI model** is connected. Answers and reports come from fixed, tested rules.
 > - No real recruitment data has been imported, and **no study with participants** has been run yet.

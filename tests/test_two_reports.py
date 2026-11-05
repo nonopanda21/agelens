@@ -56,9 +56,39 @@ class NoModel(unittest.TestCase):
             return api_seeker.check_pasted(dict(BODY, text=text))["reports"]["template"]["reading"]
         self.assertIn("no age wording", reading("Salary up to 35k"))
         self.assertIn("contradicts itself", reading("年龄不限。年龄35岁以下。"))
+        self.assertIn("Age 35 or under", reading("年龄不限。年龄35岁以下。"))
         self.assertIn("cut off", reading("任职要求：本科，年龄35岁以"))
         self.assertIn("could not read as a limit", reading("任职要求：本科，年龄要求：28-3"))
         self.assertIn("with an exception", reading(AD))
+
+
+class SeenInUserTesting(unittest.TestCase):
+    def test_a_preference_is_not_called_an_exception(self):
+        q = api_seeker.check_pasted(dict(BODY, text="30岁以下优先"))["reports"]["template"]["question"]
+        self.assertIn("any exception", q)
+        self.assertNotIn("the exception", q)
+
+    def test_below_the_minimum_is_said(self):
+        b = api_seeker.check_pasted(dict(BODY, text="年龄28-35周岁", profile={"age": 24, "years_experience": 1}))
+        self.assertIn("the stated minimum is 28", b["summary"]["relates"])
+        self.assertIn("minimum age of 28", json.dumps(b["employer_question"]))
+
+    def test_an_impossible_age_is_not_reported_as_no_age_given(self):
+        b = api_seeker.check_pasted(dict(BODY, profile={"age": 200}))
+        self.assertNotIn("did not give", b["summary"]["relates"])
+
+    def test_one_ad_is_not_called_similar_ads(self):
+        r = api_seeker.check_pasted(dict(BODY, text="Data analyst. SQL required."))["reports"]
+        self.assertNotIn("similar", " ".join(r["evidence"]))
+
+    def test_contact_details_do_not_reach_the_model(self):
+        fake, patch = with_model({"statements": []})
+        with patch:
+            api_seeker.check_pasted(dict(BODY, text="联系人电话13800000000，邮箱a.b@example.invalid。年龄35岁以下。"))
+        sent = json.dumps(fake.calls, ensure_ascii=False)
+        self.assertNotIn("13800000000", sent)
+        self.assertNotIn("a.b@example.invalid", sent)
+        self.assertIn("年龄35岁以下", sent)
 
 
 class WithModel(unittest.TestCase):

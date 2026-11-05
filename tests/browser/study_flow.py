@@ -71,6 +71,16 @@ def participant(pw, i, shoot=False):
     page.keyboard.press("Enter")
     for k in range(4):
         page.wait_for_selector("#st-reading"); page.wait_for_timeout(150)
+        if re.search(r"Hard age cap|exception|preference|Incomplete", page.inner_text(".st-head h1")):
+            problems.append("task heading gives away the answer: " + page.inner_text(".st-head h1"))
+        if page.locator("[role=tab]").count() != 3 or not page.locator("#panel-ad").is_visible() or page.locator("#panel-tool").is_visible():
+            problems.append("reading tabs: expected three, with only the first panel open")
+        page.click("#tab-tool")
+        if not page.locator(".st-aid").is_visible():
+            problems.append("the tool tab does not show the tool")
+        page.keyboard.press("ArrowLeft")
+        if page.evaluate("document.activeElement.id") != "tab-ev" or not page.locator(".st-evidence").is_visible():
+            problems.append("arrow keys do not move between the reading tabs")
         nocjk(page, f"p{i} task{k}")
         if "SIMULATED" not in page.inner_text(".st-banner") or "SIMULATED" not in page.inner_text(".st-aid"):
             problems.append("task screen lacks the SIMULATED notice")
