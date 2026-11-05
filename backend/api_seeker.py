@@ -3,7 +3,7 @@ Never logs bodies, CV text, pasted ad text or questions (the server logger recor
 import re
 import unicodedata
 
-from . import ageparse, ageparse_en, brief, cv, gloss, llm, reading_check, two_reports
+from . import ageparse, ageparse_en, brief, cv, gloss, llm, profile_text, reading_check, two_reports
 from .server import HTTPError, Response  # noqa: F401  (HTTPError used below)
 
 # ---- pasted ad text (live adversarial exchange: someone hands you an ad) --------------------------------------
@@ -177,6 +177,12 @@ def check_pasted(body, allow_model=True):
 
 
 def register(router):
+    @router.post("/api/profile/parse")
+    def profile_parse(req):
+        if len(req.body or b"") > 8 * 1024:
+            raise HTTPError(413, "That is too long. A sentence or two is enough.")
+        return profile_text.parse(req.json().get("text"))
+
     @router.post("/api/cv/parse")
     def cv_parse(req):
         data = req.body or b""

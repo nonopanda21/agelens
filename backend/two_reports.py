@@ -3,7 +3,9 @@
              It does not use the person's background and makes no model call.
 'ai'       : the checked model statements already in this brief, so no second paid call. Absent, it says why; nothing stands in for it.
 These are examples of what each tool writes, not study data."""
-from . import brief, gloss, real_context, study_arms
+import base64
+
+from . import brief, gloss, real_context, report_pdf, study_arms
 
 _KIND = {"cap_with_exception": "an age limit with an exception", "hard_cap": "a fixed age limit", "range_or_min": "an age range or minimum",
          "preference": "an age preference", "ambiguous": "age wording the rules could not read as a limit", "none": "no age wording"}
@@ -129,5 +131,7 @@ def build(b, ad_text=None, rules_only=None):
         if r["available"]:
             r["markdown"] = _markdown(r, ev, b.get("data_label") or "")
             r["filename"] = "agelens-%s-report.md" % name
+            r["pdf"] = base64.b64encode(report_pdf.build(r["markdown"])).decode("ascii")  # built per answer, never stored
+            r["pdf_filename"] = "agelens-%s-report.pdf" % name
         out[name] = r
     return out

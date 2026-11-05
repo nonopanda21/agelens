@@ -206,3 +206,4 @@ fieldset.share .chk{margin-right:var(--s4)}
 .using{margin:0 0 var(--s3)}
 .answer-stale{margin-bottom:var(--s3)}
 .rc-card{margin:var(--s3) 0;padding:var(--s3) var(--s4);background:var(--yellow-soft);border:1px solid var(--warm-line,var(--line));border-radius:var(--r-sm)}.rc-card ul{margin:var(--s2) 0;padding-left:1.2em}.rc-card p{margin:0}
+.quick-fill{margin-bottom:var(--s4)}.quick-fill textarea{width:100%;min-height:0}.quick-fill .hint{margin:0}

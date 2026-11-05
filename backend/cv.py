@@ -143,7 +143,7 @@ def _zh_to_int(s):
 
 
 YEARS_PATTERNS = [
-    re.compile(r"(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b(?:\s+of)?", re.I),
+    re.compile(r"(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b(?![\s-]*old\b|\s+of\s+age\b)(?:\s+of)?", re.I),  # "38 years old" is an age
     re.compile(r"\b(" + "|".join(EN_NUM) + r")\s+(?:years?|yrs?)\b", re.I),
     re.compile(r"([0-9零一二两三四五六七八九十]{1,3})\s*年(?:以上)?(?:的)?(?:[一-龥]{0,6})?(?:工作)?经[验历]"),
     re.compile(r"(?:工作|从业|经验)\s*([0-9零一二两三四五六七八九十]{1,3})\s*年"),

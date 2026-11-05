@@ -179,6 +179,31 @@
   }
   const spin = (t) => h('p', { role: 'status' }, h('span.spinner'), ' ' + t);
 
+  /* ---------- quick fill: one line about you -> the fields below (rules, in memory, no AI) ---------- */
+  function quickFill() {
+    const NAMES = { age: 'age', years_experience: 'years of experience', occupation: 'role', region: 'region', education: 'education' };
+    const said = h('p.hint', { role: 'status', id: 'quick-said' });
+    const ta = h('textarea', { id: 'f-quick', rows: 2, maxlength: 1000, autocomplete: 'off', 'aria-describedby': 'quick-said', placeholder: 'For example: I\'m 38, 9 years in marketing, based in Guangzhou, bachelor\'s degree', onpaste: () => setTimeout(fill, 0) });
+    const btn = h('button.btn.btn-secondary', { type: 'button', id: 'quick-btn', onclick: () => fill() }, 'Fill in for me');
+    async function fill() {
+      if (!ta.value.trim()) { said.textContent = 'Type a sentence about yourself first.'; return; }
+      btn.disabled = true;
+      try {
+        const f = (await call('/api/profile/parse', { json: { text: ta.value } })).fields || {};
+        const found = Object.keys(f);
+        if (f.age != null) S.p.age = String(f.age);
+        if (f.years_experience != null) S.p.years = String(f.years_experience);
+        if (f.occupation) { S.p.occupation = f.occupation; S.termEdited = false; syncTerm(); }
+        if (f.region) S.p.region = f.region;
+        if (f.education) S.p.education = f.education;
+        save(); fillForm();
+        said.textContent = found.length ? 'Filled in: ' + found.map((k) => NAMES[k]).join(', ') + '. Please check them; you can change anything.' : 'Nothing could be picked out. Please fill in the fields yourself.';
+      } catch (e) { said.textContent = 'That could not be read just now. Please fill in the fields yourself.'; }
+      btn.disabled = false;
+    }
+    return h('div.quick-fill', {}, h('label', { for: 'f-quick' }, 'Fill in from one sentence'), ta, h('div.row', { style: 'margin-top:var(--s2)' }, btn, said));
+  }
+
   /* ---------- CV zone ---------- */
   function cvZone() {
     const input = h('input', { type: 'file', id: 'cv-file', accept: '.txt,.docx,.pdf', class: 'visually-hidden', tabindex: '-1', 'aria-hidden': 'true' });
@@ -375,7 +400,8 @@
         r.removed ? h('p.hint', {}, 'The code check removed ' + r.removed + ' AI statement' + (r.removed === 1 ? '' : 's') + ' from this report.') : null,
         list('Evidence from the rules (the same in both reports)', rep.evidence.length ? rep.evidence : ['The rules found no age wording.']),
         h('div.answer-actions.no-print', {},
-          h('button.btn.btn-primary', { type: 'button', onclick: () => saveMd(r.markdown, r.filename) }, 'Download this report (Markdown)'),
+          r.pdf ? h('button.btn.btn-primary', { type: 'button', onclick: () => savePdf(r.pdf, r.pdf_filename) }, 'Download PDF') : null,
+          h('button.btn.btn-quiet', { type: 'button', onclick: () => saveMd(r.markdown, r.filename) }, 'Download this report (Markdown)'),
           r.question ? h('button.btn.btn-secondary', { type: 'button', onclick: copy }, 'Copy the question') : null, said),
       ].flat(Infinity).filter(Boolean));
       panel.hidden = false; panel.focus({ preventScroll: true });
@@ -484,6 +510,13 @@
   /* ---------- downloads ---------- */
   function downloadMd(b) {
     saveMd(b.markdown || '# AgeLens brief\n\nMarkdown was not provided by the server.', 'agelens-brief.md');
+  }
+  function savePdf(b64, name) {
+    const bin = atob(b64), bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    const a = h('a', { href: url, download: name }); document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
   function saveMd(md, name) {
     const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
@@ -758,6 +791,7 @@
           h('div.row.demo-row', { role: 'group', 'aria-label': 'Fictional example situations' }, CASES.filter((c) => S.presenter || !c.presenter).map((c) => h('button.btn.btn-quiet', { type: 'button', 'data-case': c.id, onclick: () => runCase(c.id) }, c.label)))),
         pasteBox(),
         h('fieldset.form-block', {}, h('legend', {}, stepNo(2), 'About you'), h('p.sub', {}, 'Optional. Age only explains how an ad’s condition compares with you; it never hides jobs.'),
+          quickFill(),
           h('div.form-grid.form-grid-4', {},
             field('Occupation or target role', 'occupation', { type: 'text', placeholder: 'e.g. operations manager', autocomplete: 'off' }),
             field('Age', 'age', { type: 'number', min: '14', max: '80', inputmode: 'numeric' }),
