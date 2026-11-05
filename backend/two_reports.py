@@ -3,7 +3,7 @@
              It does not use the person's background and makes no model call.
 'ai'       : the checked model statements already in this brief, so no second paid call. Absent, it says why; nothing stands in for it.
 These are examples of what each tool writes, not study data."""
-from . import brief, real_context, study_arms
+from . import brief, gloss, real_context, study_arms
 
 _KIND = {"cap_with_exception": "an age limit with an exception", "hard_cap": "a fixed age limit", "range_or_min": "an age range or minimum",
          "preference": "an age preference", "ambiguous": "age wording the rules could not read as a limit", "none": "no age wording"}
@@ -61,6 +61,23 @@ def template_report(b):
             "reading": reading, "stated": [], "related": [], "unclear": [], "checklist": list(study_arms.CHECKLIST), "question": question}
 
 
+def _about(b):
+    """What the person shared, in their own terms, so they can see what the report rests on. Only what they gave; never Chinese on this page."""
+    qb = b.get("question_background") or {}
+    p = qb.get("profile") or {}
+    bits = ["you are %d" % p["age"] if p.get("age") is not None else None,
+            "you have %s of experience" % ("1 year" if p.get("years_experience") == 1 else "%s years" % p["years_experience"]) if p.get("years_experience") is not None else None,
+            "your role is %s" % p["occupation"] if p.get("occupation") and not gloss.has_cjk(p["occupation"]) else None,
+            "you are looking in %s" % gloss.province_en(p["region"]) if p.get("region") else None]
+    bits = [x for x in bits if x]
+    q = qb.get("question") or ""
+    out = ["You told us " + (", ".join(bits[:-1]) + " and " + bits[-1] if len(bits) > 1 else bits[0]) + "."] if bits else [
+        "You did not share your age or experience, so this report stays general. Add them above if you want a closer reading."]
+    if q and not qb.get("question_default") and not gloss.has_cjk(q):
+        out.append("You asked: " + q)
+    return out
+
+
 def ai_report(b, ad_text=None):
     base = {"kind": "ai", "title": "AI report", "written_by": "An AI model, then checked by code. The check catches listed failures, not every misleading sentence."}
     if b.get("ai_status") != "used":
@@ -72,7 +89,7 @@ def ai_report(b, ad_text=None):
         return dict(base, available=False, reason="No statement from the AI model passed the code check, so there is no AI report for this ad.")
     removed = len(((b.get("ai_report") or {}).get("dropped")) or [])
     return dict(base, available=True, reading="", stated=by["explicit"] + by["exceptions"], related=by["relates"], unclear=by["cannot"], checklist=[],
-                question=by["ask"][0] if by["ask"] else None, removed=removed,
+                question=by["ask"][0] if by["ask"] else None, removed=removed, reading_check=b.get("reading_check"), about=_about(b),
                 context=real_context.build(ad_text, (b.get("question_background") or {}).get("profile"), (b.get("pasted") or {}).get("age_class"),
                                            bool(_rules_exception(b))))
 
@@ -83,6 +100,11 @@ def _rules_exception(b):
 
 def _markdown(r, ev, label):
     L = ["# AgeLens: %s" % r["title"], "", "**%s.** %s" % (label, r["written_by"]), "", SHARED_NOTE, ""]
+    rc = r.get("reading_check")
+    if rc and rc["status"] in ("differ", "ai_only"):
+        L += ["> **%s**" % rc["title"]] + ["> %s" % x for x in rc["lines"]] + (["> %s" % rc["note"]] if rc.get("note") else []) + [""]
+    if r.get("about"):
+        L += ["## What you told us", ""] + [x + "\n" for x in r["about"]]
     if r.get("reading"):
         L += ["## Reading", "", r["reading"], ""]
     for title, key in (("What the ad states", "stated"), ("How it relates to you", "related"), ("What the ad leaves open", "unclear"), ("Checklist", "checklist")):
@@ -98,10 +120,12 @@ def _markdown(r, ev, label):
     return "\n".join(L)
 
 
-def build(b, ad_text=None):
-    ev = evidence(b)
+def build(b, ad_text=None, rules_only=None):
+    """rules_only: the brief before any model reading. The template report and the shared evidence come from it, so "No AI" stays true."""
+    base = rules_only or b
+    ev = evidence(base)
     out = {"note": SHARED_NOTE, "evidence": ev}
-    for name, r in (("template", template_report(b)), ("ai", ai_report(b, ad_text))):
+    for name, r in (("template", template_report(base)), ("ai", ai_report(b, ad_text))):
         if r["available"]:
             r["markdown"] = _markdown(r, ev, b.get("data_label") or "")
             r["filename"] = "agelens-%s-report.md" % name

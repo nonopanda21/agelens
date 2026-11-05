@@ -3,7 +3,7 @@ Never logs bodies, CV text, pasted ad text or questions (the server logger recor
 import re
 import unicodedata
 
-from . import ageparse, ageparse_en, brief, cv, gloss, llm, two_reports
+from . import ageparse, ageparse_en, brief, cv, gloss, llm, reading_check, two_reports
 from .server import HTTPError, Response  # noqa: F401  (HTTPError used below)
 
 # ---- pasted ad text (live adversarial exchange: someone hands you an ad) --------------------------------------
@@ -129,34 +129,50 @@ def check_pasted(body, allow_model=True):
     if not str(body.get("question") or "").strip():
         raise HTTPError(400, "A question is required to build an Evidence brief.")
     terms = _read_terms(text)
-    ad = {"id": PASTE_ID, "title": "Pasted ad text", "company": None, "occupation": None, "province": None, "city": None,
-          "posted_date": None, "source": PASTE_LABEL, "is_demo": False, "description": text, "age_terms": terms,
-          "age_status": ageparse.age_status(terms), "age_class": ageparse.ad_class(terms), "snippet_highlight": ""}
-    b = brief.build_brief({"question": body.get("question"), "question_default": body.get("question_default"), "profile": body.get("profile"), "evidence_ids": [PASTE_ID]},
-                          _PastedEvidence(ad), allow_model=allow_model)
-    b["data_label"] = PASTE_LABEL
-    b["using_demo"] = False
-    b["scope"].update(basis="pasted text", data_version=None, stored=False)
-    for st in b["answer"]["cannot"]:
-        if st["text"].startswith("Only 1 ad matched"):
-            st["text"] = st["text_en"] = "This answer covers only the one pasted ad. It says nothing about other ads or the job market."
-    b["next_steps"] = [s for s in b["next_steps"] if "Broaden" not in s]
-    trunc = [t["snippet"] for t in terms if "truncated" in (t.get("flag") or "")]
-    conflict = [t["snippet"] for t in terms if "conflict" in (t.get("flag") or "")]
-    b["pasted"] = {"label": PASTE_LABEL, "stored": False, "chars": len(text), "max_chars": PASTE_MAX_CHARS,
-                   "age_status": ad["age_status"], "age_class": ad["age_class"], "rule_version": ageparse.RULE_VERSION,
-                   "instruction_like": _instruction_lines(text), "truncated": trunc[:1], "reading_notes": _reading_notes(text, terms),
-                   "conflict": list(dict.fromkeys(conflict))[:3],
-                   "truncated_en": [gloss.quote_en(x, terms) for x in trunc[:1]],
-                   "conflict_en": [gloss.quote_en(x, terms) for x in list(dict.fromkeys(conflict))[:3]],
-                   "note": "Instructions inside ads are ignored: the pasted text is read as data only, and nothing in it changes how AgeLens answers."}
-    b["pasted"]["instruction_like_en"] = [_instruction_en(x) for x in b["pasted"]["instruction_like"]]
-    note = ["> **%s.** %s" % (PASTE_LABEL, b["pasted"]["note"])]
-    if b["pasted"]["instruction_like"]:
-        note.append("> Wording that looks like an instruction was found and NOT followed (quoted as text only): "
-                    + "; ".join("`%s`" % x.replace("`", "'") for x in b["pasted"]["instruction_like_en"]))
-    b["markdown"] = brief.to_markdown(b).replace("\n## ", "\n" + "\n".join(note) + "\n\n## ", 1)
-    b["reports"] = two_reports.build(b, text)
+
+    def one_brief(terms, reading_out=None, replay=None):
+        ad = {"id": PASTE_ID, "title": "Pasted ad text", "company": None, "occupation": None, "province": None, "city": None,
+              "posted_date": None, "source": PASTE_LABEL, "is_demo": False, "description": text, "age_terms": terms,
+              "age_status": ageparse.age_status(terms), "age_class": ageparse.ad_class(terms), "snippet_highlight": ""}
+        b = brief.build_brief({"question": body.get("question"), "question_default": body.get("question_default"), "profile": body.get("profile"), "evidence_ids": [PASTE_ID]},
+                              _PastedEvidence(ad), allow_model=allow_model, reading_out=reading_out, replay=replay)
+        b["data_label"] = PASTE_LABEL
+        b["using_demo"] = False
+        b["scope"].update(basis="pasted text", data_version=None, stored=False)
+        for st in b["answer"]["cannot"]:
+            if st["text"].startswith("Only 1 ad matched"):
+                st["text"] = st["text_en"] = "This answer covers only the one pasted ad. It says nothing about other ads or the job market."
+        b["next_steps"] = [s for s in b["next_steps"] if "Broaden" not in s]
+        trunc = [t["snippet"] for t in terms if "truncated" in (t.get("flag") or "")]
+        conflict = [t["snippet"] for t in terms if "conflict" in (t.get("flag") or "")]
+        b["pasted"] = {"label": PASTE_LABEL, "stored": False, "chars": len(text), "max_chars": PASTE_MAX_CHARS,
+                       "age_status": ad["age_status"], "age_class": ad["age_class"], "rule_version": ageparse.RULE_VERSION,
+                       "instruction_like": _instruction_lines(text), "truncated": trunc[:1], "reading_notes": _reading_notes(text, terms),
+                       "conflict": list(dict.fromkeys(conflict))[:3],
+                       "truncated_en": [gloss.quote_en(x, terms) for x in trunc[:1]],
+                       "conflict_en": [gloss.quote_en(x, terms) for x in list(dict.fromkeys(conflict))[:3]],
+                       "note": "Instructions inside ads are ignored: the pasted text is read as data only, and nothing in it changes how AgeLens answers."}
+        b["pasted"]["instruction_like_en"] = [_instruction_en(x) for x in b["pasted"]["instruction_like"]]
+        note = ["> **%s.** %s" % (PASTE_LABEL, b["pasted"]["note"])]
+        if b["pasted"]["instruction_like"]:
+            note.append("> Wording that looks like an instruction was found and NOT followed (quoted as text only): "
+                        + "; ".join("`%s`" % x.replace("`", "'") for x in b["pasted"]["instruction_like_en"]))
+        b["markdown"] = brief.to_markdown(b).replace("\n## ", "\n" + "\n".join(note) + "\n\n## ", 1)
+        return b
+
+    second = []
+    rules_only = b = one_brief(terms, reading_out=second)  # the template report stays rules only, whatever the model reads
+    check = reading_check.compare(second[0].get("reading"), text, terms) if second else None
+    filled = reading_check.filled_terms(check, terms, text)
+    if filled:
+        b = one_brief(filled, replay=second[0]["raw"])
+        said = {t["snippet"] for t in filled if "ai_read" in (t.get("flag") or "")} | {t.get("exception_text") for t in filled if "ai_read" in (t.get("flag") or "")}
+        for key in ("explicit", "exceptions"):
+            for st in b["answer"][key]:
+                if st.get("source") == "rules" and st.get("quote") in said:
+                    st["type"] = "ai_read"
+    b["reading_check"] = {k: v for k, v in check.items() if k != "checked"} if check else None
+    b["reports"] = two_reports.build(b, text, rules_only)
     return b
 
 

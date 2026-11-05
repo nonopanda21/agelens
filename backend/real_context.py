@@ -95,6 +95,6 @@ def build(ad_text, profile, age_class=None, has_exception=False):
                     else "Exceptions are uncommon in ads like this, so ask directly rather than assume there is flexibility.")
     age = profile.get("age")
     if median and isinstance(age, int) and age > median:
-        tips.append("You entered %d, above the median stated maximum for this group. If you are comparing roles, it may help to look at several ads%s." % (
+        tips.append("At %d, you are above the median stated maximum for this group. That says nothing about your fit for a job. If you are comparing roles, it may help to look at several ads%s." % (
             age, ", including other regions (wording varies, as above)" if low else ""))
     return {"scope": scope, "facts": facts, "suggestions": tips, "note": NOTE}

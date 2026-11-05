@@ -6,7 +6,7 @@
 (function () {
   const h = AgeLens.h;
   const LB = () => AgeLens.labels || { occ: (v) => v, prov: (v) => v, source: (v) => v, orig: () => null };
-  const TAG = { ad_fact: 'Ad wording (translated)', user_stated: 'You said', rules: 'AgeLens rules', model_inference: 'Model inference' };
+  const TAG = { ai_read: 'AI reading, checked against the ad', ad_fact: 'Ad wording (translated)', user_stated: 'You said', rules: 'AgeLens rules', model_inference: 'Model inference' };
   const TAG_TIP = { ad_fact: 'What the ad says, shown in English', user_stated: 'From what you entered', rules: 'Found by fixed rules, not AI', model_inference: 'A model’s reading, checked by code but not guaranteed' };
   const EXAMPLE = {
     question: 'I am 38 with eight years in operations. Some ads say “normally under 35, exceptions possible”. What should I clarify before applying?',
@@ -327,6 +327,7 @@
       demoNote(), paste && S.qCleared ? h('p.answer-note', { role: 'status' }, 'New ad, so your previous question was cleared and the usual question was used. Your age and background were kept.') : null, paste ? pasteNotes(b.pasted || {}) : null,
       S.broadened.length ? h('p.answer-note', { role: 'status' }, 'You broadened this search: ' + S.broadened.join(', ') + '.') : null,
       b.insufficient && !paste ? h('p.answer-note', { role: 'status' }, 'Only ' + b.scope.ads_analysed + (b.scope.ads_analysed === 1 ? ' similar ad was' : ' similar ads were') + ' found, too few to describe a pattern. Below is only what those ads say.') : null,
+      paste ? readingCheck(b.reading_check) : null,
       summaryCard(b),
       paste && b.reports ? twoReports(b.reports) : null,
       h('h3.answer-more-h', {}, 'The full answer'),
@@ -365,6 +366,7 @@
       const copy = async () => { said.textContent = (await copyText(r.question)) ? 'Copied. Edit it before you send it.' : 'Could not copy. Select the text and copy it yourself.'; };
       panel.replaceChildren(...[
         h('h3', {}, r.title), h('p.hint', {}, r.written_by),
+        r.about ? [h('h4', {}, 'What you told us'), r.about.map((x) => h('p', {}, x))] : null,
         r.reading ? [h('h4', {}, 'Reading'), h('p', {}, r.reading)] : null,
         list('What the ad states', r.stated), list('How it relates to you', r.related), list('What the ad leaves open', r.unclear), list('Checklist', r.checklist),
         r.context ? [list('What real recruitment data shows', r.context.facts), list('Suggestions', r.context.suggestions), h('p.hint', {}, r.context.note)] : null,
@@ -391,6 +393,12 @@
       panel);
   }
   /** The top of the answer: what the ad(s) state, how that relates to you (no eligibility wording), and one question to send. */
+  /* Two readings of the same wording: shown side by side, neither chosen. */
+  function readingCheck(rc) {
+    if (!rc || rc.status !== 'differ') return null;
+    return h('section.rc-card', { role: 'status', 'aria-label': 'Two readings of this wording' }, h('strong', {}, rc.title),
+      rc.lines.length ? h('ul', {}, rc.lines.map((x) => h('li', {}, x))) : null, rc.note ? h('p', {}, rc.note) : null);
+  }
   function summaryCard(b) {
     const sm = b.summary, eq = b.employer_question;
     if (!sm) return null;

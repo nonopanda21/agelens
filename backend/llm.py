@@ -32,7 +32,7 @@ from pathlib import Path
 from . import db
 
 PROMPT_DIR = Path(__file__).with_name("prompts")
-PROMPT_FILE = "explain_v3.txt"
+PROMPT_FILE = "explain_v4.txt"
 TEMPLATE_LABEL = "Template demo"
 SECTIONS = ("explicit", "exceptions", "relates", "cannot", "ask")
 TYPES = ("ad_fact", "user_stated", "model_inference")
@@ -605,7 +605,7 @@ def run_explanation(llm_input, provider=None, log=True):
     if reason:
         res["reason"] = reason
         return res
-    res.update(ok=True, statements=clean["statements"], report=report)
+    res.update(ok=True, statements=clean["statements"], report=report, reading=out.get("reading") if isinstance(out, dict) else None, raw=out)
     return res
 
 

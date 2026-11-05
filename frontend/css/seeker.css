@@ -205,3 +205,4 @@ fieldset.share .chk{margin-right:var(--s4)}
 .link-btn{font:inherit;background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer}
 .using{margin:0 0 var(--s3)}
 .answer-stale{margin-bottom:var(--s3)}
+.rc-card{margin:var(--s3) 0;padding:var(--s3) var(--s4);background:var(--yellow-soft);border:1px solid var(--warm-line,var(--line));border-radius:var(--r-sm)}.rc-card ul{margin:var(--s2) 0;padding-left:1.2em}.rc-card p{margin:0}

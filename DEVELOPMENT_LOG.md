@@ -885,3 +885,9 @@ Problems found first: AI arm fails on T1/T4 with gpt-4o-mini; "you may qualify" 
 ## 2026-11-04: real recruitment counts in the AI report
 
 User pointed out the two reports were close to the same. Added a section to the AI report only: what the real counts show around this ad, and a few suggestions. Written by code from fixed sentences, not by the model, so the numbers cannot be invented; the cost is that the suggestions are less tailored than model text. No city level exists in the aggregates, so region means province. Tested with a local mock model; the real model has not produced a report with this section yet.
+
+## 2026-11-04: AI normalises the pasted ad; the report uses what the person shared
+
+User asked that odd input be handled by AI as a normalising step, not shown as a separate feature, and that reports treat the person's information humanely. The model's reading (`explain_v4`, same call) can only fill a gap the rules left, after code checks its quotes and numbers. Rules are never overridden; a conflict shows both readings. Template report stays rules only, built from the brief before the reading is applied. One line by the input still says the text goes to the AI provider: removing it would make the page false, so I kept it and told the user. CVs stay rules only, as the page promises, until the team decides otherwise (names and employers cannot be reliably removed).
+
+The AI report now opens with what the person told us, and `explain_v4` asks the model to answer their question first, use only what they said, and keep their age out of the employer question. That last change also reaches the study's AI arm. Tested with a mock model only so far: whether the real model writes this well is not known until it runs.

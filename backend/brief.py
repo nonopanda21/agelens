@@ -337,7 +337,7 @@ def _with_details(ev, ads):
     return ads
 
 
-def build_brief(body, ev=None, allow_model=True):
+def build_brief(body, ev=None, allow_model=True, reading_out=None, replay=None):
     """allow_model=False keeps the brief rules-only even when a model is connected (the study aid must not vary)."""
     if ev is None:
         from . import evidence as ev  # lazy: agent A's module may land after this one
@@ -494,8 +494,11 @@ def build_brief(body, ev=None, allow_model=True):
                             question_default)
     scope["data_version"] = _data_version(ev)
     mstat = llm.status()
-    res = llm.run_explanation(llm_input) if allow_model and mstat["connected"] and n else {"ran": False, "ok": False, "reason": "not_configured" if not (allow_model and mstat["connected"]) else "no_evidence"}
+    # replay: the model's answer to this ad, checked again now the terms are complete. No second call.
+    res = llm.run_explanation(llm_input, provider=llm.FakeProvider(replay), log=False) if replay is not None else llm.run_explanation(llm_input) if allow_model and mstat["connected"] and n else {"ran": False, "ok": False, "reason": "not_configured" if not (allow_model and mstat["connected"]) else "no_evidence"}
     ai_status, note, report = "template", llm.failure_text("not_configured"), None
+    if res["ran"] and res["ok"] and reading_out is not None:
+        reading_out.append(res)
     if res["ran"] and res["ok"]:
         ai_status, note, report = "used", "Model-written statements below are labelled “Model inference” or “Ad text” and were checked by code against the ad texts. The check is not a guarantee; confirm against the original wording. To write them, the ad text, your question and the background you confirmed were sent to the AI provider.", res["report"]
         for st in res["statements"]:
@@ -520,7 +523,7 @@ def build_brief(body, ev=None, allow_model=True):
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "headings": [{"key": k, "title": t.replace("does the ad", "do the ads") if n > 1 else t} for k, t in ANSWER_HEADINGS], "answer": answer, "evidence_index": index,
         "sections": SECTIONS, "insufficient": insufficient, "using_demo": bool(demo),
-        "question_background": {"question": question, "profile": profile, "missing_fields": missing,
+        "question_background": {"question": question, "question_default": question_default, "profile": profile, "missing_fields": missing,
                                 "question_missing": not question},
         "summary": _summary(ads, n, status, with_max_all, exc_ads, profile),
         "employer_question": _employer_question(ads, n, with_max_all, exc_ads, amb, profile) if n else None,
@@ -706,7 +709,7 @@ def _region_en(region):
     return region
 
 
-TAG = {"ad_fact": "Ad wording (translated)", "user_stated": "You said", "rules": "AgeLens rules", "model_inference": "Model inference"}
+TAG = {"ai_read": "AI reading, checked against the ad", "ad_fact": "Ad wording (translated)", "user_stated": "You said", "rules": "AgeLens rules", "model_inference": "Model inference"}
 
 
 def _en(s):
