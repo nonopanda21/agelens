@@ -194,10 +194,10 @@ class AnthropicProvider(Provider):
         self.base_url = base_url or "https://api.anthropic.com/v1/messages"
         self.timeout, self.max_tokens, self._http = timeout, max_tokens, http or _urllib_http
 
-    def generate(self, llm_input):
-        _, system = load_prompt()
+    def generate(self, llm_input, system=None, user=None):  # system and user replace the explanation prompt (the RCT's independent answers)
+        system = system if system is not None else load_prompt()[1]
         body = json.dumps({"model": self.model, "max_tokens": self.max_tokens, "temperature": 0, "system": system,
-                           "messages": [{"role": "user", "content": render_user_message(llm_input)}]}).encode("utf-8")
+                           "messages": [{"role": "user", "content": user if user is not None else render_user_message(llm_input)}]}).encode("utf-8")
         headers = {"content-type": "application/json", "x-api-key": self._key, "anthropic-version": "2023-06-01"}
         status, raw = self._http(self.base_url, headers, body, self.timeout)
         if status != 200:
@@ -232,10 +232,10 @@ class OpenAIProvider(Provider):  # max_tokens covers reasoning tokens too
         self.base_url = base_url or "https://api.openai.com/v1/chat/completions"
         self.timeout, self.max_tokens, self._http = timeout, max_tokens, http or _urllib_http
 
-    def generate(self, llm_input):
-        _, system = load_prompt()
+    def generate(self, llm_input, system=None, user=None):
+        system = system if system is not None else load_prompt()[1]
         payload = {"model": self.model, "max_completion_tokens": self.max_tokens, "response_format": {"type": "json_object"},
-                   "messages": [{"role": "system", "content": system}, {"role": "user", "content": render_user_message(llm_input)}]}
+                   "messages": [{"role": "system", "content": system}, {"role": "user", "content": user if user is not None else render_user_message(llm_input)}]}
         if self.model.startswith(("gpt-3", "gpt-4")):  # newer models accept only their default temperature
             payload["temperature"] = 0
         headers = {"content-type": "application/json", "authorization": "Bearer " + self._key}

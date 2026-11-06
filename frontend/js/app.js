@@ -172,7 +172,7 @@
   const routes = [
     [/^\/?$/, 'home'], [/^\/why$/, 'why'], [/^\/findings$/, 'findings'], [/^\/seeker$/, 'seeker'],
     [/^\/evidence\/([\w-]+)$/, 'evidence'], [/^\/requests(?:\/([\w-]+))?$/, 'requests'], [/^\/reviewer(?:\/([\w-]+))?$/, 'reviewer'],
-    [/^\/study\/score$/, 'score'], [/^\/study$/, 'study'], [/^\/about$/, 'about'], [/^\/status$/, 'status'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
+    [/^\/study\/score$/, 'score'], [/^\/study\/crossover$/, 'study'], [/^\/study\/admin$/, 'rctAdmin'], [/^\/study$/, 'rct'], [/^\/about$/, 'about'], [/^\/status$/, 'status'], [/^\/access$/, 'access'], [/^\/pro$/, 'pro'],
   ];
   /** Small line icon for centred states (empty / sign-in / not found). Static SVG markup, no user text. */
   const ICONS = {
@@ -208,7 +208,7 @@
       const m = path.split('?')[0].match(rx);
       if (!m) continue;
       const page = AgeLens.pages[name];
-      setRoute(name, name === 'evidence' ? 'seeker' : name === 'score' ? 'study' : name, page && page.title, page && page.layout);
+      setRoute(name, name === 'evidence' ? 'seeker' : name === 'score' || name === 'rct' || name === 'rctAdmin' ? 'study' : name, page && page.title, page && page.layout);
       main.replaceChildren(); window.scrollTo(0, 0);
       try { await page.render(main, { id: m[1], query: new URLSearchParams(path.split('?')[1] || '') }); }
       catch (e) { main.replaceChildren(AgeLens.h('div.wrap.section', {}, AgeLens.h('div.notice.error', { role: 'alert' }, 'This page could not load: ' + e.message + ' Reload the page to try again.'))); }

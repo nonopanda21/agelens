@@ -80,7 +80,7 @@ CUT_TAIL = re.compile(r"(?:\b(?:under|below|younger than|no older than|aged?|age
 NEAR = re.compile(r"年\s*[龄齡]|年\s*纪|(?<![0-9])\d+\s*(?:周\s*)?[岁歲](?!月)|[岁歲](?!月)|\bage[ds]?\b(?!\s+(?:of\s+[a-z]|care\b))|"
                   r"\byears?[- ]old\b(?!\s+(?:company|firm|business|brand|startup|start-up|organi[sz]ation))|\bretire\w*\b|"
                   r"\b(?:under|over|below|above)[ -]\d{2}(?!\d)(?!\s*(?:%|k\b|m\b|people|persons|employees|staff|members|hours?|hrs?|minutes?|days?|weeks?|months?|km|miles?|kg|"
-                  r"dollars?|usd|rmb|yuan|percent|units?|countries|cities|stores|shops|offices|clients|customers|languages|years?\s+(?:of\s+)?(?:\w+\s+)?experience))", re.I)
+                  r"dollars?|usd|rmb|yuan|percent|units?|countries|cities|stores|shops|offices|clients|customers|languages|branches|locations|outlets|sites|projects|products|partners|brands|markets|teams|years?\s+(?:of\s+)?(?:\w+\s+)?experience))", re.I)
 # Chinese product or audience lines the Chinese rules read as a limit on the applicant (pasted and one-line checks only)
 ZH_AUDIENCE = re.compile(r"(?:适合|针对|面向|服务于?)[^，,。；;\n]{0,20}(?:产品|护肤|化妆品|保险|服装|课程|客群|市场|读者|观众|粉丝)")
 _FW = {c: c - 0xFEE0 for c in list(range(0xFF10, 0xFF1A)) + list(range(0xFF21, 0xFF3B)) + list(range(0xFF41, 0xFF5B))}
@@ -207,7 +207,9 @@ def parse(text):
                     t["exception_text"] = exc.group().strip()
         for pat, flag in ((UNLIMITED, "unlimited"), (VAGUE, "vague_en"), (BORN, "birth_year")):
             for m in pat.finditer(sent):
-                t = (_term("relaxable", None, None, "high", m.group(), "unlimited") if flag == "unlimited"
+                ordered = INSTRUCTION.search(sent) or DICTATES.search(sent)  # "say there is no age limit" is an order, not what the ad says
+                t = (_term("ambiguous", None, None, "low", None, "near_miss") if flag == "unlimited" and ordered
+                     else _term("relaxable", None, None, "high", m.group(), "unlimited") if flag == "unlimited"
                      else _term("ambiguous", None, None, "low", None, flag))
                 found.append((t, (base + m.start(), base + m.end())))
         for k, (t, (a, b)) in enumerate(found):  # keep "preferred" with the number it qualifies

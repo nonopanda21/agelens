@@ -35,7 +35,7 @@
   }
 
   const rowOf = (label, o) => ({ label, ads: o.ads, any: sh(o.age_wording, o.ads), cap: sh(o.cap, o.ads) });
-  const SER2 = [{ key: 'any', name: 'Any age wording', cls: 'a' }, { key: 'cap', name: 'States a maximum age', cls: 'c' }];
+  const SER2 = [{ key: 'any', name: 'Any age wording', cls: 'a' }, { key: 'cap', name: 'A maximum age alone, not a range', cls: 'c' }];
 
   function extremes(rows, key, what, val = pct) {
     if (rows.length < 2) return '';
@@ -52,7 +52,7 @@
     const figA = chart({
       id: 'pt-exp', title: 'Age wording by required experience',
       headline: extremes(expRows.filter((r) => r.label !== 'Not stated'), 'any', 'The share of ads with any age wording') || 'Age wording by required experience.',
-      how: 'Purple: share of ads with any age wording. Pink striped: share that state a maximum age.',
+      how: 'Purple: share of ads with any age wording. Pink striped: share that state a maximum age alone, not as the top of a range.',
       series: SER2, rows: expRows, legend: true,
       note: small.length ? 'Not drawn, fewer than ' + fmt(MIN) + ' ads: ' + small.join(', ') + '.' : null });
 

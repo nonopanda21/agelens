@@ -1,6 +1,6 @@
 """Aids shown to participants in the study.
 
-Crossover design (crossover-rules-v1, the default; see docs/EVAL_PLAN.md), one condition per TASK:
+Crossover design (crossover-rules-v1, the default; see docs/EVAL_PLAN_v2_crossover_ai.md), one condition per TASK:
 kind 'none'    : condition A, the ad and background only (what a job seeker has today).
 kind 'agelens' : condition B, the AgeLens evidence check for that ad: the same rules-only output the Job Seeker page shows
                  for a pasted ad (api_seeker.check_pasted with allow_model=False). Real product output, not simulated, and the
@@ -146,7 +146,7 @@ def agelens_aid(task):
 
 
 # =====================================================================================================
-# Design crossover-ai-v1 (decided 2026-10-29, docs/EVAL_PLAN.md): fixed template versus contextual AI assistance, identical evidence.
+# Design crossover-ai-v1 (decided 2026-10-29, docs/EVAL_PLAN_v2_crossover_ai.md): fixed template versus contextual AI assistance, identical evidence.
 #   condition A = arm 'template'      : a static question template and checklist filled mechanically from the evidence package.
 #   condition B = arm 'ai_contextual' : a model reads the profile and the SAME evidence and drafts a reading, what is explicit /
 #                                       unclear, and a targeted question. Its output goes through llm.run_explanation (evidence check).

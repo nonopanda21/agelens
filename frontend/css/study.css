@@ -91,3 +91,20 @@
 @media (max-width:480px){.st-refs .st-dl{grid-template-columns:max-content 1fr}}
 .st-page .st-head h1{background:none!important;padding-bottom:0!important}
 @media (max-width:640px){.st-head{flex-wrap:nowrap;gap:var(--s2);top:56px}.st-page .st-head h1{font-size:1.05rem}.st-head .st-timer{align-items:center;min-width:0}.st-head .st-timer .hint{display:none}.st-head .st-clock{font-size:1.1rem;padding:0 var(--s2)}.st-prog{font-size:.8rem;gap:var(--s2)}.st-dots i{width:12px}}
+/* randomized test (#/study) */
+.rct-picks{display:grid;gap:var(--s2);margin-bottom:var(--s4)}
+.rct-pick{display:flex;gap:var(--s3);align-items:flex-start;padding:var(--s3);border:1px solid var(--line);border-radius:var(--r-sm);cursor:pointer;margin:0;font-weight:400;min-height:44px}
+.rct-pick:hover{background:var(--bg-alt)}
+.rct-pick:has(input:checked){border-color:var(--accent-line);background:var(--accent-soft)}
+.rct-pick input{width:18px;height:18px;margin:2px 0 0;flex:none}
+.rct-pick .hint{display:block;margin:2px 0 0}
+.rct-labels{margin-bottom:var(--s5)}
+.rct-exp{margin:0;padding-left:var(--s5)}
+.rct-tool-out h3{font-size:.95rem;margin:var(--s3) 0 var(--s1)}
+.rct-tool-out ul{margin:0;padding-left:var(--s5)}
+.rct-code{display:grid;gap:var(--s1);margin:var(--s4) 0;max-width:280px}
+.rct-files{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:var(--s2) var(--s4);align-items:center}
+html.rct-focus #nav nav,html.rct-focus .nav-menu,html.rct-focus .nav-cta-bar,html.rct-focus .sk-tab,html.rct-focus .sk-panel,html.rct-focus .foot{display:none!important}
+html.rct-focus .brand{pointer-events:none}
+#rct-counts th,#rct-counts td{text-align:left}
+#rct-ncodes{max-width:7rem}

@@ -1,5 +1,7 @@
 # Budget record
 
+> Team figure from the halfway slides: **US$40 of US$200 spent, largest line AI tools US$20.** API use on the live site must be added. Sections below that say no model is connected date from before the model was connected.
+
 Total team budget: US$200 (SPEC2 section 12).
 
 ## 1. Plan (PLANNED, not spent)

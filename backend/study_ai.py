@@ -1,4 +1,4 @@
-"""Design crossover-ai-v1 (docs/EVAL_PLAN.md): participant view, blinded rubric scoring and anonymous export for
+"""Design crossover-ai-v1 (docs/EVAL_PLAN_v2_crossover_ai.md): participant view, blinded rubric scoring and anonymous export for
 'fixed template versus contextual AI assistance, identical evidence'. Called from api_study (which owns routing, the formal gate
 and the tables); all functions take the api_study module as `S` so there is no import cycle.
 Safety rules are the ones in api_study: raters never get the tool, arm, participant code or other raters' scores; participants never

@@ -12,7 +12,7 @@
     ['Who is AgeLens for?', 'Mid-career jobseekers in any field who are changing jobs or returning to work. It helps you ask the question. It cannot remove an age limit, and only the employer can answer.'],
     ['Is AI used?', AgeLens.byModel('Not right now. Briefs are produced by fixed rules and templates. If a model is connected later, its output is checked against the quoted evidence and labelled.', 'Yes, for part of the answer. Fixed rules find the wording; an AI model adds statements that code checks against the quoted evidence and labels. Whether this helps has not been evaluated.')],
     ['Can text in an ad or a CV change how the system behaves?', 'No. Ads and CVs are treated as data to analyse, never as instructions.'],
-    ['How will you test whether this helps?', 'We plan a small classroom study: each person works through four fictional ads with the same evidence, two with a fixed template and two with contextual AI assistance, and blind raters score how well the ad was read and the question written. It has not been run yet, and it cannot show effects on unemployment or hiring.'],
+    ['How will you test whether this helps?', 'We plan a randomized test: half the testers answer alone and half can open AgeLens, on the same job ads and fictional CVs. We compare accuracy and time. It has not been run yet, and it cannot show effects on unemployment or hiring.'],
   ];
   AL.home = AL.home || { sections: [] };
   AL.home.sections.push({ id: 'faq', order: 60, page: 'why', rail: 'What it is not', render(el) {

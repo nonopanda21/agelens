@@ -60,7 +60,7 @@ def nocjk(page, tag):
 def participant(pw, i, shoot=False):
     b = pw.chromium.launch(args=ARGS)
     ctx = b.new_context(viewport={"width": 1280, "height": 900}); page = ctx.new_page(); watch(page, f"p{i}")
-    page.goto(BASE + "/#/study"); page.wait_for_selector("text=Information and consent")
+    page.goto(BASE + "/#/study/crossover"); page.wait_for_selector("text=Information and consent")
     banner = page.inner_text(".st-banner")
     if "SIMULATED" not in banner or "No AI model was used" not in banner:
         problems.append("intro banner lacks the SIMULATED / no-AI notice: " + banner)

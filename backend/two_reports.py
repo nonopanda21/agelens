@@ -1,5 +1,5 @@
 """Two reports on one pasted ad, from the same rules evidence, for the two buttons on the answer page.
-'template' : a fixed form filled in mechanically from the evidence (same wording as arm 'template' in docs/EVAL_PLAN.md, no ad id).
+'template' : a fixed form filled in mechanically from the evidence (same wording as arm 'template' in docs/EVAL_PLAN_v2_crossover_ai.md, no ad id).
              It does not use the person's background and makes no model call.
 'ai'       : the checked model statements already in this brief, so no second paid call. Absent, it says why; nothing stands in for it.
 These are examples of what each tool writes, not study data."""
@@ -22,7 +22,8 @@ def evidence(b):
     for key in ("explicit", "exceptions"):
         for s in _rules_items(b, key):
             q = s.get("quote_en") if s.get("quote") else None
-            out.append(brief._en((s.get("text_en") or s["text"]) + (' [ad text: "%s"]' % q if q else "")))
+            said = (' [ad text: "%s"]' % q if q == s.get("quote") else " [ad wording, in other words: %s]" % q) if q else ""  # quotation marks only for the ad's own words
+            out.append(brief._en((s.get("text_en") or s["text"]) + said))
     return out
 
 

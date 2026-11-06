@@ -140,7 +140,7 @@
       h('ol.mv-chain', {}, STEPS.map(([t, d], i) => h('li.mv-step', {},
         h('span.mv-step-n', { 'aria-hidden': 'true' }, String(i + 1)), h('b.mv-step-t', {}, t), h('span.mv-step-d', {}, d)))),
       h('p.mv-take', {}, 'Our first claim is limited to ', h('b', {}, 'better decision support'), '. Hiring effects and wider economic effects are left for future evaluation.'),
-      h('p.mv-take.mv-eval', {}, h('b', {}, 'How we will test it. '), 'We will compare contextual AI assistance with fixed templates on identical evidence, measuring interpretation accuracy, actionable questions, unsupported claims and completion time. The study has not been run.'),
+      h('p.mv-take.mv-eval', {}, h('b', {}, 'How we will test it. '), 'In a randomized test, half the testers answer alone and half can open AgeLens, on the same ads and fictional CVs. We measure accuracy and time. It has not been run.'),
       h('div.mv-cols', {},
         h('section.mv-colbox.sug', { 'aria-labelledby': 'toc-sug' }, h('h4#toc-sug', {}, 'What the evidence suggests'),
           h('ul', {}, SUGGESTS.map(([a, b]) => h('li', {}, h('b', {}, a), b))),

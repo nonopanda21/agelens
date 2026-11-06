@@ -1,0 +1,24 @@
+{
+ "version": "rct-rehearsal-1",
+ "status": "REHEARSAL ONLY. Fictional ads and CVs written to test the tool. Not the frozen test set.",
+ "practice": [
+  {"id": "PR1", "job_title": "Customer Service Representative", "ad_text": "Customer Service Representative. Applicants must be under 35. Good spoken communication. Shift work.", "entry_date": "2027-03-01",
+   "cv": {"cv_id": "CV-PR1", "name": "Candidate L", "birth_date": "1990-05-10", "graduation_date": "2012-06-30", "education": "Bachelor's degree", "years_experience": 13, "experience": ["2012 to now: customer support, retail bank"]}},
+  {"id": "PR2", "job_title": "Warehouse Assistant", "ad_text": "Warehouse Assistant. Forklift licence preferred. Day shifts, competitive pay.", "entry_date": "2027-03-01",
+   "cv": {"cv_id": "CV-PR2", "name": "Candidate M", "birth_date": "1981-11-02", "graduation_date": "2000-07-01", "education": "High school", "years_experience": 20, "experience": ["2006 to now: warehouse operations"]}}
+ ],
+ "cases": [
+  {"id": "RH1", "job_title": "Accountant", "ad_text": "Accountant. Age 35 or under. CPA preferred. Three years of bookkeeping required.", "entry_date": "2027-01-04", "stratum": {"wording": "explicit", "province": "rehearsal", "occupation": "财务"},
+   "cv": {"cv_id": "CV-RH1", "name": "Candidate A", "birth_date": "1988-01-15", "graduation_date": "2010-06-30", "education": "Bachelor's degree", "years_experience": 14, "experience": ["2012 to now: accountant, manufacturing firm"]}},
+  {"id": "RH2", "job_title": "Sales Manager", "ad_text": "Sales Manager. Aged 25 to 40. Five years of sales experience. Travel required.", "entry_date": "2027-01-04", "stratum": {"wording": "explicit", "province": "rehearsal", "occupation": "销售"},
+   "cv": {"cv_id": "CV-RH2", "name": "Candidate B", "birth_date": "1992-08-20", "graduation_date": "2014-06-30", "education": "Bachelor's degree", "years_experience": 11, "experience": ["2015 to now: sales, building materials"]}},
+  {"id": "RH3", "job_title": "Operations Manager", "ad_text": "Operations Manager. Generally not above 35; candidates with 8+ years of relevant experience may be considered up to 40.", "entry_date": "2027-01-04", "stratum": {"wording": "explicit", "province": "rehearsal", "occupation": "运营管理"},
+   "cv": {"cv_id": "CV-RH3", "name": "Candidate C", "birth_date": "1988-09-01", "graduation_date": "2011-06-30", "education": "Bachelor's degree", "years_experience": 9, "experience": ["2017 to now: marketing coordinator, online retailer"]}},
+  {"id": "RH4", "job_title": "Graphic Designer", "ad_text": "Graphic Designer. Born in 1995 or later; starting in 2031. Portfolio required.", "entry_date": "2031-01-06", "stratum": {"wording": "indirect", "province": "rehearsal", "occupation": "设计"},
+   "cv": {"cv_id": "CV-RH4", "name": "Candidate D", "birth_date": "1996-04-12", "graduation_date": "2018-06-30", "education": "Bachelor's degree", "years_experience": 8, "experience": ["2018 to now: designer, advertising agency"]}},
+  {"id": "RH5", "job_title": "Purchasing Officer", "ad_text": "Purchasing Officer. Born in 1990 or later; starting in 2028. Supplier negotiation experience.", "entry_date": "2028-02-01", "stratum": {"wording": "indirect", "province": "rehearsal", "occupation": "采购"},
+   "cv": {"cv_id": "CV-RH5", "name": "Candidate E", "birth_date": "1986-03-22", "graduation_date": "2008-06-30", "education": "Bachelor's degree", "years_experience": 16, "experience": ["2010 to now: purchasing, auto parts"]}},
+  {"id": "RH6", "job_title": "Marketing Assistant", "ad_text": "Marketing Assistant. Recent graduates preferred for our young team. Social media skills.", "entry_date": "2027-01-04", "stratum": {"wording": "indirect", "province": "rehearsal", "occupation": "市场营销"},
+   "cv": {"cv_id": "CV-RH6", "name": "Candidate F", "birth_date": "1992-02-14", "graduation_date": "2015-06-30", "education": "Bachelor's degree", "years_experience": 10, "experience": ["2016 to now: marketing, consumer goods"]}}
+ ]
+}

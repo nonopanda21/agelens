@@ -1,3 +1,5 @@
+> Dated: written before a model was connected and before the randomized test. Check against the live site and `docs/EVAL_PLAN.md`.
+
 # Demo script
 
 **For the live part, follow docs/LIVE_DEMO.md first.** It is newer: pasted ads are English or Chinese, the question is optional, and the page is now "Check an ad". Page names and click paths below may be older; rehearse them.

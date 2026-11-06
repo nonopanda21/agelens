@@ -163,13 +163,24 @@ def _questions(ads, n, with_max, exc_ads, amb, profile):
     return qs
 
 
+def _preferred_ages(ad):
+    """'ages 25 to 35' from a preference term with numbers, or None."""
+    for t in _terms(ad):
+        lo, hi = t.get("min_age"), t.get("max_age")
+        if t.get("kind") == "preference" and (lo is not None or hi is not None):
+            return "ages %d to %d" % (lo, hi) if lo is not None and hi is not None else "age %d or over" % lo if hi is None else "age %d or under" % hi
+    return None
+
+
 def _employer_question(ads, n, with_max, exc_ads, amb, profile):
     """The ONE question the answer leads with: the person's experience (never their age) + the most useful neutral ask.
     It goes to one employer, so with several similar ads it never cites the other ads."""
     one = n == 1
     conf = [a for a in ads if _conflict_snippets(a)]
     cut = [a for a in ads if any(_flagged(t, "truncated") for t in _terms(a))]
-    exp = _experience_sentence(profile["years_experience"], profile["occupation"])
+    years, age = profile["years_experience"], profile.get("age")
+    impossible = isinstance(years, (int, float)) and isinstance(age, (int, float)) and years > age - 14  # a typing slip must not go into a message to an employer
+    exp = _experience_sentence(None if impossible else years, profile["occupation"])
     consider = "or can experience like mine be considered?" if exp else "or does it vary by candidate?"
     caps = sorted({t["max_age"] for t in _terms(ads[0]) if t.get("max_age") is not None and t.get("kind") in ("max", "range") and _usable(t)}) if one else []
     if one and len(caps) > 1 and not conf:
@@ -253,12 +264,17 @@ def _summary(ads, n, status, with_max, exc_ads, profile):
     elif mixed:
         relates = ("You entered %d. The ad gives more than one age limit, so only the employer can say which one applies, if any." % age if _max_age(ads[0]) is not None or any(t.get("max_age") is not None and t.get("kind") in ("max", "range") for t in _terms(ads[0]))
                    else "You entered %d. The ad's age wording points in different directions, so only the employer can say what applies, if anything." % age)
+    elif not with_max and one and _preferred_ages(ads[0]):
+        relates = "You entered %d; the ad prefers %s. A preference is not a stated requirement. Only the employer can say how it is used." % (age, _preferred_ages(ads[0]))
     elif not with_max:
         relates = "No stated maximum age to compare with the age you entered (%d)." % age
     elif one:
         mx, to = _max_age(with_max[0]), _relax_to(with_max[0])
         if to and mx < age <= to:
             relates = "You entered %d: above the stated maximum of %d, within the %d the exception names. Only the employer can say whether the exception covers you." % (age, mx, to)
+        elif age == mx:
+            relates = "You entered %d, the same number as the stated limit. Read the ad's own words: \"under %d\" leaves out %d, while \"%d or under\" includes it. Only the employer can say how the limit is applied%s." % (
+                age, mx, mx, mx, " and whether the exception wording covers you" if _exceptions(with_max[0]) else "")
         else:
             relates = "You entered %d; the stated maximum is %d. Only the employer can say how the limit is applied%s." % (
                 age, mx, " and whether the exception wording covers you" if _exceptions(with_max[0]) else "")

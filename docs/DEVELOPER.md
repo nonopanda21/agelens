@@ -93,7 +93,8 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 - **Full report `#/pro`** (Pro): free vs Pro, the Pro code and the wallet.
 - **Invite code `#/access`:** used only when the host sets invite codes.
 - **Reviewer `#/reviewer`:** the queue; ask for information, draft, publish, close. It needs the token or a reviewer invite code.
-- **Study tools `#/study`** (participants) and **Scoring `#/study/score`** (raters and operator): the crossover study (`docs/EVAL_PLAN.md`, design `crossover-ai-v1`; older designs via `AGELENS_STUDY_DESIGN=crossover-rules-v1`). Simulation mode only; formal mode is refused without `data/study/APPROVAL.json` AND a connected AI model.
+- **Randomized test `#/study`** and **desk `#/study/admin`** (`backend/rct.py`, `backend/api_rct.py`, `frontend/pages/rct.js`), the current evaluation.
+- **Retired study tools `#/study/crossover`** (participants) and **Scoring `#/study/score`** (raters and operator): the crossover study (`docs/EVAL_PLAN.md`, design `crossover-ai-v1`; older designs via `AGELENS_STUDY_DESIGN=crossover-rules-v1`). Simulation mode only; formal mode is refused without `data/study/APPROVAL.json` AND a connected AI model.
 - **Method and sources `#/about`.**
 
 ## Automation
@@ -110,7 +111,8 @@ cp data/agelens.db /tmp/copy.db && AGELENS_DB=/tmp/copy.db .venv/bin/python app.
 | `docs/MOTIVATION.md` | the motivation section with page-referenced citations |
 | `docs/DEPLOY.md`, `render.yaml` | public deployment on Render: open or invite-only, free-plan limits |
 | `docs/PRO.md` | Pro stage 1: free vs Pro, codes and credits, the Word report |
-| `docs/EVAL_PLAN.md` | **current evaluation plan** (decided 2026-10-29): contextual AI vs fixed template, identical evidence; outcomes, power, SIMULATED dry run. Old plan: `docs/EVAL_PLAN_v1_rules_vs_ad.md` |
+| `docs/EVAL_PLAN.md` | **current evaluation plan**: randomized test, AgeLens vs no tool |
+| `docs/EVAL_PLAN_v2_crossover_ai.md` | earlier plan (2026-10-29): contextual AI vs fixed template, identical evidence; outcomes, power, SIMULATED dry run. Old plan: `docs/EVAL_PLAN_v1_rules_vs_ad.md` |
 | `docs/EVAL_PROTOCOL.md`, `docs/PREREGISTRATION_DRAFT.md`, `data/study/` | legacy parallel protocol (superseded), scoring template, power analyses, dry-run exports |
 | `docs/DELIVERABLES.md`, `docs/COURSE_CHECKLIST.md`, `docs/PENDING_TEACHER.md` | course deliverables, requirement cross-reference, items awaiting the teacher |
 | `docs/DEMO_SCRIPT.md`, `docs/ADVERSARIAL_CASES.md` | live-demo outline, adversarial inputs |

@@ -24,7 +24,7 @@ AgeLens.pages.about = {
           h('div', {}, h('p', {}, h('span.badge.mint', {}, 'Real data · Recruitment ads 2021–2024')),
             h('p', {}, 'The statistics and the regional map summarise recruitment data supplied by the team: 10,058,826 ads read, 10,054,663 with a recognised province. Only counts are published: no ad text, company or contact detail leaves the team’s computer.')),
           h('div', {}, h('p', {}, h('span.badge.sim', {}, 'Demo · Synthetic data')),
-            h('p', {}, 'The ads you can open (answers on Check an ad, demo cases, the study tasks) are fictional, generated for this course project. None comes from a real employer or person. They are written in Chinese and shown here in English; the rules read the Chinese.'))),
+            h('p', {}, 'The ads you can open (answers on Check an ad, demo cases) are fictional, generated for this course project. None comes from a real employer or person. They are written in Chinese and shown here in English; the rules read the Chinese.'))),
         h('h3', {}, 'Limits of the real data'),
         h('ul', {},
           h('li', {}, 'The counts show how ads are worded on one platform. They are not hiring, rejection or unemployment rates.'),
@@ -49,6 +49,6 @@ AgeLens.pages.about = {
           h('ul', {}, h('li', {}, 'Not legal advice, and no legal conclusion about any ad.'),
             h('li', {}, 'It does not make or support hiring decisions. Age wording in an ad is not a rate of discrimination or rejection.'),
             h('li', {}, 'The first claim is better decision support. AgeLens cannot remove a binding age restriction, and any benefit for getting a job needs an employer to respond. Effects on hiring and the wider economy are left for future evaluation.'),
-            h('li', {}, 'A classroom-scale study can test whether people read the wording more accurately and ask more usable questions. It cannot show changes in unemployment or GDP.'))))));
+            h('li', {}, 'A classroom-scale study can test whether people judge an age condition more accurately and faster. It cannot show changes in unemployment or GDP.'))))));
   },
 };

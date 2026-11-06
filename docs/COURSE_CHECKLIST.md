@@ -1,3 +1,5 @@
+> Dated: written 2026-10-24, before a model was connected and before the randomized test. `#/status` and `docs/EVAL_PLAN.md` are current.
+
 # Course cross-reference
 
 Status vocabulary (only these): **done and verified** / **implemented, unverified** / **planned** / **blocked/needs teacher**.

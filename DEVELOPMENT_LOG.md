@@ -895,3 +895,15 @@ The AI report now opens with what the person told us, and `explain_v4` asks the 
 ## 2026-11-04: quick fill and PDF reports
 
 Quick fill reads one sentence by rules, so personal details are not sent to a provider just to fill a form. While testing it, "38 years old" turned out to count as 38 years of experience in `cv.find_years`, which also affected CV uploads; fixed. Reports now download as PDF, written by `backend/report_pdf.py` with the standard library and built-in Helvetica, so nothing new to install, and text is limited to Windows-1252 (Chinese is replaced by a marker, as elsewhere on the English pages).
+
+## 2026-11-05: randomized test replaces the crossover
+
+The team chose the design in its halfway slides and action guide: AgeLens against no tool, 32 ad and CV pairs, two regressions. Built into the site at `#/study` and `#/study/admin`, reusing the study token and the approval-gate pattern; the crossover moved to `#/study/crossover`, unlinked. Only a fictional rehearsal set ships. The test set and answers are the team's, and there are no participants or results.
+
+Power simulation found what the formula hides: "gain at least 10" with a true gain of 10 passes under half the time at any N, and at N = 40 passing both rules is unlikely. Written into the plan for the team to decide. Render's free plan has no disk, so durable storage is now a formal-mode requirement.
+
+## 2026-11-05: review of the test and Check an ad
+
+A four-part review found defects that must be fixed before any formal run of the test (listed in `docs/EVAL_PLAN.md`). The team is not demonstrating the test now, so it stays on the site as a simulated rehearsal and those defects wait; two that could affect the rest of the site or lose a session were fixed (a slow request finishing after leaving the page, and any error deleting the session).
+
+Fixed on Check an ad: "no age limit" inside an injected instruction was reported as what the ad says; a firewall 403 from the host read as an expired session; an age equal to the stated limit read as fitting it; a preferred age range was described as no age wording to compare; a cap beside a higher preferred age was not flagged; "over 40 branches" read as age; text that is plainly not an ad got a full answer and a model call; an impossible experience figure went into the employer question; translated or described wording appeared as a direct quote in reports. Quick fill: a place read as a role, Chinese years and degree. On Findings, "States a maximum age" meant caps alone while the headline count includes tops of ranges.

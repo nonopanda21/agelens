@@ -1,4 +1,4 @@
-"""Pure statistics for the crossover-ai-v1 evaluation (docs/EVAL_PLAN.md). Stdlib only, seeded, no database.
+"""Pure statistics for the crossover-ai-v1 evaluation (docs/EVAL_PLAN_v2_crossover_ai.md). Stdlib only, seeded, no database.
 Unit of analysis = PARTICIPANT: for each outcome, D = mean over the participant's 2 contextual-AI tasks minus mean over the 2 fixed-template tasks.
 Used by api_study/study_ai (export columns), scripts/analyze_study_ai.py (analysis) and the tests.
 Anything computed from a SIMULATED export is a software test, never a result."""
@@ -115,7 +115,7 @@ def analyse(doc):
     out = {"design": meta.get("design"), "simulated": sim, "ai_model_used": model_used,
            "label": ("SIMULATED: software test only. A real AI model wrote the AI tool's text, but the sessions were scripted. Not study data, not a result." if sim and model_used
                      else "SIMULATED: software test only. No AI model was used. Not study data, not a result, says nothing about AI." if sim
-                     else "FORMAL export (read docs/EVAL_PLAN.md before interpreting)"),
+                     else "FORMAL export (read docs/EVAL_PLAN_v2_crossover_ai.md before interpreting)"),
            "meta": {k: meta.get(k) for k in ("schema", "scope", "generated_at", "tasks_version", "rubric_version")}}
     ok = [p for p in parts if p.get("diff_acc", "") != ""]
     seqs = sorted({p["sequence"] for p in parts})

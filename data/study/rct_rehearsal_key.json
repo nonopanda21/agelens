@@ -1,0 +1,13 @@
+{
+ "version": "rct-rehearsal-1",
+ "answers": {
+  "PR1": {"gold_label": "Conflict", "evidence_text": "Applicants must be under 35.", "rationale": "Age 36 on the entry date."},
+  "PR2": {"gold_label": "Match", "evidence_text": "Forklift licence preferred.", "rationale": "The ad states no age condition.", "no_age_limit": true},
+  "RH1": {"gold_label": "Conflict", "evidence_text": "Age 35 or under.", "rationale": "Age 38 on the entry date."},
+  "RH2": {"gold_label": "Match", "evidence_text": "Aged 25 to 40.", "rationale": "Age 34 on the entry date."},
+  "RH3": {"gold_label": "Unknown", "evidence_text": "candidates with 8+ years of relevant experience may be considered up to 40", "rationale": "Age 38 is above 35 and inside the exception; the ad does not say whether marketing years count as relevant."},
+  "RH4": {"gold_label": "Match", "evidence_text": "Born in 1995 or later", "rationale": "Born in 1996."},
+  "RH5": {"gold_label": "Conflict", "evidence_text": "Born in 1990 or later", "rationale": "Born in 1986."},
+  "RH6": {"gold_label": "Unknown", "evidence_text": "Recent graduates preferred for our young team.", "rationale": "A preference, with no hard age or graduation limit stated."}
+ }
+}

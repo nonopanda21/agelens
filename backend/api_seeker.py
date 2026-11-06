@@ -63,14 +63,30 @@ def _read_terms(text):
         for t in free + pref:
             ageparse._flag(t, "conflict")
             t["confidence"] = "low"
+    # "18-25" beside "40 or over preferred": no one can meet both. Pasted checks only, as above.
+    tops = [t for t in terms if t.get("max_age") is not None and t.get("kind") in ("max", "range") and t.get("confidence") == "high"]
+    above = [t for t in pref if t.get("min_age") is not None and any(t["min_age"] > x["max_age"] for x in tops)]
+    if above:
+        for t in tops + above:
+            ageparse._flag(t, "conflict")
     if not terms:
         miss = ageparse_en.near_miss(text)
         terms = [miss] if miss else []
     return terms
 
 
+# words nearly any job ad has; without them and without age wording, the text is probably not an ad
+_AD_WORDS = re.compile(r"招聘|岗位|职位|任职|职责|薪|工资|经验|学历|本科|大专|工作|负责|要求|专员|经理|助理|工程师|文员|\b(?:jobs?|roles?|positions?|hir(?:e|es|ing)|vacanc\w+|candidates?|applicants?|apply|experience|salary|pay|wages?|responsib\w+|requir\w+|qualif\w+|degree|skills?|team|manager|engineer|assistant|officer|clerk|accountant|analyst|designer|developer|driver|teacher|nurse|sales\w*|staff|employer|employees?|career|full[- ]time|part[- ]time|shifts?)\b", re.I)
+
+
+def _not_an_ad(text, terms):
+    return not terms and not _AD_WORDS.search(text)
+
+
 def _reading_notes(text, terms):
     notes = []
+    if _not_an_ad(text, terms):
+        notes.append("This does not look like a job ad, so there is little to read. Paste the text of the ad itself.")
     if not gloss.has_cjk(text):
         notes.append("This text is in English. AgeLens was built and checked on Chinese ads; English is read by a smaller rule set, added so anyone can try the tool, and its accuracy has not been measured.")
     if not terms:
@@ -129,6 +145,8 @@ def check_pasted(body, allow_model=True):
     if not str(body.get("question") or "").strip():
         raise HTTPError(400, "A question is required to build an Evidence brief.")
     terms = _read_terms(text)
+    not_ad = _not_an_ad(text, terms)
+    allow_model = allow_model and not not_ad  # nothing to explain, so no call is spent on it
 
     def one_brief(terms, reading_out=None, replay=None):
         ad = {"id": PASTE_ID, "title": "Pasted ad text", "company": None, "occupation": None, "province": None, "city": None,
@@ -172,6 +190,9 @@ def check_pasted(body, allow_model=True):
                 if st.get("source") == "rules" and st.get("quote") in said:
                     st["type"] = "ai_read"
     b["reading_check"] = {k: v for k, v in check.items() if k != "checked"} if check else None
+    if not_ad:
+        b["employer_question"] = rules_only["employer_question"] = None
+        b["ai_note"] = rules_only["ai_note"] = "This does not look like a job ad, so the AI model was not run."
     b["reports"] = two_reports.build(b, text, rules_only)
     return b
 

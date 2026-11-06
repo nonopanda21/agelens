@@ -15,8 +15,8 @@ A Northwestern University SEPOL 425 course project (Group Delta).
 > **Status, stated plainly.**
 > - **Statistics and the map** summarise **10.05 million real recruitment ads** posted 2021–2024. Only counts are published: no ad text, company or contact (`data/real/`, method in [`docs/REAL_DATA_YEARS.md`](docs/REAL_DATA_YEARS.md)).
 > - **The ads you can open**, the Job Seeker answers and the demo cases use a fictional, reproducible set of 960 ads, labelled "Demo · Synthetic data".
-> - **No AI model** is connected. Answers and reports come from fixed, tested rules.
-> - No real recruitment data has been imported, and **no study with participants** has been run yet.
+> - **An AI model** is connected on the live site, behind code checks; without one, answers come from fixed, tested rules. Whether it helps has not been evaluated.
+> - The real ads are aggregated only and not imported, and **no study with participants** has been run yet.
 >
 > AgeLens is not legal advice and makes no hiring or eligibility decisions. Everything claimed here is backed by [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md).
 
@@ -75,14 +75,12 @@ Steps and free-plan limits are in [`docs/DEPLOY.md`](docs/DEPLOY.md). Before pus
 
 ## How we will evaluate it
 
-The team's decision (2026-10-29): compare **contextual AI assistance with fixed templates, using identical evidence**. The claim is improved decision support only; nothing about interviews, hiring or employment, and the tool cannot remove a binding age limit.
+The team's plan (2026-11-05, draft for teacher approval): a **randomized test**. Half the testers answer alone, half can open AgeLens, on the same job ads and fictional CVs. The claim is better accuracy and less time on these reading tasks, nothing about hiring.
 
-- **Design:** a within-participant crossover. Each participant does 4 fictional tasks: 2 with a fixed template, 2 with contextual AI assistance.
-  - Outcomes, scored blind by raters: interpretation accuracy (primary), unsupported claims (key safety), actionable question, completion time.
-  - Target: 24 participants.
-- **Status:** the study tools are built and rehearsed with SIMULATED dry runs (scripted sessions; in the latest, `gpt-6-luna` wrote the AI text on a local server). **No model is switched on by default, no participant is recruited, no approval exists, and no results exist.**
+- **Design:** server-side 1:1 randomization, 32 ad and CV pairs (16 explicit or neutral, 16 indirect), answers frozen in advance. An AI model also answers alone, for comparison with the control group.
+- **Status:** the test runs at `#/study` as a rehearsal with fictional cases, and has only run with scripted testers. **No approval, no frozen test set, no participants, no results.** The server refuses formal mode until these exist.
 
-Full plan, power analysis and dry run: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
+Full plan and power analysis: [`docs/EVAL_PLAN.md`](docs/EVAL_PLAN.md).
 
 ## How it is built
 

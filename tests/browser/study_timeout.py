@@ -10,7 +10,7 @@ print("limit set", set_limit(6))
 try:
     with sync_playwright() as pw:
         b = pw.chromium.launch(); p = b.new_page(); errs = []
-        p.on("console", lambda m: m.type == "error" and errs.append(m.text)); p.goto(BASE + "/#/study"); p.check("#st-agree"); p.click("text=Begin")
+        p.on("console", lambda m: m.type == "error" and errs.append(m.text)); p.goto(BASE + "/#/study/crossover"); p.check("#st-agree"); p.click("text=Begin")
         p.wait_for_selector("#st-reading, #st-answer")  # crossover-ai-v1 has two boxes (reading, question); the legacy designs have one
         p.fill("#st-reading" if p.locator("#st-reading").count() else "#st-answer", "Half-written reading of the age wording")
         p.wait_for_selector("text=Time is up", timeout=15000); print("auto-submitted:", p.inner_text(".notice"), "| console errors:", errs or "none")

@@ -103,7 +103,7 @@
     try { data = await res.json(); } catch (e) { parsed = false; }
     clearTimeout(timer);
     if (!res.ok) {
-      const kind = res.status === 401 || res.status === 403 ? 'session' : res.status === 409 ? 'duplicate' : res.status >= 500 ? 'server' : res.status === 429 ? 'busy' : 'rejected';
+      const kind = res.status === 403 && !parsed ? 'blocked' : res.status === 401 || res.status === 403 ? 'session' : res.status === 409 ? 'duplicate' : res.status >= 500 ? 'server' : res.status === 429 ? 'busy' : 'rejected';
       throw Object.assign(new Error((data && data.error) || 'Request failed (' + res.status + ').'), { kind, status: res.status, data: data || {} });
     }
     if (!parsed || data === null) throw Object.assign(new Error('The server sent a reply that could not be read.'), { kind: 'parse', status: res.status });
@@ -116,6 +116,7 @@
     parse: ['The reply could not be read', 'The server answered, but not in a form this page understands. Your answers are kept. Try again.'],
     session: ['Your session or access key is missing or has expired', 'Reload the page and try again. Anything you typed in this tab is kept; a human-review request may need to be submitted again.'],
     busy: ['The server is busy', 'Too many requests at once. Wait a moment and try again.'],
+    blocked: ['The hosting network blocked this text', 'Its firewall sometimes stops text that looks like code, such as SQL commands or file paths. This is not about your session or the ad. Remove those parts and try again.'],
     rejected: ['The request was not accepted', null],
   };
   function problemBox(err, retry, extra) {
@@ -230,7 +231,7 @@
     out.replaceChildren(spin('Reading ' + file.name + '…'));
     try { cvReview(out, await call('/api/cv/parse', { method: 'POST', body: file, headers: { 'X-Filename': encodeURIComponent(file.name) }, timeout: CV_TIMEOUT_MS })); }
     catch (e) {
-      const msg = e.kind === 'unreachable' || e.kind === 'timeout' || e.kind === 'server' || e.kind === 'parse' ? PROBLEM[e.kind][0] + '. ' + PROBLEM[e.kind][1] : e.message;
+      const msg = e.kind === 'unreachable' || e.kind === 'timeout' || e.kind === 'server' || e.kind === 'parse' || e.kind === 'blocked' ? PROBLEM[e.kind][0] + '. ' + PROBLEM[e.kind][1] : e.message;
       cvFail(out, msg, () => upload(file, out, zone), e.kind);
     } finally { zone.classList.remove('busy'); }
   }
@@ -338,7 +339,7 @@
     const box = $('answer'); if (!box) return;
     if (loading) return box.replaceChildren(h('div.answer', { 'aria-busy': 'true' }, h('p.hint', { role: 'status' }, S.mode === 'paste' || S.results ? 'Building your answer…' : 'Finding similar ads, then building your answer…', AgeLens.byModel('', ' With the AI model this usually takes about 10 seconds.')), h('div.skel', { 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))));
     const paste = S.mode === 'paste';
-    if (S.problem) return box.replaceChildren(h('div.answer', {}, demoNote(), problemBox(S.problem, paste && S.problem.kind === 'rejected' ? null : () => (paste ? runPaste() : run(S.page, { keepBroadened: true }))), paste ? h('p.hint', {}, 'Nothing was stored. The text you pasted is still in the box above.') : null));
+    if (S.problem) return box.replaceChildren(h('div.answer', {}, demoNote(), problemBox(S.problem, paste && (S.problem.kind === 'rejected' || S.problem.kind === 'blocked') ? null : () => (paste ? runPaste() : run(S.page, { keepBroadened: true }))), paste ? h('p.hint', {}, 'Nothing was stored. The text you pasted is still in the box above.') : null));
     const r = S.results;
     if (!paste && !r) return box.replaceChildren();
     if (!paste && !r.total) return box.replaceChildren(h('div.answer', {}, demoNote(), emptyState(r)));

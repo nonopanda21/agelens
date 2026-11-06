@@ -11,6 +11,7 @@ _AGE = [re.compile(r"\b(?:i am|i'm|im|age[ds]?|age is|my age is)\s*:?\s*(\d{2})\
 _ROLE = re.compile(r"\b(?:years?|yrs?)(?:\s+of)?(?:\s+\w+)?\s+(?:experience\s+)?(?:in|as|at)\s+(?:an?\s+|the\s+)?([a-z][a-z &/-]{2,40})"
                    r"|\b(?:work(?:ing)?|worked)\s+(?:in|as)\s+(?:an?\s+|the\s+)?([a-z][a-z &/-]{2,40})"
                    r"|\b(?:i am|i'm|im)\s+(?:an?\s+)([a-z][a-z &/-]{2,40})"
+                   r"|\b\d{2}[- ]years?[- ]old\s+([a-z][a-z &/-]{2,40})"
                    r"|\b(?:looking for|seeking|want|applying for)\s+(?:an?\s+)?([a-z][a-z &/-]{2,40}?)\s+(?:jobs?|roles?|positions?)\b", re.I)
 _ROLE_END = re.compile(r"\s+(?:and|with|based|living|from|for|at|who|in|near)\b.*$", re.I)
 _ROLE_ZH = re.compile(r"(?:做|从事)([一-鿿]{2,10}?)(?:工作|行业|岗位|\d|[一二两三四五六七八九十]+年|$|[，,。；;])")
@@ -50,14 +51,27 @@ def _role(text):
     m = _ROLE.search(text)
     if m:
         role = _ROLE_END.sub("", next(g for g in m.groups() if g)).strip(" -/&")
-        if 2 < len(role) <= 40:
+        if 2 < len(role) <= 40 and not _region(role):  # "worked 3 years in Beijing" names a place, not a role
             return role
     m = _ROLE_ZH.search(text)
     return m.group(1) if m else None
 
 
+def _years(text):
+    y = cv.find_years(text)
+    if y is not None:
+        return y
+    m = re.search(r"(?<![\d.])(\d{1,2})\s*年(?!\d)", text)  # a bare "9年" in a short line about a person; four-digit years do not match
+    return int(m.group(1)) if m and 0 < int(m.group(1)) <= 50 else None
+
+
+def _education(text):
+    e = cv.find_education(text)
+    return e.split()[0] if e and re.match(r"[一-鿿]", e) else e  # Chinese degree words end at the space
+
+
 def parse(text):
     """-> {"fields": {only what was found}}. Contact details are ignored, and no free text beyond a short role or degree comes back."""
     text = cv.redact(str(text or "")[:MAX_CHARS])
-    f = {"age": _age(text), "years_experience": cv.find_years(text), "occupation": _role(text), "region": _region(text), "education": cv.find_education(text)}
+    f = {"age": _age(text), "years_experience": _years(text), "occupation": _role(text), "region": _region(text), "education": _education(text)}
     return {"fields": {k: v for k, v in f.items() if v not in (None, "")}}

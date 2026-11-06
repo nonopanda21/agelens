@@ -7,7 +7,7 @@ Unit of analysis = PARTICIPANT (usable share of 4 tasks), never the pooled 4 ans
   SECONDARY  : usable on >=3 of 4 tasks: risk difference with Newcombe hybrid-score 95% CI; Fisher exact two-sided p.
   AGREEMENT  : Cohen's kappa (R1 vs R2, items scored by both, before adjudication) per criterion + severe flag, with raw agreement.
   SENSITIVITY: completers only (all 4 tasks submitted); excluding participants with unresolved scores is the primary rule.
-CROSSOVER design (meta.design crossover-rules-v1, the planned design; docs/EVAL_PLAN.md):
+CROSSOVER design (meta.design crossover-rules-v1, the planned design; docs/EVAL_PLAN_v2_crossover_ai.md):
   PRIMARY    : per participant D = usable share on AgeLens tasks (B) - usable share on ad-only tasks (A), 2 tasks each.
                Mean D; percentile bootstrap 95% CI over participants (20,000 resamples, seed 20261023); two-sided sign-flip
                randomisation test (20,000 flips); paired t p also shown. Pre-registered threshold applied verbatim from
